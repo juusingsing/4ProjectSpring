@@ -1,5 +1,5 @@
 package back.config;
-//123
+//123456
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
