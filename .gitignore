@@ -1,4 +1,14 @@
-.project
+# Gradle
+.gradle/
+build/
 
-# 윈도우 임시 및 캐시 폴더 무시
-AppData/
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 로그
+*.log
