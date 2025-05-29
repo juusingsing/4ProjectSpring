@@ -1,0 +1,4 @@
+.project
+
+# 윈도우 임시 및 캐시 폴더 무시
+AppData/
