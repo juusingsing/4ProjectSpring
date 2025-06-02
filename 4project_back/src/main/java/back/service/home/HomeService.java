@@ -4,24 +4,11 @@ import java.io.IOException;
 import java.util.List;
 
 import back.model.board.Board;
-import back.model.board.Comment;
+import back.model.home.Home;
 
 public interface HomeService {
-    
-	public List getBoardList(Board board);
-	
-    public Board getBoardById(String boardId);
-    
-    public boolean createBoard(Board board) throws NumberFormatException, IOException;
-    
-    public boolean updateBoard(Board board);
-    
-    public boolean deleteBoard(Board board);
-    
-    public boolean createComment(Comment comment);
-    
-    public boolean updateComment(Comment comment);
-    
-    public boolean deleteComment(Comment comment);
-
+	public List getAnimalSortedByName(Home home);
+	public List getAnimalSortedByCreateDtDesc(Home home);
+	public List getPlantSortedByName(Home home);
+	public List getPlantSortedByCreateDtDesc(Home home);
 }

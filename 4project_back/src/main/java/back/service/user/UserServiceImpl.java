@@ -26,11 +26,11 @@ public class UserServiceImpl implements UserService {
 	public boolean validateUser(User user) {
     	
     	try {
-            User dbUser = userMapper.getUserById(user.getUserId());
+            User dbUser = userMapper.getUserById(user.getUsersId());
             if (dbUser == null) return false;
             
-            String encryptedPassword = passwordEncoder.encode(user.getPassword());
-            return passwordEncoder.matches(dbUser.getPassword(), encryptedPassword);
+            String encryptedPassword = passwordEncoder.encode(user.getUsersPassword());
+            return passwordEncoder.matches(dbUser.getUsersPassword(), encryptedPassword);
         } catch (Exception e) {
         	log.error("로그인 실패", e);
 			throw new HException("로그인 실패", e);
@@ -42,8 +42,8 @@ public class UserServiceImpl implements UserService {
     public boolean registerUser(User user) {
 
         try {
-            String password = user.getPassword();
-            user.setPassword(password != null ? passwordEncoder.encode(password) : null);
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
             return userMapper.registerUser(user) > 0;
         } catch (Exception e) {
         	log.error("회원가입 실패", e);
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
     
     @Override
 	public boolean updateUser(User user) {
-    	String password = user.getPassword();
-    	user.setPassword(password != null ? passwordEncoder.encode(password) : null);
+    	String password = user.getUsersPassword();
+    	user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
     	
     	return userMapper.updateUser(user) > 0;
 	}
@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
     @Override
 	public boolean deleteUser(User user) {
     	try {
-            String password = user.getPassword();
-            user.setPassword(password != null ? passwordEncoder.encode(password) : null);
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
             return userMapper.deleteUser(user) > 0;
         } catch (Exception e) {
             log.error("사용자 탈퇴 중 오류", e);
@@ -111,8 +111,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean userM(User user) {
 		try {
-            String password = user.getPassword();
-            user.setPassword(password != null ? passwordEncoder.encode(password) : null);
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
             return userMapper.userM(user) > 0;
         } catch (Exception e) {
             log.error("회원관리 중 오류", e);
@@ -123,8 +123,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int userIdCheck(User user) {
 		try {
-            String password = user.getPassword();
-            user.setPassword(password != null ? passwordEncoder.encode(password) : null);
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
             return userMapper.userIdCheck(user);
         } catch (Exception e) {
             log.error("불러오기 오류", e);

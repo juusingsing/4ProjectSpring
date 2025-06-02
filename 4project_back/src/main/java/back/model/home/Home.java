@@ -16,31 +16,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor  // 모든 필드를 매개변수로 하는 생성사 자동 생성
 @EqualsAndHashCode(callSuper = true)
 public class Home extends Model {
+	
+    private String userId;
+    private String fileId;
 
-	//검색필터
-	private String searchText;
-	private String startDate;
-	private String endDate;
+    // 동물 관련 컬럼 (ANIMAL 테이블에만 존재)
+    private String animalId;
+    private String animalName;
+    private String animalSpecies;
+    private String animalAdoptionDate; 
+    private String birthDate; 
+    private String gender;
+    private String animalMemo;
+
+    // 식물 관련 컬럼 (PLANT 테이블에만 존재)
+    private String plantId;
+    private String plantName;
+    private String plantType;
+    private String plantPurchaseDate; 
+    private String plantSunPreference;
+    private String plantGrowStatus;
+
 	
-	//페이징
-	private int rn;
-	
-	private int startRow;
-	private int endRow;
-	private int page = 1;   // 기본 페이지 1
-	private int size = 10;  //기본페이지 크기 10
-	
-	private int totalCount;
-	private int totalPages;
-	private String sortField = "CREATE_DT";
-    private String sortOrder = "DESC";
-	
-	
-    
-	private String boardId;
-	private String title;
-	private String content;
-	private String viewCount;
 
 
 

@@ -5,7 +5,7 @@
 <mapper namespace="back.mapper.home.HomeMapper"> <!-- 매퍼의 네임스페이스 설정 -->
 
 
-  <select id="getAnimalById" parameterType="string" resultType="back.model.home.Home">
+  <select id="getAnimalSortedByName"  resultType="back.model.home.Home">
             SELECT
 		        ANIMAL_ID,
 		        USER_ID,
@@ -22,12 +22,35 @@
                 UPDATE_ID,
                 DEL_YN
 		    FROM ANIMAL 
-		    WHERE ANIMAL_ID = #{animalId}
-		      AND DEL_YN = 'N'
+		    WHERE DEL_YN = 'N'
+		    ORDER BY
+            ANIMAL_NAME ASC, ANIMAL_ID ASC
+    </select>
+    
+      <select id="getAnimalSortedByCreateDtDesc"  resultType="back.model.home.Home">
+            SELECT
+		        ANIMAL_ID,
+		        USER_ID,
+		        FILE_ID,
+		        ANIMAL_NAME,
+                ANIMAL_SPECIES,
+                ANIMAL_ADOPTIONDATE,
+                BIRTH_DATE,
+                GENDER,
+                ANIMAL_MEMO,
+                CREATE_DT,
+                UPDATE_DT,
+                CREATE_ID,
+                UPDATE_ID,
+                DEL_YN
+		    FROM ANIMAL 
+		    WHERE DEL_YN = 'N'
+		    ORDER BY
+            CREATE_DT ASC, ANIMAL_ID ASC
     </select>
     
     
-     <select id="getPlantById" parameterType="string" resultType="back.model.home.Home">
+     <select id="getPlantSortedByName" resultType="back.model.home.Home">
             SELECT
 		        PLANT_ID,
 				USER_ID,
@@ -43,196 +66,30 @@
 				UPDATE_DT,
 				DEL_YN
 		    FROM PLANT 
-		    WHERE PLANT_ID = #{plantId}
-		      AND DEL_YN = 'N'
+		    WHERE DEL_YN = 'N'
+		    ORDER BY
+            PLANT_NAME ASC, PLANT_ID ASC
     </select>
     
-    <select id="getBoardList" parameterType="back.model.board.Board" resultType="back.model.board.Board">
-             SELECT *
-             FROM (
-	             SELECT
-	                ROWNUM AS RN,
-			        B.BOARD_ID,
-			        B.TITLE,
-			        B.CONTENT,
-			        B.VIEW_COUNT,
-			        B.CREATE_ID,
-			        B.UPDATE_ID,
-			        B.CREATE_DT,
-			        B.UPDATE_DT,
-			        B.DEL_YN
-	            FROM (
-		            SELECT
-				        A.BOARD_ID,
-				        A.TITLE,
-				        A.CONTENT,
-				        A.VIEW_COUNT,
-				        A.CREATE_ID,
-				        A.UPDATE_ID,
-				        TO_CHAR(A.CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
-				        TO_CHAR(A.UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
-				        A.DEL_YN 
-				    FROM BOARD A
-				    <where>
-					    AND A.DEL_YN = 'N' 
-					   <if test="searchText != null and searchText != ''">
-		            	AND (
-		            	   A.TITLE LIKE '%'||#{searchText}||'%'
-		            	OR A.CONTENT LIKE '%'||#{searchText}||'%'
-		            	)
-		        	   </if>
-		        	   <if test="startDate != null and startDate != ''">
-				           <![CDATA[ AND A.CREATE_DT >= TO_DATE(#{startDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') ]]>
-				        </if>
-				        <if test="endDate != null and endDate != ''">
-				           <![CDATA[ AND A.CREATE_DT <= TO_DATE(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') ]]>
-				        </if>
-			        </where>
-			        ORDER BY ${sortField} ${sortOrder}
-			    ) B
-		   	) C
-		    WHERE C.RN BETWEEN #{startRow} AND #{endRow}
-		    
-    </select>
-    
-    <select id="getTotalBoardCount" parameterType="back.model.board.Board" resultType="int">
-        SELECT COUNT(B.BOARD_ID) 
-          FROM (
-	            SELECT
-			        A.BOARD_ID,
-			        A.TITLE,
-			        A.CONTENT,
-			        A.VIEW_COUNT,
-			        A.CREATE_ID,
-			        A.UPDATE_ID,
-			        TO_CHAR(A.CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
-			        TO_CHAR(A.UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
-			        A.DEL_YN
-			    FROM BOARD A
-			    <where>
-				    AND A.DEL_YN = 'N' 
-				   <if test="searchText != null and searchText != ''">
-	            	AND (
-	            	   A.TITLE LIKE '%'||#{searchText}||'%'
-	            	OR A.CONTENT LIKE '%'||#{searchText}||'%'
-	            	)
-	        	   </if>
-	        	   <if test="startDate != null and startDate != ''">
-			           <![CDATA[ AND A.CREATE_DT >= TO_DATE(#{startDate} || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') ]]>
-			        </if>
-			        <if test="endDate != null and endDate != ''">
-			           <![CDATA[ AND A.CREATE_DT <= TO_DATE(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') ]]>
-			        </if>
-		        </where>
-		    ) B
-    </select>
-    
-    <select id="getBoardById" parameterType="string" resultType="back.model.board.Board">
+    <select id="getPlantSortedByCreateDtDesc" resultType="back.model.home.Home">
             SELECT
-		        BOARD_ID,
-		        TITLE,
-		        CONTENT,
-		        VIEW_COUNT,
-		        CREATE_ID,
-		        UPDATE_ID,
-		        CREATE_DT,
-		        UPDATE_DT,
-		        DEL_YN
-		    FROM BOARD 
-		    WHERE BOARD_ID = #{boardId}
-		      AND DEL_YN = 'N'
+		        PLANT_ID,
+				USER_ID,
+				FILE_ID,
+				PLANT_NAME,
+				PLANT_TYPE,
+				PLANT_PURCHASE_DATE,
+				PLANT_SUN_PREFERENCE,
+				PLANT_GROW_STATUS,
+				CREATE_ID,
+				UPDATE_ID,
+				CREATE_DT,
+				UPDATE_DT,
+				DEL_YN
+		    FROM PLANT 
+		    WHERE DEL_YN = 'N'
+		    ORDER BY
+            CREATE_DT ASC, PLANT_ID ASC
     </select>
-    
-    
-	<insert id="create" parameterType="back.model.board.Board">
-        INSERT INTO BOARD 
-	        (
-	        BOARD_ID,
-	        TITLE,
-	        CONTENT,
-	        VIEW_COUNT,
-	        CREATE_ID,
-	        CREATE_DT
-	        )
-	        VALUES 
-	        (
-	        SEQ_BOARD.NEXTVAL, 
-	        #{title}, 
-	        #{content}, 
-	        #{viewCount}, 
-	        #{createId},
-	        SYSDATE
-	        )
-	    <selectKey keyProperty="boardId" resultType="string" order="AFTER">
-	       SELECT SEQ_BOARD.CURRVAL FROM DUAL
-	    </selectKey>
-     </insert>
-    <update id="update" parameterType="back.model.board.Board">
-        UPDATE BOARD SET
-        TITLE = #{title},
-        CONTENT = #{content},
-        VIEW_COUNT = #{viewCount},
-        UPDATE_ID = #{updateId},
-        UPDATE_DT = SYSDATE
-        WHERE BOARD_ID = #{boardId}
-    </update>
-    
-     <update id="delete" parameterType="back.model.board.Board">
-        UPDATE BOARD 
-        SET DEL_YN = 'Y',  
-            UPDATE_ID = #{updateId},  
-            UPDATE_DT = SYSDATE  
-        WHERE BOARD_ID = #{boardId}
-    </update>
-     
-    <!-- 댓글 등록 -->
-    <insert id="insertComment" parameterType="back.model.board.Comment">
-        INSERT INTO POST_COMMENT (COMMENT_ID, BOARD_ID, PARENT_COMMENT_ID, CONTENT, CREATE_ID)
-        VALUES (SEQ_COMMENT.NEXTVAL, #{boardId}, #{parentCommentId}, #{content}, #{createId})
-    </insert>
-
-    <!-- 게시글에 대한 댓글 조회 (대댓글 포함) -->
-    <select id="getCommentsByBoardId" parameterType="string" resultType="back.model.board.Comment">
-        SELECT 
-	        COMMENT_ID, 
-	        BOARD_ID, 
-	        PARENT_COMMENT_ID, 
-	        CONTENT, 
-	        CREATE_ID, 
-	        UPDATE_ID,  
-	        TO_CHAR(CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
-			TO_CHAR(UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
-	        DEL_YN
-        FROM POST_COMMENT
-        WHERE BOARD_ID = #{boardId}
-          AND DEL_YN = 'N'
-        ORDER BY COMMENT_ID DESC
-    </select>
-
-    <!-- 댓글 조회 -->
-    <select id="getCommentById" parameterType="int" resultType="back.model.board.Comment">
-        SELECT *
-        FROM POST_COMMENT
-        WHERE COMMENT_ID = #{commentId}
-          AND DEL_YN = 'N'
-    </select>
-
-    <!-- 댓글 수정 -->
-    <update id="updateComment" parameterType="back.model.board.Comment">
-        UPDATE POST_COMMENT
-        SET CONTENT = #{content},
-            UPDATE_ID = #{updateId},
-            UPDATE_DT = SYSDATE
-        WHERE COMMENT_ID = #{commentId}
-    </update>
-
-    <!-- 댓글 삭제 -->
-    <update id="deleteComment" parameterType="back.model.board.Comment">
-        UPDATE POST_COMMENT
-        SET DEL_YN = 'Y',
-        	UPDATE_ID = #{updateId},
-            UPDATE_DT = SYSDATE
-        WHERE COMMENT_ID = #{commentId}
-    </update>
 	
 </mapper>

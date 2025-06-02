@@ -23,12 +23,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserId();
+        return user.getUsersId();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getUsersPassword();
     }
 
     @Override

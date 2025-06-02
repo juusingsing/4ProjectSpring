@@ -11,7 +11,7 @@ public interface UserMapper {
 	
 	public int registerUser(User user);
 	
-	public User getUserById(String userId);
+	public User getUserById(String usersId);
 	
 	public int updateUser(User user);
 	

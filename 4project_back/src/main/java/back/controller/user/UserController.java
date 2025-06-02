@@ -48,10 +48,10 @@ public class UserController {
 //		SecurityUtil.checkAuthorization(userDetails, userDetails.getUser().getUserId());
 		
 		String userId = "";
-		if (user.getUserId() == null || user.getUserId().equals("") ) {
-			userId = userDetails.getUser().getUserId();
+		if (user.getUsersId() == null || user.getUsersId().equals("") ) {
+			userId = userDetails.getUser().getUsersId();
 		} else {
-			userId = user.getUserId();
+			userId = user.getUsersId();
 		}
 		User selectUser = userService.getUserById(userId);
 		
@@ -60,7 +60,7 @@ public class UserController {
 	
 	@PostMapping("/register.do")
 	public ResponseEntity<?> register(@RequestBody User user) {
-		log.info("회원가입 요청: {}", user.getUserId());
+		log.info("회원가입 요청: {}", user.getUsersId());
 		
 		int userIdCheck = userService.userIdCheck(user);
 		
@@ -86,7 +86,7 @@ public class UserController {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		
-		log.info("회원정보 수정 요청 : {}", user.getUserId());
+		log.info("회원정보 수정 요청 : {}", user.getUsersId());
 		
 		
 			
@@ -106,8 +106,8 @@ public class UserController {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		
-		log.info("회원탈퇴 요청 : {}", user.getUserId());
-		SecurityUtil.checkAuthorization(userDetails, userDetails.getUser().getUserId());
+		log.info("회원탈퇴 요청 : {}", user.getUsersId());
+		SecurityUtil.checkAuthorization(userDetails, userDetails.getUser().getUsersId());
 		user.setUpdateId(userDetails.getUsername());
 		
 		boolean success = userService.deleteUser(user);
@@ -122,10 +122,10 @@ public class UserController {
 	
 	@PostMapping("/login.do")
 	public ResponseEntity<?> login(@RequestBody User user, HttpServletRequest request) {
-		log.info("로그인 시도 : {}", user.getUserId());
+		log.info("로그인 시도 : {}", user.getUsersId());
 		try {
 			Authentication auth = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword())
+					new UsernamePasswordAuthenticationToken(user.getUsersId(), user.getUsersPassword())
 			);
 			
 			SecurityContextHolder.getContext().setAuthentication(auth);
@@ -142,7 +142,7 @@ public class UserController {
 			
 		} catch (AuthenticationException e) {
 			e.printStackTrace();
-			log.warn("로그인 실패: {}", user.getUserId());
+			log.warn("로그인 실패: {}", user.getUsersId());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body(new ApiResponse<>(false, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
 		}
@@ -178,7 +178,7 @@ public class UserController {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		
-		log.info("회원관리 요청 : {}", user.getUserId());
+		log.info("회원관리 요청 : {}", user.getUsersId());
 		
 		user.setUpdateId(userDetails.getUsername());
 		

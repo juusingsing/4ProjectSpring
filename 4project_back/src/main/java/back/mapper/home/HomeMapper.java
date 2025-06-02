@@ -6,28 +6,14 @@ import org.apache.ibatis.annotations.Mapper;
 
 import back.model.board.Board;
 import back.model.board.Comment;
+import back.model.home.Home;
 
 @Mapper
 public interface HomeMapper {
 	
-	public List<Board> getBoardList(Board board);
-	
-	public int getTotalBoardCount(Board board);
-	
-	public Board getBoardById(String BoardId);
-	
-	public int create(Board board);
-	
-	public int update(Board board);
-	
-	public int delete(Board board);
-	
-	public List<Comment> getCommentsByBoardId(String BoardId);
-	
-	public int insertComment(Comment comment);
-	
-	public int updateComment(Comment comment);
-	
-	public int deleteComment(Comment comment);
-	
+	public List<Home> getAnimalSortedByName();
+	public List<Home> getAnimalSortedByCreateDtDesc();
+	public List<Home> getPlantSortedByName();
+	public List<Home> getPlantSortedByCreateDtDesc();
+
 }
