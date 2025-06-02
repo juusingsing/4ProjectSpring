@@ -35,6 +35,5 @@ public class User extends Model {
   	private String sortField = "CREATE_DT";
   	private String sortOrder = "DESC";
   	
-  	private String delYn;
 
 }
