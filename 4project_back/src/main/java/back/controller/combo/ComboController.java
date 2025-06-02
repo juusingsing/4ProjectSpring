@@ -80,6 +80,7 @@ public ResponseEntity<?> delete(@RequestBody Combo combo) {
     return ResponseEntity.ok(new ApiResponse<>(deleted, deleted ? "삭제 성공" : "삭제 실패", null));
 }
 
+//정해진 테이블, 컬럼 조회
 @PostMapping("/list.do")
 public ResponseEntity<?> getComboList(@RequestBody Combo combo) {
 	log.info(combo.toString());
@@ -88,12 +89,14 @@ public ResponseEntity<?> getComboList(@RequestBody Combo combo) {
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", comboList));
 }
 
+//활성화된 그룹아이디로 COMMON 조회
 @PostMapping("/common.do")
 public ResponseEntity<List<GroupCode>> getGroupsWithCodes() {
     List<GroupCode> result = comboService.getActiveGroupsWithCodes();
     return ResponseEntity.ok(result);
 }
 
+//받아온 그룹아이디로 COMMON 조회
 @PostMapping("/listByGroup.do")
 public ResponseEntity<?> getComboListByGroup(@RequestBody Map<String, String> param) {
     String groupId = param.get("groupId");
