@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class WriteServiceImpl implements BoardService {
+public class WriteServiceImpl implements WriteService {
     @Autowired
     private BoardMapper boardMapper;
     @Autowired

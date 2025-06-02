@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class HomeServiceImpl implements WriteService {
+public class HomeServiceImpl implements HomeService {
     @Autowired
     private BoardMapper boardMapper;
     @Autowired

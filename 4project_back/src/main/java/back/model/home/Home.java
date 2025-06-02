@@ -41,13 +41,7 @@ public class Home extends Model {
 	private String title;
 	private String content;
 	private String viewCount;
-	
-	private List<PostFile> postFiles;
-	private List<Comment> comments;
-	
-	private List<MultipartFile> files;
-	private String remainingFileIds;
-	
+
 
 
     
