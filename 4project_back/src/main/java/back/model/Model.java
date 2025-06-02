@@ -8,4 +8,5 @@ public class Model {
     private String updateId;   // 수정자 ID
     private String createDt;   // 생성일
     private String updateDt;   // 수정일
+    private String delYn;      // 삭제 여부 (Y/N)
 }

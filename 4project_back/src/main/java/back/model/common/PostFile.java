@@ -21,7 +21,6 @@ public class PostFile extends Model {
 	private String fileName;
 	private String filePath;
 	private String basePath;
-	private String delYn;
 	
 	private List<MultipartFile> files; 
 
