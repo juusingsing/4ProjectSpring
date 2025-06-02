@@ -21,6 +21,8 @@ import back.mapper.file.FileMapper;
 import back.model.board.Board;
 import back.model.board.Comment;
 import back.model.combo.Combo;
+import back.model.combo.CommonCode;
+import back.model.combo.GroupCode;
 import back.model.common.PostFile;
 import back.util.FileUploadUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -78,6 +80,25 @@ public class ComboServiceImpl implements ComboService {
 	@Override
 	public List<Combo> getList(Combo combo) {
 		return comboMapper.list();
+	}
+
+	@Override
+	public List<GroupCode> getActiveGroupsWithCodes() {
+		List<GroupCode> groups = comboMapper.selectActiveGroups();
+
+        for (GroupCode group : groups) {
+            List<CommonCode> codes = comboMapper.selectCodesByGroupId(group.getGroupId());
+            group.setCommonCodes(codes);
+        }
+
+        return groups;
+	}
+
+	@Override
+	public List<CommonCode> getListByGroupId(String groupId) {
+		
+            List<CommonCode> codes = comboMapper.selectCodesByGroupId(groupId);
+		return codes;
 	}
 
 
