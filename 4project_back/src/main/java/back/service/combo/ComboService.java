@@ -6,6 +6,8 @@ import java.util.List;
 import back.model.board.Board;
 import back.model.board.Comment;
 import back.model.combo.Combo;
+import back.model.combo.CommonCode;
+import back.model.combo.GroupCode;
 
 public interface ComboService {
     
@@ -17,6 +19,10 @@ public interface ComboService {
     public boolean delete(Combo combo);
     
     public List getList(Combo combo);
+    
+    public List<GroupCode> getActiveGroupsWithCodes();
+    
+    public List<CommonCode> getListByGroupId(String groupId);
 
 
 }

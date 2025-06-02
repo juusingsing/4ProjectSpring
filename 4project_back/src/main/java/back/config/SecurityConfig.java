@@ -77,6 +77,7 @@ public class SecurityConfig {
                     "/api/combo/create.do", // ✅ 게시글 등록 허용
                     "/api/combo/delete.do",
                     "/api/combo/list.do",
+                    "/api/combo/listByGroup.do",
                     "/combo/list.do",
                     "/api/img/imgSave.do",
                     "/uploads/**", // ✅ 정적 리소스 (이미지, 파일 등)

@@ -31,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 import back.model.board.Board;
 import back.model.board.Comment;
 import back.model.combo.Combo;
+import back.model.combo.CommonCode;
+import back.model.combo.GroupCode;
 import back.model.common.CustomUserDetails;
 import back.model.user.User;
 import back.service.combo.ComboService;
@@ -84,6 +86,19 @@ public ResponseEntity<?> getComboList(@RequestBody Combo combo) {
 	List comboList = comboService.getList(combo);
 
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", comboList));
+}
+
+@PostMapping("/common.do")
+public ResponseEntity<List<GroupCode>> getGroupsWithCodes() {
+    List<GroupCode> result = comboService.getActiveGroupsWithCodes();
+    return ResponseEntity.ok(result);
+}
+
+@PostMapping("/listByGroup.do")
+public ResponseEntity<?> getComboListByGroup(@RequestBody Map<String, String> param) {
+    String groupId = param.get("groupId");
+    List<CommonCode> comboList = comboService.getListByGroupId(groupId);
+    return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", comboList));
 }
 
 
