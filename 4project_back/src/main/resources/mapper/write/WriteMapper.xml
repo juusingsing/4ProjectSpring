@@ -2,51 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="back.mapper.home.HomeMapper"> <!-- 매퍼의 네임스페이스 설정 -->
+<mapper namespace="back.mapper.write.WriteMapper"> <!-- 매퍼의 네임스페이스 설정 -->
 
-
-  <select id="getAnimalById" parameterType="string" resultType="back.model.home.Home">
-            SELECT
-		        ANIMAL_ID,
-		        USER_ID,
-		        FILE_ID,
-		        ANIMAL_NAME,
-                ANIMAL_SPECIES,
-                ANIMAL_ADOPTIONDATE,
-                BIRTH_DATE,
-                GENDER,
-                ANIMAL_MEMO,
-                CREATE_DT,
-                UPDATE_DT,
-                CREATE_ID,
-                UPDATE_ID,
-                DEL_YN
-		    FROM ANIMAL 
-		    WHERE ANIMAL_ID = #{animalId}
-		      AND DEL_YN = 'N'
-    </select>
-    
-    
-     <select id="getPlantById" parameterType="string" resultType="back.model.home.Home">
-            SELECT
-		        PLANT_ID,
-				USER_ID,
-				FILE_ID,
-				PLANT_NAME,
-				PLANT_TYPE,
-				PLANT_PURCHASE_DATE,
-				PLANT_SUN_PREFERENCE,
-				PLANT_GROW_STATUS,
-				CREATE_ID,
-				UPDATE_ID,
-				CREATE_DT,
-				UPDATE_DT,
-				DEL_YN
-		    FROM PLANT 
-		    WHERE PLANT_ID = #{plantId}
-		      AND DEL_YN = 'N'
-    </select>
-    
     <select id="getBoardList" parameterType="back.model.board.Board" resultType="back.model.board.Board">
              SELECT *
              FROM (

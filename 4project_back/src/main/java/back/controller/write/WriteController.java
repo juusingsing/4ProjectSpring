@@ -39,7 +39,7 @@ import back.util.SecurityUtil;
 
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api/write")
 @Slf4j
 public class WriteController{
 	
