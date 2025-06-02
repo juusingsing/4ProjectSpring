@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="back.mapper.diary.DiaryMapper"> <!-- 매퍼의 네임스페이스 설정 -->
+    
+    <select id="getDiaryById" parameterType="string" resultType="back.model.diary.Diary">
+    	SELECT
+    		DIARY_ID,
+    		USER_ID,
+    		DIARY_TITLE,
+    		DIARY_CONTENT,
+    		DIARY_DATE,
+    		DIARY_TYPE,
+	        CREATE_ID,
+	        CREATE_DT,
+	       	DEL_YN
+	   	FROM DIARY
+	   	WHERE DIARY_ID = #{diaryId}
+	   		AND DEL_YN='N'
+    </select>
+	<insert id="create" parameterType="back.model.diary.Diary">
+        INSERT INTO DIARY 
+	        (
+	        DIARY_ID,
+	        USER_ID,
+	        DIARY_TITLE,
+	        DIARY_CONTENT,
+	        DIARY_DATE,
+	        DIARY_TYPE,
+	        CREATE_ID,
+	        CREATE_DT
+	        )
+	        VALUES 
+	        (
+	        SEQ_DIARY.NEXTVAL,
+	        #{userId}, 
+	        #{diaryTitle}, 
+	        #{diaryContent}, 
+	        #{diaryDate},
+	        #{diaryType},
+	        #{createId},
+	        SYSDATE
+	        )
+	    <selectKey keyProperty="diaryId" resultType="string" order="AFTER">
+	       SELECT SEQ_DIARY.CURRVAL FROM DUAL
+	    </selectKey>
+     </insert>
+    
+     
+    
+	
+</mapper>

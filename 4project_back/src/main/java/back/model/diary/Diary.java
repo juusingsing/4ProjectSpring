@@ -1,0 +1,26 @@
+package back.model.diary;
+
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import back.model.Model;
+import back.model.board.Board;
+import back.model.board.Comment;
+import back.model.common.PostFile;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor // 기본 생성자 자동 생성
+@AllArgsConstructor // 모든 필드를 매개변수로 하는 생성자 자동 생성
+@EqualsAndHashCode(callSuper = true)
+public class Diary extends Model{
+	private String diaryId;
+	private String diaryTitle;
+	private String diaryContent;
+	private String diaryDate;
+	private String diaryType;
+	
+}
