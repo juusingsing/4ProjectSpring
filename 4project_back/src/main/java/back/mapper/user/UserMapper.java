@@ -23,5 +23,5 @@ public interface UserMapper {
 	
 	public int userM(User user);
 	
-	public int userIdCheck(User user);
+	public int usersIdCheck(User user);
 }

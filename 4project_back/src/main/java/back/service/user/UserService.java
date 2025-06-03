@@ -22,6 +22,6 @@ public interface UserService {
     
     public boolean userM(User user);
     
-    public int userIdCheck(User user);
+    public boolean usersIdCheck(User user);
 
 }

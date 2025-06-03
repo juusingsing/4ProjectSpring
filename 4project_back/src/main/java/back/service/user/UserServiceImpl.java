@@ -121,14 +121,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int userIdCheck(User user) {
+	public boolean usersIdCheck(User user) {
 		try {
-            String password = user.getUsersPassword();
-            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
-            return userMapper.userIdCheck(user);
+            int count = userMapper.usersIdCheck(user);
+            return count > 0;
         } catch (Exception e) {
-            log.error("불러오기 오류", e);
-            throw new HException("불러오기 실패", e);
+            log.error("아이디 중복 체크 중 오류 발생!", e);
+            throw new HException("아이디 중복 체크 실패", e);
         }
 	}
 
