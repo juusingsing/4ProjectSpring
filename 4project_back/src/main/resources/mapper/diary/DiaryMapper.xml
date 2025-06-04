@@ -4,16 +4,41 @@
 
 <mapper namespace="back.mapper.diary.DiaryMapper"> <!-- 매퍼의 네임스페이스 설정 -->
     
+    <select id="getDiaryList" parameterType="back.model.diary.Diary" resultType="back.model.diary.Diary">
+			SELECT
+				A.DIARY_ID,
+				A.DIARY_TITLE,
+				A.DIARY_CONTENT,
+				A.DIARY_DATE,
+			    A.DIARY_TYPE,
+			    A.CREATE_ID,
+			    A.UPDATE_ID,
+			    A.CREATE_DT,
+			    A.UPDATE_DT,
+			    A.DEL_YN
+			FROM DIARY A
+			<where>
+			A.DEL_YN='N'
+			<if test="diaryType != null and diaryType != ''">
+   			 	AND A.DIARY_TYPE = #{diaryType}
+			</if>
+			</where>
+			ORDER BY DIARY_DATE DESC
+
+    </select>
+    
     <select id="getDiaryById" parameterType="string" resultType="back.model.diary.Diary">
     	SELECT
     		DIARY_ID,
-    		USER_ID,
+    		USERS_ID,
     		DIARY_TITLE,
     		DIARY_CONTENT,
     		DIARY_DATE,
     		DIARY_TYPE,
 	        CREATE_ID,
+	        UPDATE_ID,
 	        CREATE_DT,
+	        UPDATE_DT,
 	       	DEL_YN
 	   	FROM DIARY
 	   	WHERE DIARY_ID = #{diaryId}
@@ -23,7 +48,7 @@
         INSERT INTO DIARY 
 	        (
 	        DIARY_ID,
-	        USER_ID,
+	        USERS_ID,
 	        DIARY_TITLE,
 	        DIARY_CONTENT,
 	        DIARY_DATE,
@@ -33,8 +58,8 @@
 	        )
 	        VALUES 
 	        (
-	        SEQ_DIARY.NEXTVAL,
-	        #{userId}, 
+	        DIARY_SEQ.NEXTVAL,
+	        #{usersId}, 
 	        #{diaryTitle}, 
 	        #{diaryContent}, 
 	        #{diaryDate},
@@ -43,7 +68,7 @@
 	        SYSDATE
 	        )
 	    <selectKey keyProperty="diaryId" resultType="string" order="AFTER">
-	       SELECT SEQ_DIARY.CURRVAL FROM DUAL
+	       SELECT DIARY_SEQ.CURRVAL FROM DUAL
 	    </selectKey>
      </insert>
     
