@@ -4,25 +4,25 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import back.model.board.Board;
-import back.model.board.Comment;
+import back.model.write.Write;
+import back.model.write.Comment;
 
 @Mapper
 public interface WriteMapper {
 	
-	public List<Board> getBoardList(Board board);
+	public List<Write> getWriteList(Write write);
 	
-	public int getTotalBoardCount(Board board);
+	public int getTotalWriteCount(Write write);
 	
-	public Board getBoardById(String BoardId);
+	public Write getWriteById(String WriteId);
 	
-	public int create(Board board);
+	public int create(Write write);
 	
-	public int update(Board board);
+	public int update(Write write);
 	
-	public int delete(Board board);
+	public int delete(Write write);
 	
-	public List<Comment> getCommentsByBoardId(String BoardId);
+	public List<Comment> getCommentsByWriteId(String WriteId);
 	
 	public int insertComment(Comment comment);
 	

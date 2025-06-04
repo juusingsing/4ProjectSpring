@@ -4,20 +4,20 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.common.PostFile;
 
 @Mapper
 public interface FileMapper {
 	
 	public int insertFile(PostFile file);
+
+	public PostFile getFileByFileId(int file);
 	
-	public PostFile getFileByFileId(PostFile file);
-	
-	public List<PostFile> getFilesByBoardId(String BoardId);
+	public List<PostFile> getFilesByFileKey(PostFile file);
 	
 	public int deleteFile(PostFile file);
+	
+	public List<PostFile> getAllFiles(); // 파일 전체 가져오기
 	
 	
 }

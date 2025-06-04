@@ -21,18 +21,21 @@ public class FileServiceImpl implements FileService {
 	@Autowired
     private FileMapper fileMapper;
 
-    public PostFile getFileByFileId(PostFile file) { 
-        PostFile PostFile = fileMapper.getFileByFileId(file);
-        return PostFile;
+    public PostFile getFileByFileId(int postFileId) { 
+        PostFile postFile = fileMapper.getFileByFileId(postFileId);
+        return postFile;
     }
 
     @Transactional
-    public Map<String, Object> insertBoardFiles(PostFile file) { 
+    public Map<String, Object> insertFiles(PostFile file) { 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-	        int boardId = file.getBoardId();
-	        String userId = file.getCreateId();
+	        int postFileKey = file.getPostFileKey();
+	        String usersId = file.getCreateId();
 	        String basePath = file.getBasePath();
+	        int postFileId = file.getPostFileId();
+	        String postFileCategory = file.getPostFileCategory();
+	        String postFileName=file.getPostFileName();
 	
 	        List<MultipartFile> files = file.getFiles();
 	
@@ -42,7 +45,7 @@ public class FileServiceImpl implements FileService {
 	            return resultMap;
 	        }
 	
-	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, boardId, userId);
+	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileId, postFileKey,  postFileCategory, usersId, postFileName);
 	
 	            for (PostFile postFile : uploadedFiles) {
 	                fileMapper.insertFile(postFile);
@@ -50,12 +53,14 @@ public class FileServiceImpl implements FileService {
 	            resultMap.put("result", true);
 	
 	            if(uploadedFiles != null && uploadedFiles.size() > 0) {
-	                resultMap.put("fileId", uploadedFiles.get(0).getFileId());
+	                resultMap.put("fileId", uploadedFiles.get(0).getPostFileId());
 	            }
 	            return resultMap;
 
         } catch (Exception e) {
-
+        	log.error("파일 업로드 중 오류 발생", e);
+            resultMap.put("result", false);
+            resultMap.put("message", "파일 업로드 실패: " + e.getMessage());
         }
         return resultMap;
     }

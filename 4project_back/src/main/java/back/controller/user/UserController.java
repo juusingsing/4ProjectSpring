@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import back.model.board.Board;
 import back.model.common.CustomUserDetails;
 import back.model.user.User;
 import back.service.user.UserService;

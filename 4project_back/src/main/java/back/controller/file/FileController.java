@@ -50,25 +50,26 @@ public class FileController {
 	public void downloadFile(@RequestParam("fileId")String fileId, HttpServletResponse response) {
 		try {
 			PostFile file = new PostFile();
-			file.setFileId(Integer.parseInt(fileId));
-			PostFile selectFile = fileService.getFileByFileId(file);
+			file.setPostFileId(Integer.parseInt(fileId));
+			int postFileId = Integer.parseInt(fileId);
+			PostFile selectFile = fileService.getFileByFileId(postFileId);
 			
 			if (selectFile == null) {
 				response.getWriter().write("파일을 찾을 수 없습니다.");
 				return;	
 			}
 			
-			File downloadFile = new File(selectFile.getFilePath());
+			File downloadFile = new File(selectFile.getPostFilePath());
 			if (!downloadFile.exists() ) {
 				response.getWriter().write("파일이 존재하지 않습니다.");
 				return;
 			}
 			
-			String fileName = selectFile.getFileName();
+			String fileName = selectFile.getPostFileName();
 			response.setContentType("application/octet-stream");
 			response.setContentLength((int) downloadFile.length());
 			response.setHeader("Content-Disposition",
-					"attachment; filename=" + URLEncoder.encode(selectFile.getFileName(), "UTF-8"));
+					"attachment; filename=" + URLEncoder.encode(selectFile.getPostFileName(), "UTF-8"));
 			
 			try (
 					FileInputStream fis = new FileInputStream(downloadFile);
@@ -89,30 +90,31 @@ public class FileController {
 	
 	
 	@GetMapping("/imgDown.do")
-	public void downloadImage(@RequestParam("fileId")String fileId, HttpServletResponse response) {
+	public void downloadImage(@RequestParam("fileId")String PostFileId, HttpServletResponse response) {
 		try {
 			PostFile file = new PostFile();
-			file.setFileId(Integer.parseInt(fileId));
-			PostFile selectFile = fileService.getFileByFileId(file);
+			file.setPostFileId(Integer.parseInt(PostFileId));
+			int postFileId = Integer.parseInt(PostFileId);
+			PostFile selectFile = fileService.getFileByFileId(postFileId);
 			
 			if (selectFile == null) {
 				response.getWriter().write("파일을 찾을 수 없습니다.");
 				return;	
 			}
 			
-			File downloadFile = new File(selectFile.getFilePath());
+			File downloadFile = new File(selectFile.getPostFilePath());
 			if (!downloadFile.exists() ) {
 				response.getWriter().write("파일이 존재하지 않습니다.");
 				return;
 			}
 			
-			String mimeType = servletContext.getMimeType(selectFile.getFilePath());
+			String mimeType = servletContext.getMimeType(selectFile.getPostFilePath());
 			if (mimeType == null) mimeType = "application/octet-stream";
 			
 			response.setContentType(mimeType);
 			response.setContentLength((int) downloadFile.length());
 			response.setHeader("Content-Disposition",
-					"inline; filename=" + URLEncoder.encode(selectFile.getFileName(), "UTF-8"));
+					"inline; filename=" + URLEncoder.encode(selectFile.getPostFileName(), "UTF-8"));
 			
 			try (
 				FileInputStream fis = new FileInputStream(downloadFile);
@@ -143,7 +145,7 @@ public class FileController {
 			postFile.setBasePath("img");
 			postFile.setCreateId("SYSTEM");
 			
-			HashMap resultMap = (HashMap) fileService.insertBoardFiles(postFile);
+			HashMap resultMap = (HashMap) fileService.insertFiles(postFile);
 			isUploadFile = (boolean) resultMap.get("result");
 			
 			responseMap.put("success", isUploadFile);

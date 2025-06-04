@@ -28,8 +28,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.combo.Combo;
 import back.model.combo.CommonCode;
 import back.model.combo.GroupCode;

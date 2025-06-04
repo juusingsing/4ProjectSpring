@@ -12,7 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
 import back.mapper.img.ImgMapper;
-import back.model.board.Board;
+import back.mapper.file.FileMapper;
+import back.model.write.Write;
 import back.model.common.PostFile;
 import back.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,10 @@ public class ImgServiceImpl implements ImgService {
 
 	@Autowired
     private ImgMapper imgMapper;
+	
+	@Autowired
+    private FileMapper fileMapper;
+	
 
     public PostFile getFileByFileId(PostFile file) { 
         PostFile PostFile = imgMapper.getFileByFileId(file);
@@ -33,9 +38,12 @@ public class ImgServiceImpl implements ImgService {
     public Map<String, Object> insertBoardFiles(PostFile file) { 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-	        int boardId = file.getBoardId();
-	        String userId = file.getCreateId();
+        	int postFileKey = file.getPostFileKey();
+	        String usersId = file.getCreateId();
 	        String basePath = file.getBasePath();
+	        int postFileId = file.getPostFileId();
+	        String postFileCategory = file.getPostFileCategory();
+	        String postFileName=file.getPostFileName();
 	
 	        List<MultipartFile> files = file.getFiles();
 	
@@ -45,7 +53,7 @@ public class ImgServiceImpl implements ImgService {
 	            return resultMap;
 	        }
 	
-	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, boardId, userId);
+	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileId, postFileKey,  postFileCategory, usersId, postFileName);
 	
 	            for (PostFile postFile : uploadedFiles) {
 	            	imgMapper.insertFile(postFile);
@@ -53,7 +61,7 @@ public class ImgServiceImpl implements ImgService {
 	            resultMap.put("result", true);
 	
 	            if(uploadedFiles != null && uploadedFiles.size() > 0) {
-	                resultMap.put("fileId", uploadedFiles.get(0).getFileId());
+	                resultMap.put("fileId", uploadedFiles.get(0).getPostFileId());
 	            }
 	            return resultMap;
 
@@ -64,12 +72,12 @@ public class ImgServiceImpl implements ImgService {
     }
 
 	@Override
-	public boolean imgSave(Board board) throws NumberFormatException, IOException {
+	public boolean imgSave(Write board) throws NumberFormatException, IOException {
 		
 			//업로드된 파일들을 처리하여 PostFile 객체 리스트 반환
 			List<PostFile> fileList = FileUploadUtil.uploadFiles(board.getFiles(), "pj4");
 			for (PostFile PostFile : fileList) {
-				imgMapper.insertFile(PostFile);
+				fileMapper.insertFile(PostFile);
 			}
 		return true;
 	}
@@ -77,7 +85,7 @@ public class ImgServiceImpl implements ImgService {
 	@Override
 	public List<PostFile> getAllFiles(PostFile postFile) {
 		// TODO Auto-generated method stub
-		log.info("파일 저장 경로: {}", postFile.getFilePath());
-		return imgMapper.getAllFiles();
+		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
+		return fileMapper.getAllFiles();
 	}
 }
