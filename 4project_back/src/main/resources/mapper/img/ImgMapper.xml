@@ -5,7 +5,7 @@
     <!-- 게시글에 첨부된 파일 목록 조회 -->
     <select id="getFilesByBoardId" parameterType="string" resultType="back.model.common.PostFile">
         SELECT 
-            FILE_ID,
+            POST_FILE_ID,
             FILE_NAME,
             FILE_PATH,
             CREATE_ID,
@@ -13,7 +13,7 @@
             CREATE_DT,
             UPDATE_DT,
             DEL_YN
-        FROM TEST_POST_FILE
+        FROM POST_FILE
         WHERE DEL_YN = 'N'
     </select>
     
@@ -28,14 +28,14 @@
             CREATE_DT,
             UPDATE_DT,
             DEL_YN
-        FROM TEST_POST_FILE
+        FROM POST_FILE
         WHERE FILE_ID = #{fileId}
         AND DEL_YN = 'N'
     </select>
 
     <!-- 게시글에 새로운 파일 등록 -->
 	<insert id="insertFile" parameterType="back.model.common.PostFile">
-	        INSERT INTO TEST_POST_FILE (
+	        INSERT INTO POST_FILE (
 	            FILE_ID, FILE_NAME, FILE_PATH, CREATE_DT
 	        ) VALUES (
 	            SEQ_TEST_POST_FILE.NEXTVAL,  
@@ -45,14 +45,14 @@
 	        )
 	        
 	       <selectKey keyProperty="fileId" resultType="int" order="AFTER">
-		       SELECT SEQ_TEST_POST_FILE.CURRVAL FROM DUAL
+		       SELECT SEQ_POST_FILE.CURRVAL FROM DUAL
 		    </selectKey>
 		    
 	</insert>
 
     <!-- 파일 삭제 처리 (DEL_YN을 'Y'로 업데이트) -->
     <update id="deleteFile" parameterType="back.model.common.PostFile">
-        UPDATE TEST_POST_FILE
+        UPDATE POST_FILE
         SET 
             DEL_YN = 'Y',
             UPDATE_DT = SYSDATE,
@@ -62,7 +62,7 @@
     
     <select id="getAllFiles" resultType="back.model.common.PostFile">
 	    SELECT FILE_ID, FILE_NAME, FILE_PATH, CREATE_ID, UPDATE_ID, CREATE_DT, UPDATE_DT, DEL_YN
-	    FROM TEST_POST_FILE
+	    FROM POST_FILE
 	    WHERE DEL_YN = 'N'
 	    ORDER BY CREATE_DT DESC
 	</select>

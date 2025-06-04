@@ -3,8 +3,6 @@ package back.service.combo;
 import java.io.IOException;
 import java.util.List;
 
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.combo.Combo;
 import back.model.combo.CommonCode;
 import back.model.combo.GroupCode;

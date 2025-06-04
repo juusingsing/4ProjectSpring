@@ -45,7 +45,7 @@
     <!-- 게시글에 새로운 파일 등록 -->
 	<insert id="insertFile" parameterType="back.model.common.PostFile">
 		<selectKey keyProperty="postFileId" resultType="int" order="AFTER">
-			SELECT SEQ_POST_FILE.NEXTVAL FROM DUAL
+			SELECT POST_FILE_SEQ.NEXTVAL FROM DUAL
 		</selectKey>  
 		INSERT INTO POST_FILE (
 			POST_FILE_ID,
@@ -53,20 +53,20 @@
 			POST_FILE_KEY,
 			POST_FILE_PATH,
 			UPLOAD_DT,
-			CREATED_DT,
-			UPDATED_DT,
+			CREATE_DT,
+			UPDATE_DT,
 			CREATE_ID,
 			UPDATE_ID
 		) VALUES (
-            SEQ_POST_FILE.NEXTVAL,
-	        #{postFileCategory},
-	        #{postFileKey},
+            POST_FILE_SEQ.NEXTVAL,
+	        'abc',
+	        123,
 	        #{postFilePath},
 	        SYSDATE,
 	        SYSDATE,
 	        SYSDATE,
 	        #{createId},
-	        #{updateId}
+	        'abc'
 		) 
 	</insert>
 
@@ -80,6 +80,13 @@
         WHERE POST_FILE_ID = #{postFileId}
         AND DEL_YN = 'N'
     </update>
+    
+    <select id="getAllFiles" resultType="back.model.common.PostFile">
+	    SELECT POST_FILE_ID, POST_FILE_NAME, POST_FILE_PATH, CREATE_ID, UPDATE_ID, CREATE_DT, UPDATE_DT, DEL_YN
+	    FROM POST_FILE
+	    WHERE DEL_YN = 'N'
+	    ORDER BY CREATE_DT DESC
+	</select>
 
     <!--
      게시글에 첨부된 파일 목록 조회 

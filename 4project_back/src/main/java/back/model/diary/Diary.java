@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.common.PostFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;

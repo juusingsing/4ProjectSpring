@@ -12,7 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
 import back.mapper.img.ImgMapper;
-import back.model.board.Board;
+import back.mapper.file.FileMapper;
+import back.model.write.Write;
 import back.model.common.PostFile;
 import back.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,10 @@ public class ImgServiceImpl implements ImgService {
 
 	@Autowired
     private ImgMapper imgMapper;
+	
+	@Autowired
+    private FileMapper fileMapper;
+	
 
     public PostFile getFileByFileId(PostFile file) { 
         PostFile PostFile = imgMapper.getFileByFileId(file);
@@ -67,12 +72,12 @@ public class ImgServiceImpl implements ImgService {
     }
 
 	@Override
-	public boolean imgSave(Board board) throws NumberFormatException, IOException {
+	public boolean imgSave(Write board) throws NumberFormatException, IOException {
 		
 			//업로드된 파일들을 처리하여 PostFile 객체 리스트 반환
 			List<PostFile> fileList = FileUploadUtil.uploadFiles(board.getFiles(), "pj4");
 			for (PostFile PostFile : fileList) {
-				imgMapper.insertFile(PostFile);
+				fileMapper.insertFile(PostFile);
 			}
 		return true;
 	}
@@ -81,6 +86,6 @@ public class ImgServiceImpl implements ImgService {
 	public List<PostFile> getAllFiles(PostFile postFile) {
 		// TODO Auto-generated method stub
 		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
-		return imgMapper.getAllFiles();
+		return fileMapper.getAllFiles();
 	}
 }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
-import back.model.board.Board;
+import back.model.write.Write;
 import back.model.common.PostFile;
 import back.service.img.ImgService;
 import back.util.ApiResponse;
@@ -171,7 +171,7 @@ public class ImgController {
 	
 	@PostMapping(value = "/imgSave.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> imgSave(
-			@ModelAttribute Board board,
+			@ModelAttribute Write board,
 			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws NumberFormatException, IOException {
 		log.info("이미지 파일 업로드 요청");
 		
