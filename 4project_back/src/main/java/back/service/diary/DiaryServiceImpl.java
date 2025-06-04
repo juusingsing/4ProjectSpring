@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import back.exception.HException;
 import back.mapper.diary.DiaryMapper;
 import back.model.diary.Diary;
-import back.service.board.BoardServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
