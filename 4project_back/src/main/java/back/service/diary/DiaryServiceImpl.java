@@ -12,7 +12,9 @@ import back.mapper.diary.DiaryMapper;
 import back.mapper.file.FileMapper;
 import back.model.common.PostFile;
 import back.model.diary.Diary;
+
 import back.util.FileUploadUtil;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -39,7 +41,7 @@ public class DiaryServiceImpl implements DiaryService{
 						Integer.parseInt(diary.getDiaryId()), 
 						"DIA",
 						diary.getCreateId(),
-						null
+						""
 					);
 			for(PostFile postFile : fileList) {
 				boolean insertResult = fileMapper.insertFile(postFile)>0;

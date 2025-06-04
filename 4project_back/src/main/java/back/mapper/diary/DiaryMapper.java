@@ -13,4 +13,5 @@ public interface DiaryMapper {
 	public int create(Diary diary);
 	public List<Diary> getDiaryList(Diary diary);
 	public List<Map<String, Object>> getDiaryTypes();
+	
 }

@@ -26,6 +26,7 @@ public class Diary extends Model{
 	private String sortField="DIARY_DATE";
 	private String sortOrder="DESC";
 	
+	private List<PostFile> postFiles;
 	private List<MultipartFile> files;
 	
 }
