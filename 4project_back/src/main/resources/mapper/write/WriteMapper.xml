@@ -4,32 +4,34 @@
 
 <mapper namespace="back.mapper.write.WriteMapper"> <!-- 매퍼의 네임스페이스 설정 -->
 
-    <select id="getBoardList" parameterType="back.model.board.Board" resultType="back.model.board.Board">
+    <select id="getWriteList" parameterType="back.model.write.Write" resultType="back.model.write.Write">
              SELECT *
              FROM (
 	             SELECT
 	                ROWNUM AS RN,
-			        B.BOARD_ID,
-			        B.TITLE,
-			        B.CONTENT,
-			        B.VIEW_COUNT,
-			        B.CREATE_ID,
-			        B.UPDATE_ID,
-			        B.CREATE_DT,
-			        B.UPDATE_DT,
-			        B.DEL_YN
+			        B.WRITING_ID,
+					B.WRITING_SORTATION,
+					B.WRITING_CATEGORY,
+					B.WRITING_TITLE,
+					B.WRITING_CONTENT,
+					B.CREATE_ID,
+					B.UPDATE_ID,
+					B.CREATE_DT,
+					B.UPDATE_DT,
+					B.DEL_YN
 	            FROM (
 		            SELECT
-				        A.BOARD_ID,
-				        A.TITLE,
-				        A.CONTENT,
-				        A.VIEW_COUNT,
-				        A.CREATE_ID,
-				        A.UPDATE_ID,
+				        A.WRITING_ID,
+						A.WRITING_SORTATION,
+						A.WRITING_CATEGORY,
+						A.WRITING_TITLE,
+						A.WRITING_CONTENT,
+						A.CREATE_ID,
+						A.UPDATE_ID,
 				        TO_CHAR(A.CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
 				        TO_CHAR(A.UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
 				        A.DEL_YN 
-				    FROM BOARD A
+				    FROM WRITING A
 				    <where>
 					    AND A.DEL_YN = 'N' 
 					   <if test="searchText != null and searchText != ''">
@@ -52,20 +54,21 @@
 		    
     </select>
     
-    <select id="getTotalBoardCount" parameterType="back.model.board.Board" resultType="int">
-        SELECT COUNT(B.BOARD_ID) 
+    <select id="getTotalWriteCount" parameterType="back.model.write.Write" resultType="int">
+        SELECT COUNT(B.WRITING_ID) 
           FROM (
 	            SELECT
-			        A.BOARD_ID,
-			        A.TITLE,
-			        A.CONTENT,
-			        A.VIEW_COUNT,
+			        A.WRITING_ID,
+			        A.WRITING_TITLE,
+			        A.WRITING_SORTATION,
+			        A.WRITING_CATEGORY,
+			        A.WRITING_CONTENT,
 			        A.CREATE_ID,
 			        A.UPDATE_ID,
 			        TO_CHAR(A.CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
 			        TO_CHAR(A.UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
 			        A.DEL_YN
-			    FROM BOARD A
+			    FROM WRITING A
 			    <where>
 				    AND A.DEL_YN = 'N' 
 				   <if test="searchText != null and searchText != ''">
@@ -84,75 +87,86 @@
 		    ) B
     </select>
     
-    <select id="getBoardById" parameterType="string" resultType="back.model.board.Board">
+    <select id="getWriteById" parameterType="string" resultType="back.model.write.Write">
             SELECT
-		        BOARD_ID,
-		        TITLE,
-		        CONTENT,
-		        VIEW_COUNT,
+		        WRITING_ID,
+		        WRITING_TITLE,
+		        WRITING_CONTENT,
 		        CREATE_ID,
 		        UPDATE_ID,
 		        CREATE_DT,
 		        UPDATE_DT,
 		        DEL_YN
-		    FROM BOARD 
-		    WHERE BOARD_ID = #{boardId}
+		    FROM WRITING 
+		    WHERE WRITING_ID = #{writingId}
 		      AND DEL_YN = 'N'
     </select>
     
     
-	<insert id="create" parameterType="back.model.board.Board">
-        INSERT INTO BOARD 
+	<insert id="create" parameterType="back.model.write.Write">
+        INSERT INTO WRITING 
 	        (
-	        BOARD_ID,
-	        TITLE,
-	        CONTENT,
-	        VIEW_COUNT,
+	        WRITING_ID,
+	        WRITING_TITLE,
+	        WRITING_CONTENT,
+	        WRITING_VIEW_COUNT,
 	        CREATE_ID,
 	        CREATE_DT
 	        )
 	        VALUES 
 	        (
-	        SEQ_BOARD.NEXTVAL, 
-	        #{title}, 
-	        #{content}, 
-	        #{viewCount}, 
+	        SEQ_WRITE.NEXTVAL, 
+	        #{writingTitle}, 
+	        #{writingContent}, 
+	        #{writingViewCount}, 
 	        #{createId},
 	        SYSDATE
 	        )
-	    <selectKey keyProperty="boardId" resultType="string" order="AFTER">
-	       SELECT SEQ_BOARD.CURRVAL FROM DUAL
+	    <selectKey keyProperty="writingId" resultType="string" order="AFTER">
+	       SELECT SEQ_WRITING.CURRVAL FROM DUAL
 	    </selectKey>
      </insert>
-    <update id="update" parameterType="back.model.board.Board">
-        UPDATE BOARD SET
-        TITLE = #{title},
-        CONTENT = #{content},
-        VIEW_COUNT = #{viewCount},
+    <update id="update" parameterType="back.model.write.Write">
+        UPDATE WRITING SET
+        WRITING_TITLE = #{writingTitle},
+        WRITING_CONTENT = #{writingContent},
+        WRITING_VIEW_COUNT = #{writingViewCount},
         UPDATE_ID = #{updateId},
         UPDATE_DT = SYSDATE
-        WHERE BOARD_ID = #{boardId}
+        WHERE WRITING_ID = #{writingId}
     </update>
     
-     <update id="delete" parameterType="back.model.board.Board">
-        UPDATE BOARD 
+     <update id="delete" parameterType="back.model.write.Write">
+        UPDATE WRITING 
         SET DEL_YN = 'Y',  
             UPDATE_ID = #{updateId},  
             UPDATE_DT = SYSDATE  
-        WHERE BOARD_ID = #{boardId}
+        WHERE WRITING_ID = #{writingId}
     </update>
      
     <!-- 댓글 등록 -->
-    <insert id="insertComment" parameterType="back.model.board.Comment">
-        INSERT INTO POST_COMMENT (COMMENT_ID, BOARD_ID, PARENT_COMMENT_ID, CONTENT, CREATE_ID)
-        VALUES (SEQ_COMMENT.NEXTVAL, #{boardId}, #{parentCommentId}, #{content}, #{createId})
+    <insert id="insertComment" parameterType="back.model.write.Comment">
+        INSERT INTO COMMENTS (
+			COMMENTS_ID, 
+			WRITING_KEY_ID, 
+			PARENT_COMMENT_ID, 
+			CONTENT, 
+			CREATE_ID)
+        VALUES (
+			SEQ_COMMENT.NEXTVAL, 
+			#{commentsId},
+			#{writingKeyId},
+			#{parentCommentId}, 
+			#{content}, 
+			#{createId}
+			)
     </insert>
 
     <!-- 게시글에 대한 댓글 조회 (대댓글 포함) -->
-    <select id="getCommentsByBoardId" parameterType="string" resultType="back.model.board.Comment">
+    <select id="getCommentsByWriteId" parameterType="string" resultType="back.model.write.Comment">
         SELECT 
-	        COMMENT_ID, 
-	        BOARD_ID, 
+	        COMMENTS_ID, 
+	        WRITING_KEY_ID, 
 	        PARENT_COMMENT_ID, 
 	        CONTENT, 
 	        CREATE_ID, 
@@ -160,36 +174,36 @@
 	        TO_CHAR(CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
 			TO_CHAR(UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
 	        DEL_YN
-        FROM POST_COMMENT
-        WHERE BOARD_ID = #{boardId}
+        FROM COMMENTS
+        WHERE WRITING_KEY_ID = #{writingKeyId}
           AND DEL_YN = 'N'
-        ORDER BY COMMENT_ID DESC
+        ORDER BY COMMENTS_ID DESC
     </select>
 
     <!-- 댓글 조회 -->
-    <select id="getCommentById" parameterType="int" resultType="back.model.board.Comment">
+    <select id="getCommentById" parameterType="int" resultType="back.model.write.Comment">
         SELECT *
-        FROM POST_COMMENT
-        WHERE COMMENT_ID = #{commentId}
+        FROM COMMENTS
+        WHERE COMMENTS_ID = #{commentsId}
           AND DEL_YN = 'N'
     </select>
 
     <!-- 댓글 수정 -->
-    <update id="updateComment" parameterType="back.model.board.Comment">
-        UPDATE POST_COMMENT
+    <update id="updateComment" parameterType="back.model.write.Comment">
+        UPDATE COMMENTS
         SET CONTENT = #{content},
             UPDATE_ID = #{updateId},
             UPDATE_DT = SYSDATE
-        WHERE COMMENT_ID = #{commentId}
+        WHERE COMMENTS_ID = #{commentsId}
     </update>
 
     <!-- 댓글 삭제 -->
-    <update id="deleteComment" parameterType="back.model.board.Comment">
-        UPDATE POST_COMMENT
+    <update id="deleteComment" parameterType="back.model.write.Comment">
+        UPDATE COMMENTS
         SET DEL_YN = 'Y',
         	UPDATE_ID = #{updateId},
             UPDATE_DT = SYSDATE
-        WHERE COMMENT_ID = #{commentId}
+        WHERE COMMENTS_ID = #{commentsId}
     </update>
 	
 </mapper>

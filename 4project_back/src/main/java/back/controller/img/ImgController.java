@@ -51,10 +51,10 @@ public class ImgController {
 	 * 일반 파일 다운로드
 	 */
 	@GetMapping("/down.do")
-	public void downloadFile(@RequestParam("fileId")String fileId, HttpServletResponse response) {
+	public void downloadFile(@RequestParam("postFileId")String postFileId, HttpServletResponse response) {
 		try {
 			PostFile file = new PostFile();
-			file.setFileId(Integer.parseInt(fileId));
+			file.setPostFileId(Integer.parseInt(postFileId));
 			PostFile selectFile = imgService.getFileByFileId(file);
 			
 			if (selectFile == null) {
@@ -62,17 +62,17 @@ public class ImgController {
 				return;	
 			}
 			
-			File downloadFile = new File(selectFile.getFilePath());
+			File downloadFile = new File(selectFile.getPostFilePath());
 			if (!downloadFile.exists() ) {
 				response.getWriter().write("파일이 존재하지 않습니다.");
 				return;
 			}
 			
-			String fileName = selectFile.getFileName();
+			String postFileName = selectFile.getPostFileName();
 			response.setContentType("application/octet-stream");
 			response.setContentLength((int) downloadFile.length());
 			response.setHeader("Content-Disposition",
-					"attachment; filename=" + URLEncoder.encode(selectFile.getFileName(), "UTF-8"));
+					"attachment; filename=" + URLEncoder.encode(selectFile.getPostFileName(), "UTF-8"));
 			
 			try (
 					FileInputStream fis = new FileInputStream(downloadFile);
@@ -93,10 +93,10 @@ public class ImgController {
 	
 	
 	@GetMapping("/imgDown.do")
-	public void downloadImage(@RequestParam("fileId")String fileId, HttpServletResponse response) {
+	public void downloadImage(@RequestParam("postFileId")String postFileId, HttpServletResponse response) {
 		try {
 			PostFile file = new PostFile();
-			file.setFileId(Integer.parseInt(fileId));
+			file.setPostFileId(Integer.parseInt(postFileId));
 			PostFile selectFile = imgService.getFileByFileId(file);
 			
 			if (selectFile == null) {
@@ -104,19 +104,19 @@ public class ImgController {
 				return;	
 			}
 			
-			File downloadFile = new File(selectFile.getFilePath());
+			File downloadFile = new File(selectFile.getPostFilePath());
 			if (!downloadFile.exists() ) {
 				response.getWriter().write("파일이 존재하지 않습니다.");
 				return;
 			}
 			
-			String mimeType = servletContext.getMimeType(selectFile.getFilePath());
+			String mimeType = servletContext.getMimeType(selectFile.getPostFilePath());
 			if (mimeType == null) mimeType = "application/octet-stream";
 			
 			response.setContentType(mimeType);
 			response.setContentLength((int) downloadFile.length());
 			response.setHeader("Content-Disposition",
-					"inline; filename=" + URLEncoder.encode(selectFile.getFileName(), "UTF-8"));
+					"inline; filename=" + URLEncoder.encode(selectFile.getPostFileName(), "UTF-8"));
 			
 			try (
 				FileInputStream fis = new FileInputStream(downloadFile);

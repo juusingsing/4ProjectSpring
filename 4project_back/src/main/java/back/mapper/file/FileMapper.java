@@ -12,10 +12,10 @@ import back.model.common.PostFile;
 public interface FileMapper {
 	
 	public int insertFile(PostFile file);
+
+	public PostFile getFileByFileId(int file);
 	
-	public PostFile getFileByFileId(PostFile file);
-	
-	public List<PostFile> getFilesByBoardId(String BoardId);
+	public List<PostFile> getFilesByFileKey(PostFile file);
 	
 	public int deleteFile(PostFile file);
 	

@@ -33,9 +33,12 @@ public class ImgServiceImpl implements ImgService {
     public Map<String, Object> insertBoardFiles(PostFile file) { 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-	        int boardId = file.getBoardId();
-	        String userId = file.getCreateId();
+        	int postFileKey = file.getPostFileKey();
+	        String usersId = file.getCreateId();
 	        String basePath = file.getBasePath();
+	        int postFileId = file.getPostFileId();
+	        String postFileCategory = file.getPostFileCategory();
+	        String postFileName=file.getPostFileName();
 	
 	        List<MultipartFile> files = file.getFiles();
 	
@@ -45,7 +48,7 @@ public class ImgServiceImpl implements ImgService {
 	            return resultMap;
 	        }
 	
-	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, boardId, userId);
+	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileId, postFileKey,  postFileCategory, usersId, postFileName);
 	
 	            for (PostFile postFile : uploadedFiles) {
 	            	imgMapper.insertFile(postFile);
@@ -53,7 +56,7 @@ public class ImgServiceImpl implements ImgService {
 	            resultMap.put("result", true);
 	
 	            if(uploadedFiles != null && uploadedFiles.size() > 0) {
-	                resultMap.put("fileId", uploadedFiles.get(0).getFileId());
+	                resultMap.put("fileId", uploadedFiles.get(0).getPostFileId());
 	            }
 	            return resultMap;
 
@@ -77,7 +80,7 @@ public class ImgServiceImpl implements ImgService {
 	@Override
 	public List<PostFile> getAllFiles(PostFile postFile) {
 		// TODO Auto-generated method stub
-		log.info("파일 저장 경로: {}", postFile.getFilePath());
+		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
 		return imgMapper.getAllFiles();
 	}
 }

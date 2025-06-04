@@ -18,7 +18,7 @@ public class FileUploadUtil {
     /**
      * 다중 파일 업로드 처리
      */
-    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int boardId, String userId) throws IOException {
+    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int postFileId, int postFileKey, String postFileCategory,String usersId, String postFileName) throws IOException {
         List<PostFile> uploadedFiles = new ArrayList<>();
         
         // multipartFiles가 null일 경우 빈 리스트 반환
@@ -59,11 +59,12 @@ public class FileUploadUtil {
                 file.transferTo(new File(filePath));
 
                 PostFile postFile = new PostFile();
-                postFile.setBoardId(boardId);
-                postFile.setCreateId(userId);
-                postFile.setUpdateId(userId);
-                postFile.setFileName(originalFileName);
-                postFile.setFilePath(filePath); // 실제 파일 전체 경로
+                postFile.setPostFileCategory(postFileCategory);
+                postFile.setPostFileKey(postFileKey);
+                postFile.setCreateId(usersId);
+                postFile.setUpdateId(usersId);
+                postFile.setPostFileName(originalFileName);
+                postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
                 postFile.setDelYn("N");
 
                 uploadedFiles.add(postFile);
@@ -123,9 +124,9 @@ public class FileUploadUtil {
                 file.transferTo(new File(filePath));
 
                 PostFile postFile = new PostFile();
-                postFile.setFileName(originalFileName);
+                postFile.setPostFileName(originalFileName);
                 postFile.setCreateId("test");
-                postFile.setFilePath(filePath); // 실제 파일 전체 경로
+                postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
                 postFile.setDelYn("N");
 
                 uploadedFiles.add(postFile);
