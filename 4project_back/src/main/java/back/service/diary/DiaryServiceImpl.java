@@ -31,13 +31,20 @@ public class DiaryServiceImpl implements DiaryService{
 	public boolean createDiary(Diary diary) {
 		try {
 			boolean result = diaryMapper.create(diary)>0;
-			List<MultipartFile>files=diary.getFiles();
 			
-			if(result && files !=null && !diary.getDiaryId().isEmpty()) {
+			List<MultipartFile>files=diary.getFiles();
+			log.info("diaryMapper.create 결과: {}", result);
+			log.info("files null 여부: {}", files == null);
+			log.info("files 개수: {}", files != null ? files.size() : "null");
+			log.info("diaryId: {}", diary.getDiaryId());
+			log.info("조건 확인 - result: {}, files: {}, diaryId: {}", result, files, diary.getDiaryId());
+			Integer id = diary.getDiaryId();
+			if(result && files != null && id != null && id > 0) {
+				log.info("파일 업로드 진입!");
 				List<PostFile> fileList = FileUploadUtil.uploadFiles(
 						files, 
 						"diary",
-						0,
+						diary.getDiaryId(),
 						diary.getPostFileCategory(),
 						diary.getCreateId()
 					);
@@ -45,6 +52,7 @@ public class DiaryServiceImpl implements DiaryService{
 			for(PostFile postFile : fileList) {
 				boolean insertResult = fileMapper.insertFile(postFile)>0;
 				if(!insertResult) throw new HException("파일 추가 실패");
+				log.info("업로드된 파일 수: {}", fileList.size());
 			}
 			}
 			return result;
@@ -78,7 +86,7 @@ public class DiaryServiceImpl implements DiaryService{
 	}
 
 	@Override
-	public Diary getDiaryById(String diaryId) {
+	public Diary getDiaryById(int diaryId) {
 		try {
 			Diary diary=diaryMapper.getDiaryById(diaryId);
 //			diary.setPostFiles(fileMapper.getFilesByFileKey(diaryId));

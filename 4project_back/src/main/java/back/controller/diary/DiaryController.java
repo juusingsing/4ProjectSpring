@@ -42,6 +42,7 @@ public class DiaryController {
 		diary.setUsersId(userDetails.getUser().getUsersId());
 		diary.setCreateId(userDetails.getUsername());
 		diary.setFiles(files);
+		log.info("파일 개수: {}", files != null ? files.size() : 0);
 		boolean isCreated = diaryService.createDiary(diary);
 		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "일기 저장 성공":"일기 저장 실패", null));
 	}

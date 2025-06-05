@@ -19,7 +19,9 @@
 			    (
 					SELECT POST_FILE_ID
 					FROM POST_FILE
-					WHERE DIARY_ID=A.DIARY_ID
+					WHERE POST_FILE_KEY = A.DIARY_ID
+					AND POST_FILE_CATEGORY = 'DIA'
+					AND DEL_YN = 'N'
 					ORDER BY POST_FILE_ID ASC
 					FETCH FIRST 1 ROWS ONLY
 				) AS THUMBNAIL
@@ -34,7 +36,7 @@
 
     </select>
     
-    <select id="getDiaryById" parameterType="string" resultType="back.model.diary.Diary">
+    <select id="getDiaryById" parameterType="int" resultType="back.model.diary.Diary">
     	SELECT
     		DIARY_ID,
     		USERS_ID,
@@ -52,6 +54,9 @@
 	   		AND DEL_YN='N'
     </select>
 	<insert id="create" parameterType="back.model.diary.Diary">
+	<selectKey keyProperty="diaryId" resultType="int" order="AFTER">
+	      SELECT DIARY_SEQ.CURRVAL  FROM DUAL
+	   </selectKey>
         INSERT INTO DIARY 
 	        (
 	        DIARY_ID,
@@ -74,9 +79,7 @@
 	        #{createId},
 	        SYSDATE
 	        )
-	   <selectKey> keyProperty="diaryId" resultType="string" order="AFTER">
-	      SELECT DIARY_SEQ.CURRVAL FROM DUAL
-	   </selectKey>
+	   
     </insert>
     
     <update id="update" parameterType="back.model.diary.Diary">
@@ -98,7 +101,11 @@
     		UPDATE_DT=SYSDATE
     	WHERE DIARY_ID=#{diaryId}
     </delete>
-     
+     <select id="getDiaryTypes" resultType="map">
+	SELECT CODE_ID, CODE_NAME
+	FROM COMMON_CODE
+	WHERE GROUP_ID = 'DiaryType'
+</select>
     
 	
 </mapper>

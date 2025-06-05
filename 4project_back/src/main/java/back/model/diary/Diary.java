@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Diary extends Model{
 	
 	
-	private String diaryId;
+	private Integer  diaryId;
 	private String diaryTitle;
 	private String diaryContent;
 	private String diaryDate;
@@ -33,3 +33,4 @@ public class Diary extends Model{
 	private String postFileCategory;
 	private String remainingFileIds;
 }
+

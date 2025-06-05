@@ -7,8 +7,8 @@ import back.model.diary.Diary;
 
 public interface DiaryService{
 	public boolean createDiary(Diary diary) throws HException;
-	public List getDiaryList(Diary diary);
-	public Diary getDiaryById(String diaryId);
+	public List<Diary> getDiaryList(Diary diary);
+	public Diary getDiaryById(int diaryId);
 	public boolean updateDiary(Diary diary);
 	public boolean deleteDiary(Diary diary);
 }
