@@ -8,7 +8,7 @@
   <select id="getAnimalSortedByName"  resultType="back.model.home.Home">
             SELECT
 		        ANIMAL_ID,
-		        USER_ID,
+		        USERS_ID,
 		        FILE_ID,
 		        ANIMAL_NAME,
                 ANIMAL_SPECIES,
@@ -30,7 +30,7 @@
       <select id="getAnimalSortedByCreateDtDesc"  resultType="back.model.home.Home">
             SELECT
 		        ANIMAL_ID,
-		        USER_ID,
+		        USERS_ID,
 		        FILE_ID,
 		        ANIMAL_NAME,
                 ANIMAL_SPECIES,
@@ -53,7 +53,7 @@
      <select id="getPlantSortedByName" resultType="back.model.home.Home">
             SELECT
 		        PLANT_ID,
-				USER_ID,
+				USERS_ID,
 				FILE_ID,
 				PLANT_NAME,
 				PLANT_TYPE,
@@ -74,7 +74,7 @@
     <select id="getPlantSortedByCreateDtDesc" resultType="back.model.home.Home">
             SELECT
 		        PLANT_ID,
-				USER_ID,
+				USERS_ID,
 				FILE_ID,
 				PLANT_NAME,
 				PLANT_TYPE,

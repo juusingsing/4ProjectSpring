@@ -18,7 +18,7 @@ public class FileUploadUtil {
     /**
      * 다중 파일 업로드 처리
      */
-    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int postFileId, int postFileKey, String postFileCategory,String usersId, String postFileName) throws IOException {
+    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int postFileKey, String postFileCategory,String usersId) throws IOException {
         List<PostFile> uploadedFiles = new ArrayList<>();
         
         // multipartFiles가 null일 경우 빈 리스트 반환
@@ -61,10 +61,10 @@ public class FileUploadUtil {
                 PostFile postFile = new PostFile();
                 postFile.setPostFileCategory(postFileCategory);
                 postFile.setPostFileKey(postFileKey);
-                postFile.setCreateId(usersId);
-                postFile.setUpdateId(usersId);
                 postFile.setPostFileName(originalFileName);
                 postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
+                postFile.setCreateId(usersId);
+                postFile.setUpdateId(usersId);
                 postFile.setDelYn("N");
 
                 uploadedFiles.add(postFile);

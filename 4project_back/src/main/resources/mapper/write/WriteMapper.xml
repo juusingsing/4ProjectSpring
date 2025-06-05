@@ -14,6 +14,7 @@
 					B.WRITING_CATEGORY,
 					B.WRITING_TITLE,
 					B.WRITING_CONTENT,
+					B.WRITIN_VIEW_COUNT,
 					B.CREATE_ID,
 					B.UPDATE_ID,
 					B.CREATE_DT,
@@ -26,6 +27,7 @@
 						A.WRITING_CATEGORY,
 						A.WRITING_TITLE,
 						A.WRITING_CONTENT,
+					    A.WRITING_VIEW_COUNT,
 						A.CREATE_ID,
 						A.UPDATE_ID,
 				        TO_CHAR(A.CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT,
@@ -73,8 +75,8 @@
 				    AND A.DEL_YN = 'N' 
 				   <if test="searchText != null and searchText != ''">
 	            	AND (
-	            	   A.TITLE LIKE '%'||#{searchText}||'%'
-	            	OR A.CONTENT LIKE '%'||#{searchText}||'%'
+	            	   A.WRITING_TITLE LIKE '%'||#{searchText}||'%'
+	            	OR A.WRITING_CONTENT LIKE '%'||#{searchText}||'%'
 	            	)
 	        	   </if>
 	        	   <if test="startDate != null and startDate != ''">
@@ -87,11 +89,14 @@
 		    ) B
     </select>
     
+    <!--게시물 조회-->
     <select id="getWriteById" parameterType="string" resultType="back.model.write.Write">
             SELECT
 		        WRITING_ID,
 		        WRITING_TITLE,
 		        WRITING_CONTENT,
+		        WRITING_SORTATION,
+	            WRITING_CATEGORY,
 		        CREATE_ID,
 		        UPDATE_ID,
 		        CREATE_DT,
@@ -102,40 +107,46 @@
 		      AND DEL_YN = 'N'
     </select>
     
-    
+    <!--게시물 생성-->
 	<insert id="create" parameterType="back.model.write.Write">
         INSERT INTO WRITING 
 	        (
 	        WRITING_ID,
 	        WRITING_TITLE,
 	        WRITING_CONTENT,
-	        WRITING_VIEW_COUNT,
+	        WRITING_SORTATION,
+	        WRITING_CATEGORY,
 	        CREATE_ID,
 	        CREATE_DT
 	        )
 	        VALUES 
 	        (
-	        SEQ_WRITE.NEXTVAL, 
+	        WRITING_SEQ.NEXTVAL, 
 	        #{writingTitle}, 
-	        #{writingContent}, 
-	        #{writingViewCount}, 
+	        #{writingContent},
+	        #{writingSortation},
+	        #{writingCategory},
 	        #{createId},
 	        SYSDATE
 	        )
 	    <selectKey keyProperty="writingId" resultType="string" order="AFTER">
-	       SELECT SEQ_WRITING.CURRVAL FROM DUAL
+	       SELECT WRITING_SEQ.CURRVAL FROM DUAL
 	    </selectKey>
      </insert>
+     
+     <!--게시물 수정-->
     <update id="update" parameterType="back.model.write.Write">
         UPDATE WRITING SET
         WRITING_TITLE = #{writingTitle},
         WRITING_CONTENT = #{writingContent},
-        WRITING_VIEW_COUNT = #{writingViewCount},
+        WRITING_SORTATION = #{writingSortation},
+	    WRITING_CATEGORY = #{writingCategory},
         UPDATE_ID = #{updateId},
         UPDATE_DT = SYSDATE
         WHERE WRITING_ID = #{writingId}
     </update>
     
+    <!--게시물 삭제-->
      <update id="delete" parameterType="back.model.write.Write">
         UPDATE WRITING 
         SET DEL_YN = 'Y',  
@@ -148,15 +159,15 @@
     <insert id="insertComment" parameterType="back.model.write.Comment">
         INSERT INTO COMMENTS (
 			COMMENTS_ID, 
-			WRITING_KEY_ID, 
-			PARENT_COMMENT_ID, 
+			WRITING_ID, 
+			PARENT_COMMENTS_ID, 
 			CONTENT, 
 			CREATE_ID)
         VALUES (
-			SEQ_COMMENT.NEXTVAL, 
+			COMMENTS_SEQ.NEXTVAL, 
 			#{commentsId},
-			#{writingKeyId},
-			#{parentCommentId}, 
+			#{writingId},
+			#{parentCommentsId}, 
 			#{content}, 
 			#{createId}
 			)
@@ -166,8 +177,8 @@
     <select id="getCommentsByWriteId" parameterType="string" resultType="back.model.write.Comment">
         SELECT 
 	        COMMENTS_ID, 
-	        WRITING_KEY_ID, 
-	        PARENT_COMMENT_ID, 
+	        WRITING_ID, 
+	        PARENT_COMMENTS_ID, 
 	        CONTENT, 
 	        CREATE_ID, 
 	        UPDATE_ID,  
@@ -175,7 +186,7 @@
 			TO_CHAR(UPDATE_DT, 'YYYY-MM-DD') AS UPDATE_DT,
 	        DEL_YN
         FROM COMMENTS
-        WHERE WRITING_KEY_ID = #{writingKeyId}
+        WHERE WRITING_ID = #{writingId}
           AND DEL_YN = 'N'
         ORDER BY COMMENTS_ID DESC
     </select>

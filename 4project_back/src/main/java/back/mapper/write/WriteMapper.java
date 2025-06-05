@@ -14,7 +14,7 @@ public interface WriteMapper {
 	
 	public int getTotalWriteCount(Write write);
 	
-	public Write getWriteById(String WriteId);
+	public Write getWriteById(int WritingId);
 	
 	public int create(Write write);
 	
@@ -22,7 +22,7 @@ public interface WriteMapper {
 	
 	public int delete(Write write);
 	
-	public List<Comment> getCommentsByWriteId(String WriteId);
+	public List<Comment> getCommentsByWriteId(int WritintId);
 	
 	public int insertComment(Comment comment);
 	

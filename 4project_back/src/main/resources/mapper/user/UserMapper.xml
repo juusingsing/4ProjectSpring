@@ -157,10 +157,6 @@
 		        </where>
 		    ) B
     </select>
-    
-
-
-    
     <!--사용자 이용 정지/복귀 관리-->
     <update id="userM" parameterType="back.model.user.User">
     	UPDATE USERS 
