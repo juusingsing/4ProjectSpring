@@ -44,7 +44,7 @@
 
     <!-- 게시글에 새로운 파일 등록 -->
 	<insert id="insertFile" parameterType="back.model.common.PostFile">
-		<selectKey keyProperty="postFileId" resultType="int" order="AFTER">
+		<selectKey keyProperty="postFileId" resultType="int" order="BEFORE">
 			SELECT POST_FILE_SEQ.NEXTVAL FROM DUAL
 		</selectKey>  
 		INSERT INTO POST_FILE (
@@ -52,21 +52,21 @@
 			POST_FILE_CATEGORY,
 			POST_FILE_KEY,
 			POST_FILE_PATH,
-			UPLOAD_DT,
+			POST_FILE_NAME,
 			CREATE_DT,
 			UPDATE_DT,
 			CREATE_ID,
 			UPDATE_ID
 		) VALUES (
-            POST_FILE_SEQ.NEXTVAL,
-	        'abc',
-	        123,
+            #{postFileId},
+	        #{postFileCategory},
+	        #{postFileKey},
 	        #{postFilePath},
-	        SYSDATE,
+	        #{postFileName},
 	        SYSDATE,
 	        SYSDATE,
 	        #{createId},
-	        'abc'
+	       	#{createId}
 		) 
 	</insert>
 

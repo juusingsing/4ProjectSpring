@@ -33,11 +33,6 @@ public class DiaryServiceImpl implements DiaryService{
 			boolean result = diaryMapper.create(diary)>0;
 			
 			List<MultipartFile>files=diary.getFiles();
-			log.info("diaryMapper.create 결과: {}", result);
-			log.info("files null 여부: {}", files == null);
-			log.info("files 개수: {}", files != null ? files.size() : "null");
-			log.info("diaryId: {}", diary.getDiaryId());
-			log.info("조건 확인 - result: {}, files: {}, diaryId: {}", result, files, diary.getDiaryId());
 			Integer id = diary.getDiaryId();
 			if(result && files != null && id != null && id > 0) {
 				log.info("파일 업로드 진입!");
@@ -45,7 +40,7 @@ public class DiaryServiceImpl implements DiaryService{
 						files, 
 						"diary",
 						diary.getDiaryId(),
-						diary.getPostFileCategory(),
+						"MMO",
 						diary.getCreateId()
 					);
 				
@@ -69,10 +64,12 @@ public class DiaryServiceImpl implements DiaryService{
 			List<Diary> diaryList= diaryMapper.getDiaryList(diary);
 			for(Diary d:diaryList) {
 				PostFile file = new PostFile();
-				file.setPostFileCategory(diary.getPostFileCategory());
 				String category = diary.getPostFileCategory();
-				if (category == null) category = "DIA"; // 기본값 지정
+				if (category == null || category.isEmpty()) {
+			        category = "MMO"; // 기본값
+			    } // 기본값 지정
 				file.setPostFileCategory(category);
+				file.setPostFileKey(d.getDiaryId());
 				List<PostFile> files=fileMapper.getFilesByFileKey(file);
 				if(files !=null && !files.isEmpty()) {
 					d.setPostFiles(List.of(files.get(0)));
