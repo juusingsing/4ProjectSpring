@@ -15,7 +15,14 @@
 			    A.UPDATE_ID,
 			    A.CREATE_DT,
 			    A.UPDATE_DT,
-			    A.DEL_YN
+			    A.DEL_YN,
+			    (
+					SELECT POST_FILE_ID
+					FROM POST_FILE
+					WHERE DIARY_ID=A.DIARY_ID
+					ORDER BY POST_FILE_ID ASC
+					FETCH FIRST 1 ROWS ONLY
+				) AS THUMBNAIL
 			FROM DIARY A
 			<where>
 			A.DEL_YN='N'
@@ -67,11 +74,30 @@
 	        #{createId},
 	        SYSDATE
 	        )
-	    <selectKey keyProperty="diaryId" resultType="string" order="AFTER">
-	       SELECT DIARY_SEQ.CURRVAL FROM DUAL
-	    </selectKey>
-     </insert>
+	   <selectKey> keyProperty="diaryId" resultType="string" order="AFTER">
+	      SELECT DIARY_SEQ.CURRVAL FROM DUAL
+	   </selectKey>
+    </insert>
     
+    <update id="update" parameterType="back.model.diary.Diary">
+    	update DIARY
+    	SET
+    		DIARY_TITLE=#{diaryTitle},
+    		DIARY_CONTENT=#{diaryContent},
+    		DIARY_DATE=#{diaryDate},
+    		DIARY_TYPE=#{diaryType},
+    		UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+    	WHERE DIARY_ID=#{diaryId}
+    </update>
+    
+    <delete id="delete" parameterType="back.model.diary.Diary">
+    	UPDATE DIARY
+    	SET DEL_YN='Y',
+    		UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+    	WHERE DIARY_ID=#{diaryId}
+    </delete>
      
     
 	
