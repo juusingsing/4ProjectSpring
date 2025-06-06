@@ -1,6 +1,7 @@
 package back.service.diary;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import back.model.common.PostFile;
 import back.model.diary.Diary;
 
 import back.util.FileUploadUtil;
-
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -86,7 +87,14 @@ public class DiaryServiceImpl implements DiaryService{
 	public Diary getDiaryById(int diaryId) {
 		try {
 			Diary diary=diaryMapper.getDiaryById(diaryId);
-//			diary.setPostFiles(fileMapper.getFilesByFileKey(diaryId));
+			PostFile file = new PostFile();
+			String category = diary.getPostFileCategory();
+			if (category == null || category.isEmpty()) {
+		        category = "MMO"; // 기본값
+		    } // 기본값 지정
+			file.setPostFileCategory(category);
+			file.setPostFileKey(diary.getDiaryId());
+			diary.setPostFiles(fileMapper.getFilesByFileKey(file));
 			return diary;
 		}catch(Exception e) {
 			log.error("일기 조회 실패", e);
@@ -98,28 +106,40 @@ public class DiaryServiceImpl implements DiaryService{
 	public boolean updateDiary(Diary diary) {
 		try {
 			boolean result = diaryMapper.update(diary)>0;
-//			if(result) {
-//				List<MultipartFile>files=diary.getFiles();
-//				String remainingFileIds = diary. getRemainingFileIds(); 
-//				List<PostFile> existingFiles = fileMapper.getFilesByFileKey(diary.getDiaryId());
-//				
-//				for(PostFile existing:existingFiles) {
-//					if(!remainingFileIds.contains(String.valueOf(existing.getFileId()))) {
-//						existing.setUpdateId(diary.getUpdateId());
-//						boolean deleteResult = fileMapper.deleteFile(existing)>0;
-//						if(!deleteResult) throw new HException("파일 삭제 실패");
-//					}
-//				}
-//				if (files != null) {
-//					List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files,"diary",
-//							Integer.parseInt(diary.getDiaryId()), diary.getUpdateId());
-//					
-//					for(PostFile postFile : uploadedFiles) {
-//						boolean insertResult = fileMapper.insertFile(postFile)>0;
-//						if(!insertResult) throw new HException("파일 추가 실패");
-//					}
-//				}
-//			}
+			if(result) {
+				List<MultipartFile>files=diary.getFiles();
+				String remainingFileIds = diary. getRemainingFileIds(); 
+				PostFile file = new PostFile();
+				String category = diary.getPostFileCategory();
+				if (category == null || category.isEmpty()) {
+			        category = "MMO"; // 기본값
+			    } // 기본값 지정
+				file.setPostFileCategory(category);
+				file.setPostFileKey(diary.getDiaryId());
+				List<PostFile> existingFiles = fileMapper.getFilesByFileKey(file);
+				
+				for(PostFile existing:existingFiles) {
+					if(!remainingFileIds.contains(String.valueOf(existing.getPostFileId()))) {
+						existing.setUpdateId(diary.getUpdateId());
+						boolean deleteResult = fileMapper.deleteFile(existing)>0;
+						if(!deleteResult) throw new HException("파일 삭제 실패");
+					}
+				}
+				String createId = (diary.getCreateId() != null) ? diary.getCreateId() : diary.getUpdateId();//createId null값 대체
+				if (files != null && !files.isEmpty()) {
+					List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(
+							files,
+							"diary",
+							diary.getDiaryId(),
+							category,
+							createId
+							);
+					for(PostFile postFile : uploadedFiles) {
+						boolean insertResult = fileMapper.insertFile(postFile)>0;
+						if(!insertResult) throw new HException("파일 추가 실패");
+					}
+				}
+			}
 			return result;
 		}catch (Exception e) {
 			log.error("일기 수정 실패",e);
