@@ -1,7 +1,12 @@
 package back.model.pet;
 
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
 import lombok.Data;
@@ -9,7 +14,7 @@ import lombok.Data;
 
 @Data
 public class Pet extends Model {
-    private Long animalId;            // ANIMAL_ID
+    private int animalId;            // ANIMAL_ID
     private String userId;            // USER_ID
     private Long fileId;              // FILE_ID
     
@@ -26,9 +31,16 @@ public class Pet extends Model {
     private String updateId;          // UPDATE_ID
 
     private String delYn;             // DEL_YN ('N' 또는 'Y')
+    private Date parsedCreateDt; // DB에 실제로 넣을 Date 타입 값
+    private List<MultipartFile> files;
 
-	public void setProfileImagePath(String string) {
-		// TODO Auto-generated method stub
-		
-	}
+    public List<MultipartFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
+    }
+
+	
 }

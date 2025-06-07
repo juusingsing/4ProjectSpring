@@ -88,7 +88,8 @@ public class SecurityConfig {
                     "/api/find/findPw.do",
                     "/api/find/resetPassword.do",
                     "/api/email/send-code.do",
-                    "/api/email/verify-code.do"
+                    "/api/email/verify-code.do",
+                    "/api/pet/animalregister.do"
                     
                     
                 ).permitAll() // 로그인, 로그아웃, 회원가입은 누구나 접근 가능

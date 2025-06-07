@@ -7,12 +7,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
+import back.mapper.file.FileMapper;
 import back.mapper.pet.PetMapper;
+import back.model.common.PostFile;
 import back.model.pet.Pet;
+import back.util.FileUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -21,47 +27,53 @@ public class PetServiceImpl implements PetService {
 
     @Autowired
     private PetMapper petMapper;
-
+    @Autowired
+    private FileMapper fileMapper;
     // 반려동물 등록 처리
     @Override
     @Transactional
-    public boolean registerPet(Pet pet, MultipartFile imageFile) {
+    public boolean registerPet(Pet pet) {
         try {
-            // 파일 업로드 처리
-            if (imageFile != null && !imageFile.isEmpty()) {
-                String originalFilename = imageFile.getOriginalFilename();
-                String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
-                String storedFileName = UUID.randomUUID().toString() + extension;
-
-                // 파일 저장 경로 설정
-                String uploadDir = "C:/upload/petImages/"; // 서버 경로에 맞게 수정
-                File uploadPath = new File(uploadDir);
-
-                if (!uploadPath.exists()) {
-                    uploadPath.mkdirs(); // 디렉토리 생성
-                }
-
-                File destFile = new File(uploadPath, storedFileName);
-                imageFile.transferTo(destFile);
-
-                pet.setProfileImagePath("/petImages/" + storedFileName); // DB 저장용 상대 경로
+        	// String → java.util.Date 변환
+            if (pet.getCreateDt() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // LocalDateTime.toString() 형식
+                Date parsedDate = sdf.parse(pet.getCreateDt());
+                // 필요하면 java.sql.Timestamp로 변환
+                
             }
 
-            return petMapper.insertPet(pet) > 0;
+            boolean result = petMapper.insertPet(pet) > 0;
 
-        } catch (IOException e) {
-            log.error("이미지 업로드 중 오류", e);
-            throw new HException("이미지 업로드 실패", e);
+            List<MultipartFile> files = pet.getFiles();
+            int animalId = pet.getAnimalId();
+
+            if (result && files != null && animalId > 0) {
+                log.info("파일 업로드 진입!");
+                List<PostFile> fileList = FileUploadUtil.uploadFiles(
+                        files,
+                        "pet",
+                        animalId,
+                        "ANI", // 파일 카테고리 예시
+                        pet.getCreateId()
+                );
+
+                for (PostFile postFile : fileList) {
+                    
+					boolean insertResult = fileMapper.insertFile(postFile) > 0;
+                    if (!insertResult) throw new HException("파일 추가 실패");
+                    log.info("업로드된 파일 수: {}", fileList.size());
+                }
+            }
+
+            return result;
         } catch (Exception e) {
-            log.error("반려동물 등록 중 오류", e);
+            log.error("반려동물 등록 실패 animalId={}, animalName={}", pet.getAnimalId(), pet.getAnimalName(), e);
             throw new HException("반려동물 등록 실패", e);
         }
     }
+	
 
-	@Override
-	public boolean registerPet(Pet pet) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
+	
 }
 
