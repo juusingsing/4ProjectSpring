@@ -1,6 +1,8 @@
 package back.service.user;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -131,5 +133,83 @@ public class UserServiceImpl implements UserService {
         }
 	}
 
+	@Override
+	public boolean isUserIdDuplicate(String usersId) {
+		try {
+			int count = userMapper.checkUserIdDuplicate(usersId);
+			return count > 0; // 이미 DB에 존재하면 true, 존재하지 않으면 false
+		} catch (Exception e) {
+			log.error("아이디 중복 체크 중 오류", e);
+			throw new HException("아이디 중복 체크 실패", e);
+		}
+	}
+	
+	 @Override
+	 public List<User> findUsersByInfo(String email) {
+	     try {
+	         return userMapper.selectUsersByEmail(email);
+	     } catch (Exception e) {
+	         log.error("이메일로 사용자 목록 조회 중 오류", e);
+	         throw new HException("사용자 조회 실패", e);
+	     }
+	 }
 
+	 @Override
+	 public User findUserByUserIdAndEmail(String usersId, String usersEmail) {
+	     try {
+	         Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", usersId);
+	         params.put("usersEmail", usersEmail);
+	         return userMapper.findUserByUserIdAndEmail(params);
+	     } catch (Exception e) {
+	         log.error("아이디와 이메일로 사용자 조회 중 오류", e);
+	         throw new HException("사용자 조회 실패", e);
+	     }
+	 }
+	
+	 @Override
+	 public boolean updatePassword(String usersId, String encodedPassword) {
+	     try {
+	         return userMapper.updatePassword(usersId, encodedPassword) > 0;
+	     } catch (Exception e) {
+	         log.error("비밀번호 업데이트 중 오류", e);
+	         throw new HException("비밀번호 업데이트 실패", e);
+	     }
+	 }
+	
+	 @Override
+	 public boolean resetPassword(String usersId, String newPassword) {
+	     try {
+	         User user = userMapper.findByUserId(usersId);
+	         if (user == null) return false;
+
+	         String encodedPassword = passwordEncoder.encode(newPassword);
+	         return userMapper.updatePassword(usersId, encodedPassword) > 0;
+	     } catch (Exception e) {
+	         log.error("비밀번호 재설정 중 오류", e);
+	         throw new HException("비밀번호 재설정 실패", e);
+	     }
+	 }
+	
+	
+	@Override
+	public boolean isEmailRegistered(String email) {
+		try {
+		    int count = userMapper.isEmailRegistered(email);
+		    return count > 0;
+		} catch (Exception e) {
+	    	log.error("이메일 등록 여부 중 확인 실패했습니다.");
+	    	throw new HException("이메일 등록 여부 확인 실패");
+	    }
+	}
+	@Override
+	public User findByEmail(String email) {
+	    try {
+	        List<User> users = userMapper.selectUsersByEmail(email);
+	        return users != null && !users.isEmpty() ? users.get(0) : null;
+	    } catch (Exception e) {
+	        log.error("이메일로 사용자 조회 중 오류", e);
+	        throw new HException("이메일 조회 실패", e);
+	    }
+	}
 }
