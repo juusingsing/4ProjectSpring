@@ -9,13 +9,13 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
+import back.model.user.User;
 import lombok.Data;
 
 
 @Data
 public class Pet extends Model {
     private int animalId;            // ANIMAL_ID
-    private String userId;            // USER_ID
     private Long fileId;              // FILE_ID
     
     private String animalName;        // ANIMAL_NAME
@@ -42,5 +42,22 @@ public class Pet extends Model {
         this.files = files;
     }
 
-	
+    private User user;
+    
+    
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setUsersId(String usersId) {
+        if (this.user == null) {
+            this.user = new User();
+        }
+        this.user.setUsersId(usersId);
+    }
+
 }

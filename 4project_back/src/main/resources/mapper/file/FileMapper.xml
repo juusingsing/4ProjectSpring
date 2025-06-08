@@ -155,4 +155,17 @@
         AND DEL_YN = 'N'
     </update>
     -->
+    <!-- 
+        최신 업로드된 파일 ID 조회 
+        - POST_FILE 테이블에서 ref_id와 category 기준으로 가장 최근 파일 1개 선택
+        - FILE_ID는 자동 증가이므로 성능을 위해 create_dt 기준 정렬
+        - ref_id는 일반적으로 ANIMAL_ID
+    -->
+   <select id="selectLatestFileIdByRefId" resultType="long">
+	  SELECT post_file_id
+	  FROM POST_FILE
+	  WHERE post_file_key = #{refId} AND post_file_category = #{category} AND del_yn = 'N'
+	  ORDER BY create_dt DESC
+	  FETCH FIRST 1 ROWS ONLY
+   </select>
 </mapper>

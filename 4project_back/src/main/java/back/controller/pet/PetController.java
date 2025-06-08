@@ -35,18 +35,54 @@ public class PetController {
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
+        // 사용자 인증 확인
         SecurityUtil.checkAuthorization(userDetails);
 
+        // 사용자 및 시간 정보 설정
         pet.setCreateId(userDetails.getUsername());
+        pet.setUsersId(userDetails.getUsername());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         pet.setCreateDt(LocalDateTime.now().format(formatter));
+
+        // 이미지 파일이 있다면 설정
+        if (imageFile != null && !imageFile.isEmpty()) {
+            pet.setFiles(List.of(imageFile));
+        }
+
+        // 서비스 호출
+        boolean isCreated = petService.registerPet(pet);
+
+        return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "반려동물 등록 성공" : "반려동물 등록 실패", null));
+    }
+    
+    @PostMapping(value = "/petUpdate.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updatePet(
+        @RequestPart("data") Pet pet,
+        @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        SecurityUtil.checkAuthorization(userDetails);
+
+        // 사용자 및 시간 정보 세팅 등 기존 로직 유지
+        pet.setUpdateId(userDetails.getUsername());
+        pet.setUpdateDt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
 
         if (imageFile != null && !imageFile.isEmpty()) {
             pet.setFiles(List.of(imageFile));
         }
 
-        boolean isCreated = petService.registerPet(pet);
+        boolean updated = petService.updatePet(pet);
+        return ResponseEntity.ok(new ApiResponse<>(updated, updated ? "반려동물 수정 성공" : "반려동물 수정 실패", null));
+    }
+    
+    @PostMapping("/petDelete.do")
+    public ResponseEntity<?> deletePet(
+        @RequestParam int animalId,  // 삭제할 반려동물 ID
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        SecurityUtil.checkAuthorization(userDetails);
 
-        return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "반려동물 등록 성공" : "반려동물 등록 실패", null));
+        boolean deleted = petService.deletePet(animalId, userDetails.getUsername());
+        return ResponseEntity.ok(new ApiResponse<>(deleted, deleted ? "반려동물 삭제 성공" : "반려동물 삭제 실패", null));
     }
 }

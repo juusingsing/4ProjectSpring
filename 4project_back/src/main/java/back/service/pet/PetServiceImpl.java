@@ -34,12 +34,10 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public boolean registerPet(Pet pet) {
         try {
-        	// String → java.util.Date 변환
             if (pet.getCreateDt() != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // LocalDateTime.toString() 형식
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 Date parsedDate = sdf.parse(pet.getCreateDt());
-                // 필요하면 java.sql.Timestamp로 변환
-                
+                // 변환만 해두고 사용 안함
             }
 
             boolean result = petMapper.insertPet(pet) > 0;
@@ -49,19 +47,25 @@ public class PetServiceImpl implements PetService {
 
             if (result && files != null && animalId > 0) {
                 log.info("파일 업로드 진입!");
+
                 List<PostFile> fileList = FileUploadUtil.uploadFiles(
-                        files,
-                        "pet",
-                        animalId,
-                        "ANI", // 파일 카테고리 예시
-                        pet.getCreateId()
+                    files,
+                    "pet",
+                    animalId,
+                    "ANI", // 카테고리
+                    pet.getCreateId()
                 );
 
                 for (PostFile postFile : fileList) {
-                    
-					boolean insertResult = fileMapper.insertFile(postFile) > 0;
+                    boolean insertResult = fileMapper.insertFile(postFile) > 0;
                     if (!insertResult) throw new HException("파일 추가 실패");
-                    log.info("업로드된 파일 수: {}", fileList.size());
+                }
+
+                // 파일 삽입 후 해당 animalId에 대한 최신 파일 ID 조회
+                Long latestFileId = fileMapper.selectLatestFileIdByRefId(animalId, "ANI");
+
+                if (latestFileId != null) {
+                    petMapper.updatePetFileId(latestFileId, animalId);
                 }
             }
 
@@ -72,8 +76,40 @@ public class PetServiceImpl implements PetService {
         }
     }
 	
-
-
-	
+    @Override
+    @Transactional
+    public boolean updatePet(Pet pet) {
+        boolean updated = petMapper.updatePet(pet) > 0;
+        if (updated && pet.getFiles() != null && !pet.getFiles().isEmpty()) {
+            try {
+                List<PostFile> fileList = FileUploadUtil.uploadFiles(
+                    pet.getFiles(), "pet", pet.getAnimalId(), "ANI", pet.getUpdateId()
+                );
+                for (PostFile postFile : fileList) {
+                    boolean insertResult = fileMapper.insertFile(postFile) > 0;
+                    if (!insertResult) throw new HException("파일 추가 실패");
+                }
+                Long latestFileId = fileMapper.selectLatestFileIdByRefId(pet.getAnimalId(), "ANI");
+                if (latestFileId != null) {
+                    petMapper.updatePetFileId(latestFileId, pet.getAnimalId());
+                }
+            } catch (IOException e) {
+                throw new HException("파일 업로드 중 오류 발생", e);
+            }
+        }
+        return updated;
+    }
+    @Override
+    @Transactional
+    public boolean deletePet(int animalId, String animalName) {
+        // 권한 확인, 소유자 확인 로직 필요 시 추가
+        // petMapper에서 petId와 username이 일치하는 데이터만 삭제하도록 구현 권장
+    	try {
+    		return petMapper.deletePetByIdAndUser(animalId, animalName) > 0;
+    	} catch (Exception e) {
+    		log.error("반려동물 삭제 실패", e);
+    		throw new HException("삭제 실패", e);
+    	}
+    }
 }
 
