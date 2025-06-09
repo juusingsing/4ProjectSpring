@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class PetController {
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
-
+        System.out.println(pet);
         // 사용자 및 시간 정보 세팅 등 기존 로직 유지
         pet.setUpdateId(userDetails.getUsername());
         pet.setUpdateDt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
@@ -77,12 +78,31 @@ public class PetController {
     
     @PostMapping("/petDelete.do")
     public ResponseEntity<?> deletePet(
-        @RequestParam int animalId,  // 삭제할 반려동물 ID
+        @RequestParam("animalId") Integer animalId,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
 
         boolean deleted = petService.deletePet(animalId, userDetails.getUsername());
         return ResponseEntity.ok(new ApiResponse<>(deleted, deleted ? "반려동물 삭제 성공" : "반려동물 삭제 실패", null));
+    }
+    
+    @GetMapping("/getPetById.do")
+    public ResponseEntity<?> getPetById(
+        @RequestParam(name = "animalId", required = false) Integer animalId,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        SecurityUtil.checkAuthorization(userDetails);
+        
+        if (animalId == null) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "animalId는 필수입니다.", null));
+        }
+
+        Pet pet = petService.getPetById(animalId, userDetails.getUsername());
+        if (pet != null) {
+            return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
+        } else {
+            return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
+        }
     }
 }

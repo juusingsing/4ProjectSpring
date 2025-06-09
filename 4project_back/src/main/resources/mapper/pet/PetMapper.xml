@@ -65,6 +65,14 @@
 	<delete id="deletePetByIdAndUser" parameterType="map">
 	    DELETE FROM ANIMAL
 	    WHERE animal_id = #{animalId}
-	      AND animal_name = #{animalName}
+	      AND users_id = #{usersId}
 	</delete>
+	
+	<select id="getPetByIdAndUsername" parameterType="map" resultType="back.model.pet.Pet">
+	    SELECT *
+	    FROM ANIMAL
+	    WHERE animal_id = #{animalId}
+	      AND users_id = #{usersId}
+	      AND del_yn = 'N'
+	</select>
 </mapper>

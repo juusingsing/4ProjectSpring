@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import back.model.Model;
 import back.model.user.User;
 import lombok.Data;
@@ -20,7 +22,9 @@ public class Pet extends Model {
     
     private String animalName;        // ANIMAL_NAME
     private String animalSpecies;     // ANIMAL_SPECIES
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate animalAdoptionDate; // ANIMAL_ADOPTIONDATE
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;      // BIRTH_DATE
     private String gender;            // GENDER
     private String animalMemo;        // ANIMAL_MEMO

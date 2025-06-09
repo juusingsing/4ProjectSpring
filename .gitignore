@@ -17,3 +17,4 @@ Thumbs.db
 4project_back/logs/
 4project_back/src/main/resources/application.properties
 4project_back/build.gradle
+4project_back/src/main/java/back/config/WebConfig.java
