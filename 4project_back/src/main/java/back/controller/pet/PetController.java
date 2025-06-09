@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +78,8 @@ public class PetController {
     
     @PostMapping("/petDelete.do")
     public ResponseEntity<?> deletePet(
-		@RequestParam("animalId") Integer animalId,
-	    @AuthenticationPrincipal CustomUserDetails userDetails
+        @RequestParam("animalId") Integer animalId,
+        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
 

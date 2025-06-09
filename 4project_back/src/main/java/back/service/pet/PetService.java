@@ -8,7 +8,7 @@ public interface PetService {
 
 	public boolean updatePet(Pet pet);
 
-	public boolean deletePet(int animalId, String animalName);
+	public boolean deletePet(int animalId, String usersId);
 
 
 

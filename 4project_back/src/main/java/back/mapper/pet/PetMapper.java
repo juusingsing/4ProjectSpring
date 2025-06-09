@@ -11,7 +11,7 @@ public interface PetMapper {
 	public int insertPet(Pet pet);
 	public int updatePetFileId(@Param("fileId") Long fileId, @Param("animalId") int animalId);
 	public int updatePet(Pet pet);
-	public int deletePetByIdAndUser(@Param("animalId") int animalId, @Param("animalName") String animalName);
+	int deletePetByIdAndUser(@Param("animalId") int animalId, @Param("usersId") String usersId);
 	
 	Pet getPetByIdAndUsername(@Param("animalId") int animalId, @Param("usersId") String usersId);
 }
