@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="back.mapper.plant.PlantMapper">
+
+    <!-- 식물 단건 조회 -->
+    <select id="getPlantById" parameterType="string" resultType="back.model.plant.Plant">
+        SELECT
+            PLANT_ID,
+            USERS_ID AS userId,
+            FILE_ID,
+            PLANT_NAME,
+            PLANT_TYPE,
+            TO_CHAR(PLANT_PURCHASE_DATE, 'YYYY-MM-DD') AS entryDate,
+            PLANT_SUN_PREFERENCE AS sunlight,
+            PLANT_GROW_STATUS AS status,
+            CREATE_ID,
+            CREATE_DT,
+            UPDATE_ID,
+            UPDATE_DT,
+            DEL_YN
+        FROM PLANT
+        WHERE PLANT_ID = #{plantId}
+          AND DEL_YN = 'N'
+    </select>
+
+    <!-- 식물 등록 -->
+    <insert id="create" parameterType="back.model.plant.Plant">
+        INSERT INTO PLANT (
+            PLANT_ID,
+            USERS_ID,
+            FILE_ID,
+            PLANT_NAME,
+            PLANT_TYPE,
+            PLANT_PURCHASE_DATE,
+            PLANT_SUN_PREFERENCE,
+            PLANT_GROW_STATUS,
+            CREATE_ID,
+            CREATE_DT,
+            DEL_YN
+        ) VALUES (
+            SEQ_PLANT.NEXTVAL,
+            #{userId},
+            #{fileId},
+            #{plantName},
+            #{plantType},
+            TO_DATE(#{entryDate}, 'YYYY-MM-DD'),
+            #{sunlight},
+            #{status},
+            #{createId},
+            SYSDATE,
+            'N'
+        )
+        <selectKey keyProperty="plantId" resultType="string" order="AFTER">
+            SELECT TO_CHAR(SEQ_PLANT.CURRVAL) FROM DUAL
+        </selectKey>
+    </insert>
+
+    <!-- 식물 목록 조회 -->
+    <select id="getPlantList" parameterType="string" resultType="back.model.plant.Plant">
+        SELECT
+            PLANT_ID,
+            USERS_ID AS userId,
+            FILE_ID,
+            PLANT_NAME,
+            PLANT_TYPE,
+            TO_CHAR(PLANT_PURCHASE_DATE, 'YYYY-MM-DD') AS entryDate,
+            PLANT_SUN_PREFERENCE AS sunlight,
+            PLANT_GROW_STATUS AS status,
+            CREATE_DT
+        FROM PLANT
+        WHERE USERS_ID = #{userId}
+          AND DEL_YN = 'N'
+        ORDER BY CREATE_DT DESC
+    </select>
+
+    <!-- 식물 수정 -->
+    <update id="update" parameterType="back.model.plant.Plant">
+        UPDATE PLANT
+        SET
+            PLANT_NAME = #{plantName},
+            PLANT_TYPE = #{plantType},
+            PLANT_PURCHASE_DATE = TO_DATE(#{entryDate}, 'YYYY-MM-DD'),
+            PLANT_SUN_PREFERENCE = #{sunlight},
+            PLANT_GROW_STATUS = #{status},
+            UPDATE_ID = #{updateId},
+            UPDATE_DT = SYSDATE
+        WHERE PLANT_ID = #{plantId}
+    </update>
+
+    <!-- 식물 삭제 (Soft Delete) -->
+    <update id="delete" parameterType="string">
+        UPDATE PLANT
+        SET DEL_YN = 'Y',
+            UPDATE_DT = SYSDATE
+        WHERE PLANT_ID = #{plantId}
+    </update>
+
+</mapper>
