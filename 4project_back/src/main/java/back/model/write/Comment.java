@@ -16,6 +16,7 @@ public class Comment extends Model {
     private int writingId;           // 게시글 ID
     private int parentCommentsId; // 부모 댓글 ID (대댓글)
     private String content;        // 댓글 내용
+    
 
  
 }

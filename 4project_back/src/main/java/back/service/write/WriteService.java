@@ -11,7 +11,7 @@ public interface WriteService {
     
 	public List getWriteList(Write write);
 	
-    public Write getWriteById(int writingId,  PostFile file);
+    public Write getWriteById(int writingId);
     
     public boolean createWrite(Write write) throws NumberFormatException, IOException;
     

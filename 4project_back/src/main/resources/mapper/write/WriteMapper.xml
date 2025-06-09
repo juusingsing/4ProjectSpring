@@ -14,7 +14,7 @@
 					B.WRITING_CATEGORY,
 					B.WRITING_TITLE,
 					B.WRITING_CONTENT,
-					B.WRITIN_VIEW_COUNT,
+					B.WRITING_VIEW_COUNT,
 					B.CREATE_ID,
 					B.UPDATE_ID,
 					B.CREATE_DT,
@@ -38,8 +38,8 @@
 					    AND A.DEL_YN = 'N' 
 					   <if test="searchText != null and searchText != ''">
 		            	AND (
-		            	   A.TITLE LIKE '%'||#{searchText}||'%'
-		            	OR A.CONTENT LIKE '%'||#{searchText}||'%'
+		            	   A.WRITING_TITLE LIKE '%'||#{searchText}||'%'
+		            	OR A.WRITING_CONTENT LIKE '%'||#{searchText}||'%'
 		            	)
 		        	   </if>
 		        	   <if test="startDate != null and startDate != ''">
@@ -48,6 +48,12 @@
 				        <if test="endDate != null and endDate != ''">
 				           <![CDATA[ AND A.CREATE_DT <= TO_DATE(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') ]]>
 				        </if>
+				        <if test="writingSortation != null and writingSortation != ''">
+						  AND A.WRITING_SORTATION = #{writingSortation}
+						</if>
+				        <if test="writingCategory != null and writingCategory != ''">
+						  AND A.WRITING_CATEGORY = #{writingCategory}
+						</if>
 			        </where>
 			        ORDER BY ${sortField} ${sortOrder}
 			    ) B
@@ -85,12 +91,18 @@
 			        <if test="endDate != null and endDate != ''">
 			           <![CDATA[ AND A.CREATE_DT <= TO_DATE(#{endDate} || ' 23:59:59', 'YYYY-MM-DD HH24:MI:SS') ]]>
 			        </if>
+			        <if test="writingSortation != null and writingSortation !=''">
+			        AND A.WRITING_SORTATION = #{writingSortation}
+			        </if>
+			        <if test="writingCategory != null and writingCategory !=''">
+			        AND A.WRITING_CATEGORY =#{writingCategory}
+			        </if>
 		        </where>
 		    ) B
     </select>
     
     <!--게시물 조회-->
-    <select id="getWriteById" parameterType="string" resultType="back.model.write.Write">
+    <select id="getWriteById" parameterType="int" resultType="back.model.write.Write">
             SELECT
 		        WRITING_ID,
 		        WRITING_TITLE,
@@ -129,7 +141,7 @@
 	        #{createId},
 	        SYSDATE
 	        )
-	    <selectKey keyProperty="writingId" resultType="string" order="AFTER">
+	    <selectKey keyProperty="writingId" resultType="int" order="AFTER">
 	       SELECT WRITING_SEQ.CURRVAL FROM DUAL
 	    </selectKey>
      </insert>
@@ -162,19 +174,20 @@
 			WRITING_ID, 
 			PARENT_COMMENTS_ID, 
 			CONTENT, 
-			CREATE_ID)
+			CREATE_ID,
+			CREATE_DT)
         VALUES (
 			COMMENTS_SEQ.NEXTVAL, 
-			#{commentsId},
 			#{writingId},
 			#{parentCommentsId}, 
 			#{content}, 
-			#{createId}
+			#{createId},
+			SYSDATE
 			)
     </insert>
 
     <!-- 게시글에 대한 댓글 조회 (대댓글 포함) -->
-    <select id="getCommentsByWriteId" parameterType="string" resultType="back.model.write.Comment">
+    <select id="getCommentsByWriteId" parameterType="int" resultType="back.model.write.Comment">
         SELECT 
 	        COMMENTS_ID, 
 	        WRITING_ID, 

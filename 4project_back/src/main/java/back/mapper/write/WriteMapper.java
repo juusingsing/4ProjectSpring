@@ -22,7 +22,7 @@ public interface WriteMapper {
 	
 	public int delete(Write write);
 	
-	public List<Comment> getCommentsByWriteId(int WritintId);
+	public List<Comment> getCommentsByWriteId(int WritingId);
 	
 	public int insertComment(Comment comment);
 	

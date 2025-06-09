@@ -1,8 +1,11 @@
 package back.service.write;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,24 +35,30 @@ public class WriteServiceImpl implements WriteService {
     
 
     
+    
     @Override
-	public Write getWriteById(int writingId, PostFile file ) {
+	public Write getWriteById(int writingId) {
     	
     	try {
-			Write write = writeMapper.getWriteById(writingId);
-			
-			//파일 목록 조회
-			write.setPostFiles(fileMapper.getFilesByFileKey(file));
-			
-			//댓글 목록 조회
-			write.setComments(writeMapper.getCommentsByWriteId(writingId));
-			return write;
-    	} catch (Exception e) {
-            log.error("실패", 0);
-            throw new HException("실패", e);
-        }
-				
-	}
+            Write write = writeMapper.getWriteById(writingId);
+    	
+    	 if (write != null) { // 게시글이 존재하는 경우에만 파일 조회
+             PostFile searchFileCriteria = new PostFile();
+             searchFileCriteria.setPostFileKey(write.getWritingId()); // 게시글의 ID를 파일 검색 조건으로 설정
+             searchFileCriteria.setPostFileCategory("COM"); // 해당 게시판의 카테고리도 검색 조건으로 추가 (선택 사항이지만 안전함)
+
+             // 파일 목록 조회
+             write.setPostFiles(fileMapper.getFilesByFileKey(searchFileCriteria));
+         }
+         
+         //댓글 목록 조회
+         write.setComments(writeMapper.getCommentsByWriteId(writingId));
+         return write;
+     } catch (Exception e) {
+         log.error("게시글 상세 조회 실패", e); // 0 대신 e를 찍어 스택 트레이스를 확인하는 것이 좋습니다.
+         throw new HException("게시글 상세 조회 실패", e); // 예외 메시지를 명확히
+     }
+ }
 	
     @Override
 	@Transactional
@@ -58,7 +67,7 @@ public class WriteServiceImpl implements WriteService {
         	boolean result = writeMapper.create(write) > 0;
 	
         	if (result) {
-				String postFileCategory = "write"; // 이 게시판 유형에 대한 카테고리
+				String postFileCategory = "COM"; // 이 게시판 유형에 대한 카테고리
 				
 				List<PostFile> fileList = FileUploadUtil.uploadFiles(
 				    write.getFiles(), 
@@ -71,8 +80,6 @@ public class WriteServiceImpl implements WriteService {
 				for (PostFile postFile : fileList) {
 					boolean createResult = fileMapper.insertFile(postFile) > 0;
 					if (!createResult) {
-		                // 파일 추가 실패 시 트랜잭션 롤백을 위해 RuntimeException을 던집니다.
-		                // HException이 RuntimeException의 자손이 아니라면, 이 변경이 중요합니다.
 		                throw new RuntimeException("파일 추가 실패: " + postFile.getPostFileName());
 					}
 				}
@@ -91,15 +98,17 @@ public class WriteServiceImpl implements WriteService {
             	
             	List<MultipartFile> files = write.getFiles();
             	String remainingFileIds = write.getRemainingFileIds();
+            	 Set<String> remainingFileIdSet = new HashSet<>(Arrays.asList(remainingFileIds.split(",")));
             	
             	 PostFile searchFile = new PostFile();
                  searchFile.setPostFileKey(write.getWritingId()); 
+                 searchFile.setPostFileCategory("COM");
 
              	List<PostFile> existingFiles = fileMapper.getFilesByFileKey(searchFile);
             	
 
             	for (PostFile existing : existingFiles) {
-            		if (!remainingFileIds.contains(String.valueOf(existing.getPostFileId()))) {
+            		if (!remainingFileIdSet.contains(String.valueOf(existing.getPostFileId()))) {
             			existing.setUpdateId(write.getUpdateId());
             			boolean deleteResult = fileMapper.deleteFile(existing) > 0 ;
             			if (!deleteResult) throw new HException("파일 삭제 실패");
@@ -113,10 +122,8 @@ public class WriteServiceImpl implements WriteService {
             		newFilesToUpload.setPostFileKey(write.getWritingId()); // 게시글 ID를 POST_FILE_KEY로 설정
             		newFilesToUpload.setCreateId(write.getUpdateId()); // 생성자 ID (업데이트 시에는 업데이트 ID 사용)
             		newFilesToUpload.setUpdateId(write.getUpdateId()); // 업데이트 ID 설정
-            		newFilesToUpload.setBasePath("write"); // 파일 저장 기본 경로
-                    // newFilesToUpload.setPostFileId(0); // 새로운 파일이므로 0 또는 적절한 초기값. insertFiles 내부에서 처리됨.
-                    // newFilesToUpload.setPostFileCategory("write"); // 또는 Write 모델에 게시판 종류 필드가 있다면 활용
-            		// newFilesToUpload.setPostFileName(""); // FileUploadUtil에서 originalFileName을 사용하므로 여기서 설정 불필요
+            		newFilesToUpload.setBasePath("write");
+            		newFilesToUpload.setPostFileCategory("COM");
 
             		// FileService를 통해 파일 삽입 로직 호출
             		Map<String, Object> uploadResult = fileService.insertFiles(newFilesToUpload);
@@ -202,7 +209,7 @@ public class WriteServiceImpl implements WriteService {
 			throw new HException("댓글 삭제 실패", e);
 		}
 	}
-    
+	
 
 
 }

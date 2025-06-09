@@ -56,7 +56,9 @@ public ResponseEntity<?> getWriteList(@RequestBody Write write) {
 	List<Write> writeList = writeService.getWriteList(write);
 	Map dataMap = new HashMap();
 	dataMap.put("list", writeList);
-	dataMap.put("write", write);
+	dataMap.put("totalPages", write.getTotalPages());
+	dataMap.put("totalCount", write.getTotalCount());
+	dataMap.put("page", write.getPage());
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", dataMap));
 }
 
@@ -66,7 +68,7 @@ public ResponseEntity<?> getWriteList(@RequestBody Write write) {
  */
 @PostMapping("/view.do")
 public ResponseEntity<?> getWrite(@RequestBody Write write) {
-	Write selectWrite = writeService.getWriteById(write.getWritingId(),null);
+	Write selectWrite = writeService.getWriteById(write.getWritingId());
 	return ResponseEntity.ok(new ApiResponse<>(true, "조회 성공", selectWrite));
 }
 
@@ -123,9 +125,9 @@ public ResponseEntity<?> deleteWrite (
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
-		write.setCreateId(userDetails.getUsername());
+		write.setUpdateId(userDetails.getUsername());
 		write.setFiles(files);
-		boolean isDeleted = writeService.updateWrite(write);
+		boolean isDeleted = writeService.deleteWrite(write);
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "게시글 삭제 성공" : "게시글 삭제 실패", null));
 }
 
