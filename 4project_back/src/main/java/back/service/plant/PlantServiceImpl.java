@@ -1,6 +1,7 @@
 package back.service.plant;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,20 @@ public class PlantServiceImpl implements PlantService {
     private PlantMapper plantMapper;
 
     @Override
+    public List<Map<String, Object>> getPlantCheck(String plantId) {
+        return plantMapper.selectPlantCheck(plantId);
+    }
+    
+    @Override
+    public Plant getPlantById(String plantId) throws HException {
+        try {
+            return plantMapper.selectPlantById(plantId);
+        } catch (Exception e) {
+            throw new HException("식물 조회 중 오류 발생", e);
+        }
+    }
+    
+    @Override
     @Transactional
     public boolean create(Plant plant) {
         try {
@@ -28,27 +43,7 @@ public class PlantServiceImpl implements PlantService {
             throw new HException("식물 등록 실패", e);
         }
     }
-
-    @Override
-    public Plant getPlantById(String plantId) {
-        try {
-            return plantMapper.getPlantById(plantId);
-        } catch (Exception e) {
-            log.error("식물 단건 조회 중 오류 발생", e);
-            throw new HException("식물 조회 실패", e);
-        }
-    }
-
-    @Override
-    public List<Plant> getPlantList(String userId) {
-        try {
-            return plantMapper.getPlantList(userId);
-        } catch (Exception e) {
-            log.error("식물 목록 조회 중 오류 발생", e);
-            throw new HException("식물 목록 조회 실패", e);
-        }
-    }
-
+    
     @Override
     @Transactional
     public boolean update(Plant plant) {
@@ -62,7 +57,7 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     @Transactional
-    public boolean delete(String plantId) {
+    public boolean delete(int plantId) {
         try {
             return plantMapper.delete(plantId) > 0;
         } catch (Exception e) {

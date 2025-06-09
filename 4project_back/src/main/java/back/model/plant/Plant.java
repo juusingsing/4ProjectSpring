@@ -2,6 +2,8 @@ package back.model.plant;
 
 import java.sql.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import back.model.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,5 +24,7 @@ public class Plant extends Model{
     private Date plantPurchaseDate; // 식물 입수일
     private String plantSunPreference; // 햇빛/그늘 선호
     private String plantGrowStatus; // 식물 생육 상태
+    
+    private MultipartFile file;
 	
 }
