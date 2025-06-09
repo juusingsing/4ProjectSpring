@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="back.mapper.plant.PlantMapper">
+	
+	<select id="selectPlantCheck" resultType="map">
+        SELECT plant_name AS plantName,
+               plant_purchase_date AS plantPurchaseDate
+        FROM plant
+        WHERE plant_id = #{plantId}
+    </select>
+	
+	
+	<select id="selectPlantById" parameterType="string" resultType="back.model.plant.Plant">
+	    SELECT
+	        PLANT_ID,
+	        USERS_ID,
+	        FILE_ID,
+	        PLANT_NAME,
+	        PLANT_TYPE,
+	        PLANT_PURCHASE_DATE,
+	        PLANT_SUN_PREFERENCE,
+	        PLANT_GROW_STATUS,
+	        CREATE_ID,
+	        UPDATE_ID,
+	        CREATE_DT,
+	        UPDATE_DT,
+	        DEL_YN
+	    FROM PLANT
+	    WHERE PLANT_ID = #{plantId}
+	</select>
+
+
+    <!-- 식물 등록 -->
+    <insert id="create" parameterType="back.model.plant.Plant">
+    
+    <selectKey keyProperty="plantId" resultType="int" order="BEFORE">
+	    SELECT SEQ_PLANT.NEXTVAL FROM DUAL
+	</selectKey>
+
+        INSERT INTO PLANT (
+            PLANT_ID,
+            USERS_ID,
+            FILE_ID,
+            PLANT_NAME,
+            PLANT_TYPE,
+            PLANT_PURCHASE_DATE,
+            PLANT_SUN_PREFERENCE,
+            PLANT_GROW_STATUS,
+            CREATE_ID,
+            UPDATE_ID,
+            CREATE_DT,
+            UPDATE_DT,
+            DEL_YN
+        ) VALUES (
+            SEQ_PLANT.NEXTVAL,
+            #{usersId},
+            #{fileId},
+            #{plantName},
+            #{plantType},
+            #{plantPurchaseDate, jdbcType=DATE},
+            #{plantSunPreference},
+            #{plantGrowStatus},
+            #{createId, jdbcType=VARCHAR},
+            #{updateId, jdbcType=VARCHAR},
+            SYSDATE,
+            SYSDATE,
+            'N'
+        )
+
+    </insert>
+
+    <!-- 식물 수정 -->
+    <update id="update" parameterType="back.model.plant.Plant">
+        UPDATE PLANT
+        SET
+            PLANT_NAME = #{plantName},
+            PLANT_TYPE = #{plantType},
+            PLANT_PURCHASE_DATE = #{plantPurchaseDate, jdbcType=DATE},
+            PLANT_SUN_PREFERENCE = #{plantSunPreference},
+            PLANT_GROW_STATUS = #{plantGrowStatus},
+            UPDATE_ID = #{updateId, jdbcType=VARCHAR},
+            UPDATE_DT = SYSDATE
+        WHERE PLANT_ID = #{plantId}
+    </update>
+
+    <!-- 식물 삭제 -->
+    <delete id="delete" parameterType="map">
+	    DELETE FROM PLANT
+	    WHERE plant_id = #{plantId}
+	</delete>
+
+</mapper>
