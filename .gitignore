@@ -12,3 +12,6 @@ Thumbs.db
 
 # 로그
 *.log
+
+
+4project_back/logs/
