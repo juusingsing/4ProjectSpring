@@ -1,6 +1,7 @@
 package back.mapper.user;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,16 @@ public interface UserMapper {
 	public int userM(User user);
 	
 	public int usersIdCheck(User user);
+
+	public int checkUserIdDuplicate(String usersId);
+
+	public List<User> selectUsersByEmail(String email);
+
+	public User findUserByUserIdAndEmail(Map<String, Object> params);
+
+	public int updatePassword(String usersId, String encodedPassword);
+
+	public User findByUserId(String usersId);
+
+	public int isEmailRegistered(String email);
 }

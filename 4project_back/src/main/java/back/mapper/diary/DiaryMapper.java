@@ -12,6 +12,8 @@ public interface DiaryMapper {
 //	public Diary getDiaryById(String userId);
 	public int create(Diary diary);
 	public List<Diary> getDiaryList(Diary diary);
+	public Diary getDiaryById(int diaryId);
 	public List<Map<String, Object>> getDiaryTypes();
-	
+	public int update(Diary diary);
+	public int delete(Diary diary);
 }

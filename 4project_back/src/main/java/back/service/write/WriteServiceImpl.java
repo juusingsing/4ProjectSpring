@@ -33,7 +33,7 @@ public class WriteServiceImpl implements WriteService {
 
     
     @Override
-	public Write getWriteById(String writingId, PostFile file ) {
+	public Write getWriteById(int writingId, PostFile file ) {
     	
     	try {
 			Write write = writeMapper.getWriteById(writingId);
@@ -58,24 +58,23 @@ public class WriteServiceImpl implements WriteService {
         	boolean result = writeMapper.create(write) > 0;
 	
         	if (result) {
-				
-				int postFileIdForNewFile = 0; // 또는 필요에 따라 시퀀스/UUID에서 가져올 수 있습니다.
 				String postFileCategory = "write"; // 이 게시판 유형에 대한 카테고리
-				String postFileName = ""; // 또는 사용 가능한 경우 write 객체에서 가져올 수 있습니다.
 				
 				List<PostFile> fileList = FileUploadUtil.uploadFiles(
 				    write.getFiles(), 
 				    "write", // basePath
-				    postFileIdForNewFile, // postFileId (새 파일의 경우 0이 될 가능성이 높습니다. 일반적으로 삽입 후 자동 생성되거나 할당됩니다.)
-				    Integer.parseInt(write.getWritingId()), // postFileKey (실제 게시글과 파일을 연결합니다.)
+				    write.getWritingId(), // postFileKey (실제 게시글과 파일을 연결합니다.)
 				    postFileCategory, // postFileCategory
-				    write.getCreateId(), // usersId
-				    postFileName // postFileName - 제공되지 않으면 빈 문자열로 가정하거나 MultipartFile.getOriginalFilename()에서 파생
+				    write.getCreateId() // usersId
 				);
 						
-				for (PostFile PostFile : fileList) {
-					boolean createResult = fileMapper.insertFile(PostFile) > 0;
-					if (!createResult) throw new HException("파일 추가 실패");
+				for (PostFile postFile : fileList) {
+					boolean createResult = fileMapper.insertFile(postFile) > 0;
+					if (!createResult) {
+		                // 파일 추가 실패 시 트랜잭션 롤백을 위해 RuntimeException을 던집니다.
+		                // HException이 RuntimeException의 자손이 아니라면, 이 변경이 중요합니다.
+		                throw new RuntimeException("파일 추가 실패: " + postFile.getPostFileName());
+					}
 				}
 			}
 			return result;
@@ -94,7 +93,7 @@ public class WriteServiceImpl implements WriteService {
             	String remainingFileIds = write.getRemainingFileIds();
             	
             	 PostFile searchFile = new PostFile();
-                 searchFile.setPostFileKey(Integer.parseInt(write.getWritingId())); 
+                 searchFile.setPostFileKey(write.getWritingId()); 
 
              	List<PostFile> existingFiles = fileMapper.getFilesByFileKey(searchFile);
             	
@@ -111,7 +110,7 @@ public class WriteServiceImpl implements WriteService {
             		// PostFile 객체를 생성하여 FileService.insertFiles에 필요한 정보를 담습니다.
             		PostFile newFilesToUpload = new PostFile();
             		newFilesToUpload.setFiles(files); // 업로드할 MultipartFile 리스트 설정
-            		newFilesToUpload.setPostFileKey(Integer.parseInt(write.getWritingId())); // 게시글 ID를 POST_FILE_KEY로 설정
+            		newFilesToUpload.setPostFileKey(write.getWritingId()); // 게시글 ID를 POST_FILE_KEY로 설정
             		newFilesToUpload.setCreateId(write.getUpdateId()); // 생성자 ID (업데이트 시에는 업데이트 ID 사용)
             		newFilesToUpload.setUpdateId(write.getUpdateId()); // 업데이트 ID 설정
             		newFilesToUpload.setBasePath("write"); // 파일 저장 기본 경로

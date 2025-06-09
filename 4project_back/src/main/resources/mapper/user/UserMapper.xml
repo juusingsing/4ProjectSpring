@@ -3,7 +3,19 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="back.mapper.user.UserMapper"> <!-- 매퍼의 네임스페이스 설정 -->
-	
+	<resultMap id="userResultMap" type="back.model.user.User">
+	    <result property="usersId" column="USERS_ID"/>
+	    <result property="usersFileId" column="USERS_FILE_ID"/>
+	    <result property="usersName" column="USERS_NAME"/>
+	    <result property="usersPassword" column="USERS_PASSWORD"/>
+	    <result property="usersEmail" column="USERS_EMAIL"/>
+	    <result property="createId" column="CREATE_ID"/>
+	    <result property="updateId" column="UPDATE_ID"/>
+	    <result property="createDt" column="CREATE_DT"/>
+	    <result property="updateDt" column="UPDATE_DT"/>
+	    <result property="delYn" column="DEL_YN"/>
+	    
+	</resultMap>
     <!-- 사용자 ID로 사용자 정보 조회 -->
     <select id="getUserById" parameterType="string" resultType="back.model.user.User">
         SELECT 
@@ -157,10 +169,6 @@
 		        </where>
 		    ) B
     </select>
-    
-
-
-    
     <!--사용자 이용 정지/복귀 관리-->
     <update id="userM" parameterType="back.model.user.User">
     	UPDATE USERS 
@@ -182,5 +190,71 @@
         WHERE USER_ID = #{userId}
     </delete>
         -->
-
+	<select id="checkUserIdDuplicate" parameterType="string" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM USERS
+	    WHERE USERS_ID = #{usersId} AND DEL_YN = 'N'
+	</select>    
+	
+    <update id="updatePassword">
+		UPDATE users
+		SET users_password = #{encodedPassword}
+		WHERE users_id = #{userId}
+	</update>
+	    
+	<select id="findUsersByInfo" parameterType="map" resultType="back.model.user.User">
+	    SELECT *
+	    FROM users
+	    WHERE users_email = #{usersEmail, jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="findUserByUserIdAndEmail" resultMap="userResultMap" parameterType="map">
+	    SELECT * FROM USERS 
+	    WHERE USERS_ID = #{usersId, jdbcType=VARCHAR}
+	    AND USERS_EMAIL = #{usersEmail, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findByUserId" resultMap="userResultMap" parameterType="string">
+	    SELECT USERS_ID, 
+	           USERS_NAME, 
+	           USERS_PASSWORD, 
+	           USERS_EMAIL, 
+	           CREATE_ID, 
+	           UPDATE_ID, 
+	           CREATE_DT, 
+	           UPDATE_DT,
+	           DEL_YN
+	    FROM USERS
+	    WHERE USERS_ID = #{usersId}
+	      AND DEL_YN = 'N'
+	</select>
+	
+	<!-- 이메일 주소로 사용자 목록 조회 -->
+	<select id="selectUsersByEmail" resultMap="userResultMap" parameterType="string">
+	    SELECT *
+	    FROM USERS
+	    WHERE USERS_EMAIL = #{usersEmail, jdbcType=VARCHAR}
+	      AND DEL_YN = 'N'
+	</select>
+	
+	<select id="selectByEmail" resultType="back.model.user.User" parameterType="String">
+	    SELECT users_id, users_email, users_name, users_password
+	    FROM users
+	    WHERE users_email = #{usersEmail}
+	      AND ROWNUM = 1
+	</select>
+	
+	<select id="countByEmail" resultType="int" parameterType="String">
+	    SELECT COUNT(*)
+	    FROM users
+	    WHERE users_email = #{usersEmail}
+	</select>
+	
+	<select id="isEmailRegistered" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM USERS 
+	    WHERE USERS_EMAIL = #{email}
+	    AND DEL_YN = 'N'
+	</select>
 </mapper>

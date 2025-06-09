@@ -53,7 +53,7 @@ public class ImgServiceImpl implements ImgService {
 	            return resultMap;
 	        }
 	
-	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileId, postFileKey,  postFileCategory, usersId, postFileName);
+	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileKey,  postFileCategory, usersId);
 	
 	            for (PostFile postFile : uploadedFiles) {
 	            	imgMapper.insertFile(postFile);

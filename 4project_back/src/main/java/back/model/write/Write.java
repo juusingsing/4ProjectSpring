@@ -38,10 +38,13 @@ public class Write extends Model {
 	
 	
     
-	private String writingId;
-	private String title;
-	private String content;
-	private String viewCount;
+	private int writingId;
+	private String writingTitle;
+	private String writingContent;
+	private int writingViewCount;
+	
+	private String writingSortation;
+	private String writingCategory;;
 
 	private List<PostFile> postFiles;
 	private List<Comment> comments;

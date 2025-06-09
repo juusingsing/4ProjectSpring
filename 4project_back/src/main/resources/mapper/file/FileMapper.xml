@@ -11,9 +11,8 @@
 			POST_FILE_KEY,
 		   	POST_FILE_NAME, 
 			POST_FILE_PATH,
-			UPLOAD_DT,
-			CREATED_DT,
-			UPDATED_DT,
+			CREATE_DT,
+			UPDATE_DT,
 			CREATE_ID,
 			UPDATE_ID,
 			DEL_YN
@@ -29,10 +28,10 @@
             POST_FILE_ID,
 			POST_FILE_CATEGORY,
 			POST_FILE_KEY,
+			POST_FILE_NAME, 
 			POST_FILE_PATH,
-			UPLOAD_DT,
-			CREATED_DT,
-			UPDATED_DT,
+			CREATE_DT,
+			UPDATE_DT,
 			CREATE_ID,
 			UPDATE_ID,
             DEL_YN
@@ -44,7 +43,7 @@
 
     <!-- 게시글에 새로운 파일 등록 -->
 	<insert id="insertFile" parameterType="back.model.common.PostFile">
-		<selectKey keyProperty="postFileId" resultType="int" order="AFTER">
+		<selectKey keyProperty="postFileId" resultType="int" order="BEFORE">
 			SELECT POST_FILE_SEQ.NEXTVAL FROM DUAL
 		</selectKey>  
 		INSERT INTO POST_FILE (
@@ -52,21 +51,21 @@
 			POST_FILE_CATEGORY,
 			POST_FILE_KEY,
 			POST_FILE_PATH,
-			UPLOAD_DT,
+			POST_FILE_NAME,
 			CREATE_DT,
 			UPDATE_DT,
 			CREATE_ID,
 			UPDATE_ID
 		) VALUES (
-            POST_FILE_SEQ.NEXTVAL,
-	        'abc',
-	        123,
+            #{postFileId},
+	        #{postFileCategory},
+	        #{postFileKey},
 	        #{postFilePath},
-	        SYSDATE,
+	        #{postFileName},
 	        SYSDATE,
 	        SYSDATE,
 	        #{createId},
-	        'abc'
+	       	#{createId}
 		) 
 	</insert>
 
@@ -156,4 +155,17 @@
         AND DEL_YN = 'N'
     </update>
     -->
+    <!-- 
+        최신 업로드된 파일 ID 조회 
+        - POST_FILE 테이블에서 ref_id와 category 기준으로 가장 최근 파일 1개 선택
+        - FILE_ID는 자동 증가이므로 성능을 위해 create_dt 기준 정렬
+        - ref_id는 일반적으로 ANIMAL_ID
+    -->
+   <select id="selectLatestFileIdByRefId" resultType="long">
+	  SELECT post_file_id
+	  FROM POST_FILE
+	  WHERE post_file_key = #{refId} AND post_file_category = #{category} AND del_yn = 'N'
+	  ORDER BY create_dt DESC
+	  FETCH FIRST 1 ROWS ONLY
+   </select>
 </mapper>

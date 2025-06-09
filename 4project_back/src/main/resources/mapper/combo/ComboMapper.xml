@@ -45,6 +45,7 @@
 	        )
 	    
      </insert>
+     
     <update id="update" parameterType="back.model.combo.Combo">
         UPDATE COMBO SET
         LABEL = #{label},

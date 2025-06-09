@@ -45,7 +45,7 @@ public class FileServiceImpl implements FileService {
 	            return resultMap;
 	        }
 	
-	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileId, postFileKey,  postFileCategory, usersId, postFileName);
+	        List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, basePath, postFileKey,  postFileCategory, usersId);
 	
 	            for (PostFile postFile : uploadedFiles) {
 	                fileMapper.insertFile(postFile);

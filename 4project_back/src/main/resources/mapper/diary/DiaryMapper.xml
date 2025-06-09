@@ -15,7 +15,16 @@
 			    A.UPDATE_ID,
 			    A.CREATE_DT,
 			    A.UPDATE_DT,
-			    A.DEL_YN
+			    A.DEL_YN,
+			    (
+					SELECT POST_FILE_ID
+					FROM POST_FILE
+					WHERE POST_FILE_KEY = A.DIARY_ID
+					AND POST_FILE_CATEGORY = 'MMO'
+					AND DEL_YN = 'N'
+					ORDER BY POST_FILE_ID ASC
+					FETCH FIRST 1 ROWS ONLY
+				) AS THUMBNAIL
 			FROM DIARY A
 			<where>
 			A.DEL_YN='N'
@@ -27,7 +36,7 @@
 
     </select>
     
-    <select id="getDiaryById" parameterType="string" resultType="back.model.diary.Diary">
+    <select id="getDiaryById" parameterType="int" resultType="back.model.diary.Diary">
     	SELECT
     		DIARY_ID,
     		USERS_ID,
@@ -45,6 +54,9 @@
 	   		AND DEL_YN='N'
     </select>
 	<insert id="create" parameterType="back.model.diary.Diary">
+	<selectKey keyProperty="diaryId" resultType="int" order="AFTER">
+	      SELECT DIARY_SEQ.CURRVAL  FROM DUAL
+	   </selectKey>
         INSERT INTO DIARY 
 	        (
 	        DIARY_ID,
@@ -67,12 +79,33 @@
 	        #{createId},
 	        SYSDATE
 	        )
-	    <selectKey keyProperty="diaryId" resultType="string" order="AFTER">
-	       SELECT DIARY_SEQ.CURRVAL FROM DUAL
-	    </selectKey>
-     </insert>
+	   
+    </insert>
     
-     
+    <update id="update" parameterType="back.model.diary.Diary">
+    	update DIARY
+    	SET
+    		DIARY_TITLE=#{diaryTitle},
+    		DIARY_CONTENT=#{diaryContent},
+    		DIARY_DATE=#{diaryDate},
+    		DIARY_TYPE=#{diaryType},
+    		UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+    	WHERE DIARY_ID=#{diaryId}
+    </update>
+    
+    <delete id="delete" parameterType="back.model.diary.Diary">
+    	UPDATE DIARY
+    	SET DEL_YN='Y',
+    		UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+    	WHERE DIARY_ID=#{diaryId}
+    </delete>
+     <select id="getDiaryTypes" resultType="map">
+	SELECT CODE_ID, CODE_NAME
+	FROM COMMON_CODE
+	WHERE GROUP_ID = 'DiaryType'
+</select>
     
 	
 </mapper>

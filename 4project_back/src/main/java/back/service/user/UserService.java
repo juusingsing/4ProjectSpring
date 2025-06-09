@@ -24,4 +24,18 @@ public interface UserService {
     
     public boolean usersIdCheck(User user);
 
+	public boolean isUserIdDuplicate(String usersId);
+
+	public List<User> findUsersByInfo(String email);
+
+	public User findUserByUserIdAndEmail(String usersId, String usersEmail);
+
+	public boolean updatePassword(String usersId, String encodedPassword);
+
+	public boolean resetPassword(String usersId, String newPassword);
+
+	public boolean isEmailRegistered(String email);
+
+	public User findByEmail(String email);
+
 }

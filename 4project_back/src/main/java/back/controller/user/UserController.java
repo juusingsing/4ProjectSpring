@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import back.model.common.CustomUserDetails;
 import back.model.user.User;
+import back.service.email.EmailServiceImpl;
 import back.service.user.UserService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
@@ -38,7 +39,8 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
+	private EmailServiceImpl emailService;
 	@PostMapping("/view.do")
 	public ResponseEntity<?> view(@RequestBody User user) {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
@@ -61,28 +63,33 @@ public class UserController {
 	   /**
      * 회원가입
      */
-    @PostMapping("/register.do")
+	@PostMapping("/register.do")
     public ResponseEntity<?> register(@RequestBody User user) {
-        log.info("회원가입 요청 : {}", user.getUsersId());
+        if (user.getUsersId() == null || user.getUsersPassword() == null || user.getUsersEmail() == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ApiResponse<>(false, "필수 입력값이 누락되었습니다.", null));
+        }
+        System.out.println(user.getUsersPassword());
         user.setCreateId("SYSTEM");
         boolean success = userService.registerUser(user);
-
+        
+        if (success) {
+            // 회원가입 성공 후 AUTH_INFO 테이블에 usersId 저장
+            emailService.updateUsersIdToAuthInfo(user.getUsersEmail(), user.getUsersId());
+        }
         return ResponseEntity.ok(new ApiResponse<>(success, success ? "회원가입 성공" : "회원가입 실패", null));
     }
     
-    @PostMapping("/checkUsersId.do")
-	public ResponseEntity<ApiResponse<Map<String, Object>>> checkUserId(@RequestBody User user) {
-		log.info("아이디 중복 검사 : {}", user.getUsersId()); // Lombok의 로깅 기능을 사용하여 아이디 중복 검사 요청 정보를 로그로 남깁니다.
-
-		Map<String, Object> data = new HashMap<>(); // 중복 확인 결과를 담을 HashMap 객체를 생성합니다.
-		boolean exists = userService.usersIdCheck(user); // UserService를 통해 아이디 중복 여부를 확인합니다.
-		data.put("exists", exists); // HashMap에 "exists"라는 키로 중복 여부(true 또는 false)를 저장합니다.
-
-		// API 응답 객체를 생성합니다.
-		ApiResponse<Map<String, Object>> response = new ApiResponse<>(true, "중복체크 성공", data);
-
-		return ResponseEntity.ok(response); // HTTP 상태 코드 200 (성공)과 함께 ApiResponse를 반환합니다.
-	}
+	@PostMapping("/checkUserId.do")
+    public ResponseEntity<?> checkUserId(@RequestBody Map<String, String> request) {
+        String usersId = request.get("usersId");
+        boolean isDuplicate = userService.isUserIdDuplicate(usersId);
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("available", !isDuplicate);
+        return ResponseEntity.ok(result);
+    }
     
 //    
 //	@PostMapping("/register.do")
@@ -143,44 +150,41 @@ public class UserController {
 		return ResponseEntity.ok(new ApiResponse<>(success, success ? "삭제 성공" : "삭제 실패", null));
 	}
 	
-	@PostMapping("/login.do")
+	 @PostMapping("/login.do")
 	public ResponseEntity<?> login(@RequestBody User user, HttpServletRequest request) {
-		log.info("로그인 시도 : {}", user.getUsersId());
-		try {
-			Authentication auth = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(user.getUsersId(), user.getUsersPassword())
-			);
-			
-			SecurityContextHolder.getContext().setAuthentication(auth);
-			
-			HttpSession session = request.getSession(true);
-			session.setAttribute(
-					HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-					SecurityContextHolder.getContext()
-			);
-			log.info("세션 ID: {}", session.getId());
-			CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+	    log.info("로그인 시도: {}", user.getUsersId());
+	    try {
+	        Authentication auth = authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(user.getUsersId(), user.getUsersPassword())
+	        );
+	
+	        SecurityContextHolder.getContext().setAuthentication(auth);
+	
+	        HttpSession session = request.getSession(true);
+	        session.setAttribute(
+	            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+	            SecurityContextHolder.getContext()
+	        );
+	        log.info("세션 ID: {}", session.getId());
+	        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal();
-			return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", userDetails.getUser()));
-			
-		} catch (AuthenticationException e) {
-			e.printStackTrace();
-			log.warn("로그인 실패: {}", user.getUsersId());
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(new ApiResponse<>(false, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
-		}
+	        return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", userDetails.getUser()));
+	    } catch (AuthenticationException e) {
+	        log.warn("로그인 실패: {}", user.getUsersId());
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	            .body(new ApiResponse<>(false, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
+	    }
 	}
 
 	@PostMapping("/logout.do")
-	public ResponseEntity<?> logout(HttpServletRequest request) {
-		log.info("로그아웃 요청");
-		
-		request.getSession().invalidate();
-		SecurityContextHolder.clearContext();
-		
-		return ResponseEntity.ok(new ApiResponse<>(true, "로그아웃 완료", null));
-		
-	}
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        log.info("로그아웃 요청");
+
+        request.getSession().invalidate();
+        SecurityContextHolder.clearContext();
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "로그아웃 완료", null));
+    }
 	
 	/**
 	 * 
