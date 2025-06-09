@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+4project_back/src/main/resources/application.properties
+4project_back/logs/app-2025-06-02-20-09.log.gz
+4project_back/logs/app.log
