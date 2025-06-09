@@ -15,3 +15,4 @@ Thumbs.db
 
 
 4project_back/logs/
+4project_back/src/main/resources/application.properties
