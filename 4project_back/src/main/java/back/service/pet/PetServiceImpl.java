@@ -111,5 +111,9 @@ public class PetServiceImpl implements PetService {
     		throw new HException("삭제 실패", e);
     	}
     }
-}
 
+    @Override
+    public Pet getPetById(int animalId, String usersId) {
+        return petMapper.getPetByIdAndUsername(animalId, usersId);
+    }
+}
