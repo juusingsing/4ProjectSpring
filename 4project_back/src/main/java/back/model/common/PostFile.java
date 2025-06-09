@@ -16,11 +16,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 
 public class PostFile extends Model {
-	private int fileId;
-	private int boardId;
-	private String fileName;
-	private String filePath;
+	private int postFileId;
+	private int postFileKey;
+	private String postFileCategory;
+	private String postFilePath;
 	private String basePath;
+	private String postFileName;
 	
 	private List<MultipartFile> files; 
 

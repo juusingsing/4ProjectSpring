@@ -3,25 +3,27 @@ package back.service.write;
 import java.io.IOException;
 import java.util.List;
 
-import back.model.board.Board;
-import back.model.board.Comment;
+import back.model.write.Write;
+import back.model.common.PostFile;
+import back.model.write.Comment;
 
 public interface WriteService {
     
-	public List getBoardList(Board board);
+	public List getWriteList(Write write);
 	
-    public Board getBoardById(String boardId);
+    public Write getWriteById(int writingId,  PostFile file);
     
-    public boolean createBoard(Board board) throws NumberFormatException, IOException;
+    public boolean createWrite(Write write) throws NumberFormatException, IOException;
     
-    public boolean updateBoard(Board board);
+    public boolean updateWrite(Write write);
     
-    public boolean deleteBoard(Board board);
+    public boolean deleteWrite(Write write);
     
     public boolean createComment(Comment comment);
     
     public boolean updateComment(Comment comment);
     
     public boolean deleteComment(Comment comment);
+
 
 }

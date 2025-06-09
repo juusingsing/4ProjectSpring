@@ -15,11 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
-import back.mapper.board.BoardMapper;
 import back.mapper.combo.ComboMapper;
 import back.mapper.file.FileMapper;
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.combo.Combo;
 import back.model.combo.CommonCode;
 import back.model.combo.GroupCode;

@@ -1,28 +1,22 @@
 package back.service.write;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
-import back.mapper.board.BoardMapper;
 import back.mapper.file.FileMapper;
-import back.model.board.Board;
-import back.model.board.Comment;
+import back.mapper.write.WriteMapper;
 import back.model.common.PostFile;
+import back.model.write.Comment;
+import back.model.write.Write;
+import back.service.file.FileService;
 import back.util.FileUploadUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -30,24 +24,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class WriteServiceImpl implements WriteService {
     @Autowired
-    private BoardMapper boardMapper;
+    private WriteMapper writeMapper;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private FileService fileService; // 새로 추가: FileService 주입
     
 
     
     @Override
-	public Board getBoardById(String boardId) {
+	public Write getWriteById(int writingId, PostFile file ) {
     	
     	try {
-			Board board = boardMapper.getBoardById(boardId);
+			Write write = writeMapper.getWriteById(writingId);
 			
 			//파일 목록 조회
-			board.setPostFiles(fileMapper.getFilesByBoardId(boardId));
+			write.setPostFiles(fileMapper.getFilesByFileKey(file));
 			
 			//댓글 목록 조회
-			board.setComments(boardMapper.getCommentsByBoardId(boardId));
-			return board;
+			write.setComments(writeMapper.getCommentsByWriteId(writingId));
+			return write;
     	} catch (Exception e) {
             log.error("실패", 0);
             throw new HException("실패", e);
@@ -57,18 +53,28 @@ public class WriteServiceImpl implements WriteService {
 	
     @Override
 	@Transactional
-	public boolean createBoard(Board board) throws NumberFormatException, IOException {
+	public boolean createWrite(Write write) throws NumberFormatException, IOException {
        
-        	boolean result = boardMapper.create(board) > 0;
+        	boolean result = writeMapper.create(write) > 0;
 	
-			if (result) {
-				//업로드된 파일들을 처리하여 PostFile 객체 리스트 반환
-				List<PostFile> fileList = FileUploadUtil.uploadFiles(board.getFiles(), "board",
-							Integer.parseInt(board.getBoardId()), board.getCreateId());
+        	if (result) {
+				String postFileCategory = "write"; // 이 게시판 유형에 대한 카테고리
+				
+				List<PostFile> fileList = FileUploadUtil.uploadFiles(
+				    write.getFiles(), 
+				    "write", // basePath
+				    write.getWritingId(), // postFileKey (실제 게시글과 파일을 연결합니다.)
+				    postFileCategory, // postFileCategory
+				    write.getCreateId() // usersId
+				);
 						
-				for (PostFile PostFile : fileList) {
-					boolean createResult = fileMapper.insertFile(PostFile) > 0;
-					if (!createResult) throw new HException("파일 추가 실패");
+				for (PostFile postFile : fileList) {
+					boolean createResult = fileMapper.insertFile(postFile) > 0;
+					if (!createResult) {
+		                // 파일 추가 실패 시 트랜잭션 롤백을 위해 RuntimeException을 던집니다.
+		                // HException이 RuntimeException의 자손이 아니라면, 이 변경이 중요합니다.
+		                throw new RuntimeException("파일 추가 실패: " + postFile.getPostFileName());
+					}
 				}
 			}
 			return result;
@@ -77,32 +83,47 @@ public class WriteServiceImpl implements WriteService {
 	
 	@Override
 	@Transactional
-	public boolean updateBoard(Board board) {
+	public boolean updateWrite(Write write) {
         try {
-            boolean result = boardMapper.update(board) > 0;
+            boolean result = writeMapper.update(write) > 0;
             
             if (result) {
             	
-            	List<MultipartFile> files = board.getFiles();
-            	String remainingFileIds = board.getRemainingFileIds();
+            	List<MultipartFile> files = write.getFiles();
+            	String remainingFileIds = write.getRemainingFileIds();
             	
-            	List<PostFile> existingFiles = fileMapper.getFilesByBoardId(board.getBoardId());
+            	 PostFile searchFile = new PostFile();
+                 searchFile.setPostFileKey(write.getWritingId()); 
+
+             	List<PostFile> existingFiles = fileMapper.getFilesByFileKey(searchFile);
             	
 
             	for (PostFile existing : existingFiles) {
-            		if (!remainingFileIds.contains(String.valueOf(existing.getFileId()))) {
-            			existing.setUpdateId(board.getUpdateId());
+            		if (!remainingFileIds.contains(String.valueOf(existing.getPostFileId()))) {
+            			existing.setUpdateId(write.getUpdateId());
             			boolean deleteResult = fileMapper.deleteFile(existing) > 0 ;
             			if (!deleteResult) throw new HException("파일 삭제 실패");
             		}
             	}
             	
-            	if (files != null) {
-            		List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(files, "board",
-            				Integer.parseInt(board.getBoardId()), board.getUpdateId());
-            		for (PostFile postFile : uploadedFiles) {
-            			boolean insertResult = fileMapper.insertFile(postFile) > 0;
-            			if (!insertResult) throw new HException("파일 추가 실패");
+            	if (files != null && !files.isEmpty()) {
+            		// PostFile 객체를 생성하여 FileService.insertFiles에 필요한 정보를 담습니다.
+            		PostFile newFilesToUpload = new PostFile();
+            		newFilesToUpload.setFiles(files); // 업로드할 MultipartFile 리스트 설정
+            		newFilesToUpload.setPostFileKey(write.getWritingId()); // 게시글 ID를 POST_FILE_KEY로 설정
+            		newFilesToUpload.setCreateId(write.getUpdateId()); // 생성자 ID (업데이트 시에는 업데이트 ID 사용)
+            		newFilesToUpload.setUpdateId(write.getUpdateId()); // 업데이트 ID 설정
+            		newFilesToUpload.setBasePath("write"); // 파일 저장 기본 경로
+                    // newFilesToUpload.setPostFileId(0); // 새로운 파일이므로 0 또는 적절한 초기값. insertFiles 내부에서 처리됨.
+                    // newFilesToUpload.setPostFileCategory("write"); // 또는 Write 모델에 게시판 종류 필드가 있다면 활용
+            		// newFilesToUpload.setPostFileName(""); // FileUploadUtil에서 originalFileName을 사용하므로 여기서 설정 불필요
+
+            		// FileService를 통해 파일 삽입 로직 호출
+            		Map<String, Object> uploadResult = fileService.insertFiles(newFilesToUpload);
+
+            		if (!(boolean) uploadResult.get("result")) {
+            			log.error("게시글 수정 중 새 파일 업로드 및 DB 추가 실패: {}", uploadResult.get("message"));
+            			throw new HException("파일 추가 실패: " + uploadResult.get("message"));
             		}
             	}
             }
@@ -116,9 +137,9 @@ public class WriteServiceImpl implements WriteService {
 	
 	@Override
 	@Transactional
-	public boolean deleteBoard(Board board) {
+	public boolean deleteWrite(Write write) {
 		try {
-			return boardMapper.delete(board) > 0;
+			return writeMapper.delete(write) > 0;
 		} catch (Exception e) {
 			log.error("게시글 삭제 실패", e);
 			throw new HException("게시글 삭제 실패", e);
@@ -128,23 +149,23 @@ public class WriteServiceImpl implements WriteService {
 
 	@Override
 	@Transactional
-	public List getBoardList(Board board) {
+	public List getWriteList(Write write) {
 		
-		int page = board.getPage();
-		int size = board.getSize();
+		int page = write.getPage();
+		int size = write.getSize();
 		
-		int totalCount = boardMapper.getTotalBoardCount(board);
+		int totalCount = writeMapper.getTotalWriteCount(write);
 		int totalPages = (int) Math.ceil((double) totalCount / size);
 		
 		int startRow = (page - 1) * size + 1;
 		int endRow = page *size;
 		
-		board.setTotalCount(totalCount);
-		board.setTotalPages(totalPages);
-		board.setStartRow(startRow);
-		board.setEndRow(endRow);
+		write.setTotalCount(totalCount);
+		write.setTotalPages(totalPages);
+		write.setStartRow(startRow);
+		write.setEndRow(endRow);
 		
-		List list = boardMapper.getBoardList(board);
+		List list = writeMapper.getWriteList(write);
 		
 		return list;
 	}
@@ -153,7 +174,7 @@ public class WriteServiceImpl implements WriteService {
 	@Transactional
 	public boolean createComment(Comment comment) {
 		try {
-			return boardMapper.insertComment(comment) > 0;
+			return writeMapper.insertComment(comment) > 0;
 		} catch (Exception e) {
 			log.error("댓글 생성 실패", e);
 			throw new HException("댓글 생성 실패", e);
@@ -164,7 +185,7 @@ public class WriteServiceImpl implements WriteService {
 	@Transactional
 	public boolean updateComment(Comment comment) {
 		try {
-			return boardMapper.updateComment(comment) > 0;
+			return writeMapper.updateComment(comment) > 0;
 		} catch (Exception e) {
 			log.error("댓글 수정 실패", e);
 			throw new HException("댓글 수정 실패", e);
@@ -175,7 +196,7 @@ public class WriteServiceImpl implements WriteService {
 	@Transactional
 	public boolean deleteComment(Comment comment) {
 		try {
-			return boardMapper.deleteComment(comment) > 0;
+			return writeMapper.deleteComment(comment) > 0;
 		} catch (Exception e) {
 			log.error("댓글 삭제 실패", e);
 			throw new HException("댓글 삭제 실패", e);

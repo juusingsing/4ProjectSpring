@@ -28,12 +28,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import back.model.board.Board;
-import back.model.board.Comment;
+import back.model.write.Write;
+import back.model.write.Comment;
 import back.model.common.CustomUserDetails;
 import back.model.user.User;
-import back.service.board.BoardService;
-import back.service.board.BoardServiceImpl;
+import back.service.write.WriteService;
+import back.service.write.WriteServiceImpl;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
 
@@ -44,19 +44,19 @@ import back.util.SecurityUtil;
 public class WriteController{
 	
 @Autowired
-private BoardService boardService;
+private WriteService writeService;
 
 /**
  * 
  * 게시글 목록 조회 (페이징 + 검색조건)
  */
 @PostMapping("/list.do")
-public ResponseEntity<?> getBoardList(@RequestBody Board board) {
-	log.info(board.toString());
-	List<Board> boardList = boardService.getBoardList(board);
+public ResponseEntity<?> getWriteList(@RequestBody Write write) {
+	log.info(write.toString());
+	List<Write> writeList = writeService.getWriteList(write);
 	Map dataMap = new HashMap();
-	dataMap.put("list", boardList);
-	dataMap.put("board", board);
+	dataMap.put("list", writeList);
+	dataMap.put("write", write);
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", dataMap));
 }
 
@@ -65,9 +65,9 @@ public ResponseEntity<?> getBoardList(@RequestBody Board board) {
  * 게시글 단건 조회
  */
 @PostMapping("/view.do")
-public ResponseEntity<?> getBoard(@RequestBody Board board) {
-	Board selecBoard = boardService.getBoardById(board.getBoardId());
-	return ResponseEntity.ok(new ApiResponse<>(true, "조회 성공", selecBoard));
+public ResponseEntity<?> getWrite(@RequestBody Write write) {
+	Write selectWrite = writeService.getWriteById(write.getWritingId(),null);
+	return ResponseEntity.ok(new ApiResponse<>(true, "조회 성공", selectWrite));
 }
 
 /**
@@ -77,16 +77,19 @@ public ResponseEntity<?> getBoard(@RequestBody Board board) {
  * @throws NumberFormatException 
  */
 @PostMapping(value = "/create.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<?> createBoard (
-	@ModelAttribute Board board,
+public ResponseEntity<?> createWrite (
+	@ModelAttribute Write write,
 	@RequestPart(value = "files", required = false) List<MultipartFile> files
 	) throws NumberFormatException, IOException {
+	//CustomUserDetails는 애플리케이션 사용자 모델(User)과 Spring Security의 사용자 모델(UserDetails) 사이의 다리 역할을 한다.
+	//이를 통해 Spring Security가 사용자 정보를 사용하여 인증 및 권한 부여를 수행할 수 있도록 만들어 준다. 
+	//없으면 Spring Security가 당신의 User 객체를 어떻게 처리해야 할지 알 수 없다.
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
-		board.setCreateId(userDetails.getUsername());
-		board.setFiles(files);
-		boolean isCreated = boardService.createBoard(board);
+		write.setCreateId(userDetails.getUsername());
+		write.setFiles(files);
+		boolean isCreated = writeService.createWrite(write);
 		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "게시글 등록 성공" : "게시글 등록 실패", null));
 }
 
@@ -95,16 +98,16 @@ public ResponseEntity<?> createBoard (
  * 게시글 수정
  */
 @PostMapping(value = "/update.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<?> updateBoard (
-	@ModelAttribute Board board,
+public ResponseEntity<?> updateWrite (
+	@ModelAttribute Write write,
 	@RequestPart(value = "files", required = false) List<MultipartFile> files
 	) {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
-		board.setUpdateId(userDetails.getUsername());
-		board.setFiles(files);
-		boolean isUpdated = boardService.updateBoard(board);
+		write.setUpdateId(userDetails.getUsername());
+		write.setFiles(files);
+		boolean isUpdated = writeService.updateWrite(write);
 		return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "게시글 수정 성공" : "게시글 수정 실패", null));
 }
 
@@ -113,16 +116,16 @@ public ResponseEntity<?> updateBoard (
  * 게시글 삭제
  */
 @PostMapping(value = "/delete.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<?> deleteBoard (
-	@ModelAttribute Board board,
+public ResponseEntity<?> deleteWrite (
+	@ModelAttribute Write write,
 	@RequestPart(value = "files", required = false) List<MultipartFile> files
 	) {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
-		board.setCreateId(userDetails.getUsername());
-		board.setFiles(files);
-		boolean isDeleted = boardService.updateBoard(board);
+		write.setCreateId(userDetails.getUsername());
+		write.setFiles(files);
+		boolean isDeleted = writeService.updateWrite(write);
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "게시글 삭제 성공" : "게시글 삭제 실패", null));
 }
 
@@ -136,7 +139,7 @@ public ResponseEntity<?> createComment (@RequestBody Comment comment) {
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
 		comment.setCreateId(userDetails.getUsername());
-		boolean isCreated = boardService.createComment(comment);
+		boolean isCreated = writeService.createComment(comment);
 		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "댓글 등록 성공" : "댓글 등록 실패", null));
 }
 
@@ -153,7 +156,7 @@ public ResponseEntity<?> updateComment (@RequestBody Comment comment) {
 		
 		SecurityUtil.checkAuthorization(userDetails);
 		comment.setUpdateId(userDetails.getUsername());
-		boolean isUpdated = boardService.updateComment(comment);
+		boolean isUpdated = writeService.updateComment(comment);
 		return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "댓글 수정 성공" : "댓글 수정 실패", null));
 }
 
@@ -167,7 +170,7 @@ public ResponseEntity<?> deleteComment (@RequestBody Comment comment) {
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
 		comment.setUpdateId(userDetails.getUsername());
-		boolean isDeleted = boardService.deleteComment(comment);
+		boolean isDeleted = writeService.deleteComment(comment);
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "댓글 삭제 성공" : "댓글 삭제 실패", null));
 }
 

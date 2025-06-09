@@ -8,9 +8,9 @@ import back.model.common.PostFile;
 public interface FileService {
     
 	
-    public PostFile getFileByFileId(PostFile file);
+    public PostFile getFileByFileId(int postFileId);
     
-    public Map<String, Object> insertBoardFiles(PostFile file);
+    public Map<String, Object> insertFiles(PostFile file);
     
 
 }

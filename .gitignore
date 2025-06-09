@@ -12,3 +12,8 @@ Thumbs.db
 
 # 로그
 *.log
+
+
+4project_back/logs/
+4project_back/src/main/resources/application.properties
+4project_back/build.gradle

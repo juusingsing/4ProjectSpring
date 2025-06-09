@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import back.model.board.Board;
-import back.model.board.Comment;
 import back.model.home.Home;
 
 @Mapper

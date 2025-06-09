@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
+import back.model.write.Comment;
 import back.model.common.PostFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,11 +38,20 @@ public class Write extends Model {
 	
 	
     
-	private String boardId;
-	private String title;
-	private String content;
-	private String viewCount;
+	private int writingId;
+	private String writingTitle;
+	private String writingContent;
+	private int writingViewCount;
+	
+	private String writingSortation;
+	private String writingCategory;;
 
+	private List<PostFile> postFiles;
+	private List<Comment> comments;
+	
+	private List<MultipartFile> files;
+	private String remainingFileIds;
+	
 	
 
 
