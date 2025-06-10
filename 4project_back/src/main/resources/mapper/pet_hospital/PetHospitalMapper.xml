@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="back.mapper.pet_hospital.PetHospitalMapper">
+
+    <insert id="insertPetHospital" parameterType="back.model.pet_hospital.PetHospital" useGeneratedKeys="true" keyProperty="animalHospitalTreatmentId">
+	    <selectKey keyProperty="animalHospitalTreatmentId" resultType="int" order="BEFORE">
+	        SELECT ANIMAL_HOSPITAL_TREATMENT_SEQ.NEXTVAL FROM DUAL
+	    </selectKey>
+	
+	    INSERT INTO ANIMAL_HOSPITAL_TREATMENT (
+	        ANIMAL_HOSPITAL_TREATMENT_ID,
+	        ANIMAL_ID,
+	        ANIMAL_VISIT_DATE,
+	        ANIMAL_HOSPITAL_NAME,
+	        ANIMAL_MEDICATION,
+	        ANIMAL_TREATMENT_TYPE,
+	        ANIMAL_TREATMENT_MEMO,
+	        CREATE_ID,
+	        CREATE_DT,
+	        DEL_YN
+	    ) VALUES (
+	        #{animalHospitalTreatmentId},
+	        #{animalId},
+	        #{animalVisitDate},
+	        #{animalHospitalName},
+	        #{animalMedication},
+	        #{animalTreatmentType},
+	        #{animalTreatmentMemo},
+	        #{createId},
+	        SYSDATE,
+	        'N'
+	    )
+	</insert>
+
+</mapper>
