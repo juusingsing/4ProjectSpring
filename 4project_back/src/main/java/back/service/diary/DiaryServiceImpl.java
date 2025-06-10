@@ -125,6 +125,7 @@ public class DiaryServiceImpl implements DiaryService{
 						if(!deleteResult) throw new HException("파일 삭제 실패");
 					}
 				}
+				
 				String createId = (diary.getCreateId() != null) ? diary.getCreateId() : diary.getUpdateId();//createId null값 대체
 				if (files != null && !files.isEmpty()) {
 					List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(
@@ -139,6 +140,7 @@ public class DiaryServiceImpl implements DiaryService{
 						if(!insertResult) throw new HException("파일 추가 실패");
 					}
 				}
+				log.info("remainingFileIds: {}", remainingFileIds);
 			}
 			return result;
 		}catch (Exception e) {

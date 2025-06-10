@@ -60,7 +60,7 @@ public class FileUploadUtil {
 
                 PostFile postFile = new PostFile();
                 postFile.setPostFileCategory(postFileCategory);
-                postFile.setPostFileKey(postFileKey);
+                postFile.setPostFileKey(postFileKey);   //   <<여기에 산책, 일기, 커뮤니티 등 고유키 들어감
                 postFile.setPostFileName(originalFileName);
                 postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
                 postFile.setCreateId(usersId);
@@ -74,8 +74,10 @@ public class FileUploadUtil {
         return uploadedFiles;
     }
 
+    
+    
     /**
-     * 업로드 경로 반환 (날짜 단일 폴더 포함)
+     * 업로드 경로 반환 (날짜 단일 폴더 포함)       ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ임시기능임ㅁㅁㅁㅁㅁㅁㅁㅁ
      */
     public static String getUploadPath(String basePath, String dateFolder) {
         return File.separator + UPLOAD_DIR + File.separator + basePath + File.separator + dateFolder;
@@ -124,9 +126,12 @@ public class FileUploadUtil {
                 file.transferTo(new File(filePath));
 
                 PostFile postFile = new PostFile();
+                postFile.setPostFileCategory("WAL");
+                postFile.setPostFileKey(1);  //  <<여기에 산책, 일기, 커뮤니티 등 고유키 들어감
                 postFile.setPostFileName(originalFileName);
-                postFile.setCreateId("test");
                 postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
+                postFile.setCreateId("test");
+                postFile.setUpdateId("test");
                 postFile.setDelYn("N");
 
                 uploadedFiles.add(postFile);

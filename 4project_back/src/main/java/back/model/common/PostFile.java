@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 
 public class PostFile extends Model {
 	private int postFileId;
-	private int postFileKey;
 	private String postFileCategory;
+	private int postFileKey;
 	private String postFilePath;
 	private String basePath;
 	private String postFileName;

@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DiaryController {
 	@Autowired
 	private DiaryService diaryService;
+	
 	private List<MultipartFile> files;
 	
 	@PostMapping(value="/create.do", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
