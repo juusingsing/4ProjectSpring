@@ -1,5 +1,6 @@
 package back.service.plant;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +21,27 @@ public class PlantServiceImpl implements PlantService {
     private PlantMapper plantMapper;
 
     @Override
-    public List<Map<String, Object>> getPlantCheck(String plantId) {
+    public List<Map<String, Object>> getPlantCheck(Integer plantId) {
         return plantMapper.selectPlantCheck(plantId);
     }
     
+    @Override
+    @Transactional
+    public boolean saveSunlightingRecord(Plant plant) {
+
+        boolean result = plantMapper.saveSunlightInfo(plant) > 0;
+        return result;
+    }
+
+    
+    //식물저장
+    @Override
+    public boolean saveSunlightInfo(Plant plant) {
+        int result = plantMapper.saveSunlightInfo(plant);
+        return result > 0;
+    }
+
+
     @Override
     public Plant getPlantById(String plantId) throws HException {
         try {
