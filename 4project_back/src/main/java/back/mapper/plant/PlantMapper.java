@@ -11,7 +11,15 @@ import back.model.plant.Plant;
 @Mapper
 public interface PlantMapper {
 	
-	public List<Map<String, Object>> selectPlantCheck(String plant_id);
+	public List<Map<String, Object>> selectPlantCheck(int plant_id);
+	
+	public int updateSunlightInfo(
+	        @Param("plantId") Integer plantId,
+	        @Param("sunlightStatus") String sunlightStatus,
+	        @Param("sunlightMemo") String sunlightMemo
+	    );
+	public int saveSunlightInfo(Plant plant);
+
 	
 	public Plant selectPlantById(String plantId);
 	

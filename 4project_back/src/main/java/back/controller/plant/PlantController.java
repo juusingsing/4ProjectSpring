@@ -1,5 +1,6 @@
 package back.controller.plant;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.common.CustomUserDetails;
@@ -24,13 +34,15 @@ import lombok.extern.slf4j.Slf4j;
 public class PlantController {
     @Autowired
     private PlantService plantService;
+    private List<MultipartFile> files;
     
     // 식물이름 + 입수일만 조회
     @PostMapping("/simple-list.do")
     public ResponseEntity<?> getSimplePlantList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         SecurityUtil.checkAuthorization(userDetails);
-        String plantId = userDetails.getUsername();
 
+        Integer plantId = null;
+        
         List<Map<String, Object>> simpleList = plantService.getPlantCheck(plantId);
 
         Map<String, Object> data = new HashMap<>();
@@ -38,7 +50,19 @@ public class PlantController {
 
         return ResponseEntity.ok(new ApiResponse<>(true, "간단 식물 목록 조회 성공", data));
     }
-    
+
+    @PostMapping(value = "/save.do")
+    public ResponseEntity<?> saveSunlightInfo (
+    	@ModelAttribute Plant plant 
+    		) throws NumberFormatException, IOException {
+    		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+    				.getAuthentication().getPrincipal();
+    		SecurityUtil.checkAuthorization(userDetails);
+    		plant.setCreateId(userDetails.getUsername());
+    		boolean isCreated = plantService.saveSunlightInfo(plant);
+    		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "게시글 등록 성공" : "게시글 등록 실패", null));
+    }
+
 	 // 식물 상세 조회
 	    @GetMapping("/{plantId}")
 	    public ResponseEntity<?> getPlantById(
@@ -64,14 +88,14 @@ public class PlantController {
     @PostMapping(value = "/create.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(
             @ModelAttribute Plant plant,
-            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "files", required = false) List<MultipartFile>files,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
         plant.setUsersId(userDetails.getUsername());
         plant.setCreateId(userDetails.getUsername());
-        plant.setFile(file);  // MultipartFile 세팅
-
+        //plant.setFiles(files);
+        log.info("파일 개수: {}", files != null ? files.size() : 0);
         boolean isCreated;
         try {
             isCreated = plantService.create(plant);
@@ -106,7 +130,7 @@ public class PlantController {
         }
 
         plant.setUpdateId(userDetails.getUsername());
-        plant.setFile(file);
+        //plant.setFile(file);
 
         boolean isUpdated;
         try {

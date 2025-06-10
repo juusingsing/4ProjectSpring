@@ -1,10 +1,12 @@
 package back.model.plant;
 
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
+import back.model.common.PostFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class Plant extends Model{
 	
 	private int plantId; // 식물ID
-    private String usersId; // 사용자ID
     private int fileId; // 파일ID
     
     private String plantName; // 식물이름
@@ -25,6 +26,11 @@ public class Plant extends Model{
     private String plantSunPreference; // 햇빛/그늘 선호
     private String plantGrowStatus; // 식물 생육 상태
     
-    private MultipartFile file;
+    private String sunlightStatus;
+    private String sunlightMemo;
+    
+    
+    
+    private List<PostFile> postFiles;
 	
 }

@@ -8,8 +8,13 @@ import back.model.plant.Plant;
 
 public interface PlantService {
 	
-	public List<Map<String, Object>> getPlantCheck(String plantId);
+	public List<Map<String, Object>> getPlantCheck(Integer plantId);
+	
+	public boolean saveSunlightingRecord(Plant plant);
     
+	//식물 저장
+	public boolean saveSunlightInfo(Plant plant);
+	
 	public Plant getPlantById(String plantId) throws HException;
 	
     // 식물 등록

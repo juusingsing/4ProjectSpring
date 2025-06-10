@@ -4,14 +4,24 @@
 
 <mapper namespace="back.mapper.plant.PlantMapper">
 	
-	<select id="selectPlantCheck" resultType="map">
+	<select id="selectPlantCheck" parameterType="int" resultType="map">
         SELECT plant_name AS plantName,
                plant_purchase_date AS plantPurchaseDate
         FROM plant
         WHERE plant_id = #{plantId}
     </select>
 	
-	
+	<update id="updateSunlightInfo">
+	    UPDATE plant
+	    SET
+	        plant_sunlighting_status = #{sunlightStatus},
+	        plant_sunlighting_memo = #{sunlightMemo},
+	        update_id = #{updateId},
+	        update_dt = SYSDATE
+	    WHERE plant_id = #{plantId}
+	</update>
+
+
 	<select id="selectPlantById" parameterType="string" resultType="back.model.plant.Plant">
 	    SELECT
 	        PLANT_ID,
@@ -33,8 +43,7 @@
 
 
     <!-- 식물 등록 -->
-    <insert id="create" parameterType="back.model.plant.Plant">
-    
+    <insert id="create" parameterType="back.model.plant.Plant">   
     <selectKey keyProperty="plantId" resultType="int" order="BEFORE">
 	    SELECT SEQ_PLANT.NEXTVAL FROM DUAL
 	</selectKey>
@@ -54,7 +63,7 @@
             UPDATE_DT,
             DEL_YN
         ) VALUES (
-            SEQ_PLANT.NEXTVAL,
+            #{plantId},
             #{usersId},
             #{fileId},
             #{plantName},
@@ -70,6 +79,35 @@
         )
 
     </insert>
+    
+
+	<insert id="saveSunlightInfo" parameterType="back.model.plant.Plant">
+    <selectKey keyProperty="plantSunlightingId" resultType="int" order="AFTER">
+        SELECT SEQ_PLANT_SUNLIGHTING.CURRVAL FROM DUAL
+    </selectKey>
+    INSERT INTO PLANT_SUNLIGHTING (
+        PLANT_SUNLIGHTING_ID,
+        PLANT_ID,
+        PLANT_SUNLIGHTING_STATUS,
+        PLANT_SUNLIGHTING_MEMO,
+        CREATE_ID,
+        UPDATE_ID,
+        CREATE_DT,
+        UPDATE_DT,
+        DEL_YN
+    ) VALUES (
+		PLANT_SUNLIGHTING_SEQ.NEXTVAL,
+        #{plantId},
+        #{sunlightStatus},
+        #{sunlightMemo},
+        #{createId},
+        #{updateId},
+        SYSDATE,
+        SYSDATE,
+        'N'
+    )
+</insert>
+
 
     <!-- 식물 수정 -->
     <update id="update" parameterType="back.model.plant.Plant">
@@ -86,7 +124,7 @@
     </update>
 
     <!-- 식물 삭제 -->
-    <delete id="delete" parameterType="map">
+    <delete id="delete" parameterType="int">
 	    DELETE FROM PLANT
 	    WHERE plant_id = #{plantId}
 	</delete>
