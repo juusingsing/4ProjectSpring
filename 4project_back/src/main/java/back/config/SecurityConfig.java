@@ -92,7 +92,10 @@ public class SecurityConfig {
                         "/api/pet/animalregister.do",
                         "/api/pet/petUpdate.do",
                         "/api/pet/petdelete.do",
-                        "/api/pet/getPetById.do"
+                        "/api/pet/getPetById.do",
+                        "api/petWalk/petSave.do"
+                        
+                        
                     ).permitAll() // 로그인, 로그아웃, 회원가입은 누구나 접근 가능
                     .anyRequest().authenticated() // 그 외는 인증 필요
             )

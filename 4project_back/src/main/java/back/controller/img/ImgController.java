@@ -182,7 +182,7 @@ public class ImgController {
 		
 	}
 	
-	@GetMapping("/imgLoad.do")
+	@PostMapping("/imgLoad.do")
     public List<PostFile> getAllImages(@ModelAttribute PostFile postFile) {
         return imgService.getAllFiles(postFile); // 모든 파일을 반환하는 쿼리 필요
     }
