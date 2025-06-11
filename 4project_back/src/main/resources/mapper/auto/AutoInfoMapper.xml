@@ -17,8 +17,8 @@
 	        AUTH_EMAIL,
 	        AUTH_EMAIL_VERIFIED,
 	        AUTH_NUMBER,
-	        CREATED_DT,
-	        UPDATED_DT,
+	        CREATE_DT,
+	        UPDATE_DT,
 	        CREATE_ID,
 	        UPDATE_ID,
 	        DEL_YN
@@ -40,7 +40,7 @@
     <update id="updateAuthNumber" parameterType="back.model.auto.AutoInfo">
         UPDATE AUTH_INFO
         SET AUTH_NUMBER = #{authNumber},
-            UPDATED_DT = SYSDATE,
+            UPDATE_DT = SYSDATE,
             UPDATE_ID = #{updateId}
         WHERE AUTH_EMAIL = #{authEmail}
         AND DEL_YN = 'N'
@@ -50,7 +50,7 @@
     <update id="verifyAuthEmail" parameterType="String">
         UPDATE AUTH_INFO
         SET AUTH_EMAIL_VERIFIED = 'Y',
-            UPDATED_DT = SYSDATE
+            UPDATE_DT = SYSDATE
         WHERE AUTH_EMAIL = #{email}
         AND DEL_YN = 'N'
     </update>
@@ -58,7 +58,7 @@
     <update id="updateUsersId" parameterType="map">
 	    UPDATE AUTH_INFO
 	    SET USERS_ID = #{usersId},
-	        UPDATED_DT = SYSDATE
+	        UPDATE_DT = SYSDATE
 	    WHERE AUTH_EMAIL = #{email}
 	      AND DEL_YN = 'N'
 	</update>
