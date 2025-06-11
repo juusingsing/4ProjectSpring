@@ -8,6 +8,15 @@ import back.model.plant.Plant;
 
 public interface PlantService {
 	
+	//식물 일조량 개별 수정
+	public boolean updatePlantSunlightLogs(Plant plant);
+	
+	//식물 일조량 개별 삭제
+	public boolean deletePlantSunlightLogs(Plant plant);
+	
+	//식물 일조량 조회
+	public List<Plant> findByPlantId(Plant plant);
+	
 	public List<Map<String, Object>> getPlantCheck(Integer plantId);
 	
 	public boolean saveSunlightingRecord(Plant plant);
@@ -24,6 +33,6 @@ public interface PlantService {
     public boolean update(Plant plant) throws HException;
 
     // 식물 삭제
-    public boolean delete(int plantId) throws HException;  
+//    public boolean delete(Plant plant) throws HException;  
     
 }

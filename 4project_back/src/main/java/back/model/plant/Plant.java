@@ -19,12 +19,15 @@ public class Plant extends Model{
 	
 	private int plantId; // 식물ID
     private int fileId; // 파일ID
+    private int plantSunlightingId; // 일조기록ID
+
     
     private String plantName; // 식물이름
     private String plantType; // 식물 종류
     private Date plantPurchaseDate; // 식물 입수일
     private String plantSunPreference; // 햇빛/그늘 선호
     private String plantGrowStatus; // 식물 생육 상태
+    
     
     private String sunlightStatus;
     private String sunlightMemo;

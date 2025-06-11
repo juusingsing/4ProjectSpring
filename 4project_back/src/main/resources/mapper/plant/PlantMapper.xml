@@ -2,7 +2,40 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="back.mapper.plant.PlantMapper">
+<mapper namespace="back.mapper.plant.PlantMapper"> 
+
+	<!-- 식물 일조량 개별 수정-->
+	<update id="updatePlantSunlightLogs" parameterType="back.model.plant.Plant">
+    	update Plant
+    	SET
+    		PLANT_SUNLIGHTING_STATUS = #{sunlightStatus, jdbcType=VARCHAR},
+    		PLANT_SUNLIGHTING_MEMO = #{sunlightMemo},
+    		UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+    	WHERE PLANT_SUNLIGHTING_ID=#{plantSunlightingId}
+    </update>
+
+        
+	<!-- 식물 일조량 개별 삭제-->
+	<delete id="deletePlantSunlightLogs" parameterType="back.model.plant.Plant">
+	    UPDATE PLANT_SUNLIGHTING
+	    SET DEL_YN='Y',
+	    	UPDATE_ID=#{updateId},
+    		UPDATE_DT=SYSDATE
+	    WHERE PLANT_SUNLIGHTING_ID = #{plantSunlightingId}
+	</delete>
+
+	<!-- 식물 일조량 조회 -->
+	<select id="findByPlantId" resultType="back.model.plant.Plant">
+        SELECT PLANT_SUNLIGHTING_ID AS plantSunlightingId,
+               PLANT_ID AS plantId,
+               PLANT_SUNLIGHTING_STATUS AS sunlightStatus,
+               PLANT_SUNLIGHTING_MEMO AS sunlightMemo,
+               TO_CHAR(CREATE_DT, 'YYYY.MM.DD') AS createDt
+        FROM PLANT_SUNLIGHTING
+        WHERE PLANT_ID = #{plantId}
+        AND DEL_YN = 'N' ORDER BY CREATE_DT DESC
+    </select>
 	
 	<select id="selectPlantCheck" parameterType="int" resultType="map">
         SELECT plant_name AS plantName,
@@ -11,16 +44,6 @@
         WHERE plant_id = #{plantId}
     </select>
 	
-	<update id="updateSunlightInfo">
-	    UPDATE plant
-	    SET
-	        plant_sunlighting_status = #{sunlightStatus},
-	        plant_sunlighting_memo = #{sunlightMemo},
-	        update_id = #{updateId},
-	        update_dt = SYSDATE
-	    WHERE plant_id = #{plantId}
-	</update>
-
 
 	<select id="selectPlantById" parameterType="string" resultType="back.model.plant.Plant">
 	    SELECT
@@ -45,7 +68,7 @@
     <!-- 식물 등록 -->
     <insert id="create" parameterType="back.model.plant.Plant">   
     <selectKey keyProperty="plantId" resultType="int" order="BEFORE">
-	    SELECT SEQ_PLANT.NEXTVAL FROM DUAL
+	    SELECT PLANT_SEQ.NEXTVAL FROM DUAL
 	</selectKey>
 
         INSERT INTO PLANT (
@@ -80,10 +103,10 @@
 
     </insert>
     
-
-	<insert id="saveSunlightInfo" parameterType="back.model.plant.Plant">
-    <selectKey keyProperty="plantSunlightingId" resultType="int" order="AFTER">
-        SELECT SEQ_PLANT_SUNLIGHTING.CURRVAL FROM DUAL
+	<!-- 저장 -->
+<insert id="saveSunlightInfo" parameterType="back.model.plant.Plant" useGeneratedKeys="true" keyProperty="plantSunlightingId" keyColumn="PLANT_SUNLIGHTING_ID">
+    <selectKey keyProperty="plantSunlightingId" resultType="int" order="BEFORE">
+        SELECT PLANT_SUNLIGHTING_SEQ.NEXTVAL FROM DUAL
     </selectKey>
     INSERT INTO PLANT_SUNLIGHTING (
         PLANT_SUNLIGHTING_ID,
@@ -96,12 +119,12 @@
         UPDATE_DT,
         DEL_YN
     ) VALUES (
-		PLANT_SUNLIGHTING_SEQ.NEXTVAL,
+        #{plantSunlightingId},
         #{plantId},
-        #{sunlightStatus},
+        #{sunlightStatus, jdbcType=VARCHAR},
         #{sunlightMemo},
         #{createId},
-        #{updateId},
+        #{updateId, jdbcType=VARCHAR},
         SYSDATE,
         SYSDATE,
         'N'
