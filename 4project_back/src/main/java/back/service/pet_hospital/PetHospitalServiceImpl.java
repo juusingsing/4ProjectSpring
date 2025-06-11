@@ -2,9 +2,13 @@ package back.service.pet_hospital;
 
 import back.exception.HException;
 import back.mapper.pet_hospital.PetHospitalMapper;
+import back.model.common.CustomUserDetails;
 import back.model.pet_hospital.PetHospital;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,14 +22,9 @@ public class PetHospitalServiceImpl implements PetHospitalService {
 
     @Override
     @Transactional
-    public PetHospital registerHospitalRecord(PetHospital petHospital, MultipartFile file) {
+    public PetHospital registerHospitalRecord(PetHospital petHospital) {
         try {
             petHospitalMapper.insertPetHospital(petHospital); // 여기서 ID가 petHospital에 set됨 (MyBatis useGeneratedKeys)
-            
-            // 이미지 저장이 필요하면 여기에 추가
-            // 예: String filePath = fileStorageService.save(file);
-            // petHospital.setImagePath(filePath);
-
             return petHospital;
         } catch (Exception e) {
             log.error("병원 진료 등록 실패", e);
@@ -33,5 +32,26 @@ public class PetHospitalServiceImpl implements PetHospitalService {
         }
     }
 
+    @Override
+    public List<PetHospital> getAllByCreateDtDesc() {
+        return petHospitalMapper.selectAllByCreateDtDesc();
+    }
+
+    @Override
+    @Transactional
+    public void updatePetHospital(int id, PetHospital petHospital, CustomUserDetails userDetails) {
+        try {
+            petHospital.setAnimalHospitalTreatmentId(id);
+            petHospital.setUpdateId(userDetails.getUsername());
+            petHospitalMapper.updatePetHospital(petHospital);
+
+            // TODO: 파일 저장 로직은 여기에 추가
+        } catch (Exception e) {
+            log.error("병원 진료 수정 실패", e);
+            throw new HException("병원 진료 수정 실패", e);
+        }
+    }
+    
+    
     
 }

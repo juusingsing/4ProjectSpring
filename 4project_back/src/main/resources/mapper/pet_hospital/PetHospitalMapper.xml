@@ -34,5 +34,21 @@
 	        'N'
 	    )
 	</insert>
-
+	<select id="selectAllByCreateDtDesc" resultType="back.model.pet_hospital.PetHospital">
+	  SELECT * FROM ANIMAL_HOSPITAL_TREATMENT
+	  ORDER BY create_dt DESC
+	</select>
+	
+	<update id="updatePetHospital">
+	  UPDATE pet_hospital
+	  SET 
+	    animal_visit_date = #{animalVisitDate},
+	    animal_hospital_name = #{animalHospitalName},
+	    animal_medication = #{animalMedication},
+	    animal_treatment_type = #{animalTreatmentType},
+	    animal_treatment_memo = #{animalTreatmentMemo},
+	    update_id = #{updateId},
+	    update_dt = NOW()
+	  WHERE animal_hospital_treatment_id = #{animalHospitalTreatmentId}
+	</update>
 </mapper>
