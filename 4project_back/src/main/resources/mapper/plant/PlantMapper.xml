@@ -4,6 +4,23 @@
 
 <mapper namespace="back.mapper.plant.PlantMapper"> 
 
+   <!-- 식물 일조량 단건 조회-->
+   <select id="getPlantSunlightLogsId" parameterType="int" resultType="back.model.plant.Plant">
+    	SELECT
+    		PLANT_SUNLIGHTING_ID AS plantSunlightingId,
+    		PLANT_SUNLIGHTING_STATUS AS sunlightStatus,
+    		PLANT_SUNLIGHTING_MEMO AS sunlightMemo,
+	        CREATE_ID,
+	        UPDATE_ID,
+	        CREATE_DT,
+	        UPDATE_DT,
+	       	DEL_YN
+	   	FROM PLANT_SUNLIGHTING
+	   	WHERE PLANT_SUNLIGHTING_ID = #{plantSunlightingId}
+	   		AND DEL_YN='N'
+    </select>
+
+
 	<!-- 식물 일조량 개별 수정-->
 	<update id="updatePlantSunlightLogs" parameterType="back.model.plant.Plant">
     	update Plant

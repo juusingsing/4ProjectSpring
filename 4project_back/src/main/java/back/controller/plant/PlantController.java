@@ -38,6 +38,21 @@ public class PlantController {
     private PlantService plantService;
     private List<MultipartFile> files;
     
+    //식물 일조량 단건 조회
+    @PostMapping("/sunlight-alist.do")
+    public ResponseEntity<?> getPlantSunlightLogsId (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isResult = plantService.getPlantSunlightLogsId(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isResult, isResult ? "일지 조회 성공" : "일지 조회 실패", null)
+        );
+    }
+    
+    
     //식물 일조량 개별 수정
     @PostMapping("/sunlight-update.do")
     public ResponseEntity<?> updatePlantSunlightLogs (@RequestBody Plant plant,

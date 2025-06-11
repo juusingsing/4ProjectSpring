@@ -21,20 +21,30 @@ public class PlantServiceImpl implements PlantService {
     @Autowired
     private PlantMapper plantMapper;
     
+    //식물 일조량 단건 조회
+    @Override
+	public boolean getPlantSunlightLogsId(Plant plant) {
+        try {
+			return plantMapper.getPlantSunlightLogsId(plant) > 0;
+		} catch (Exception e) {
+			log.error("일조량 조회 실패", e);
+			throw new HException("일조량 조회 실패", e);
+		}
+	}
+    
+    
+    
     //식물 일조량 개별 수정
-    	@Override
+	@Override
 	public boolean updatePlantSunlightLogs(Plant plant) {
         try {
 			return plantMapper.updatePlantSunlightLogs(plant) > 0;
 		} catch (Exception e) {
-			log.error("댓글 수정 실패", e);
-			throw new HException("댓글 수정 실패", e);
+			log.error("댓글 일조량 실패", e);
+			throw new HException("댓글 일조량 실패", e);
 		}
 	}
 
-    
-    
-    
     //식물 일조량 개별 삭제
     @Override
     public boolean deletePlantSunlightLogs(Plant plant) {

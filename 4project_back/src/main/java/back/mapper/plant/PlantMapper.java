@@ -6,11 +6,13 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import back.model.diary.Diary;
 import back.model.plant.Plant;
 
 @Mapper
 public interface PlantMapper {
+	
+	//식물 일조량 단건 조회
+	public int getPlantSunlightLogsId(Plant plant);
 	
 	//식물 일조량 개별 수정
 	public int updatePlantSunlightLogs(Plant plant);

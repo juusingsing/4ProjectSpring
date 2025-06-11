@@ -8,6 +8,9 @@ import back.model.plant.Plant;
 
 public interface PlantService {
 	
+	//식물 일조량 단건 조회
+	public boolean getPlantSunlightLogsId(Plant plant);
+	
 	//식물 일조량 개별 수정
 	public boolean updatePlantSunlightLogs(Plant plant);
 	
