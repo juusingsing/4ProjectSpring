@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -67,9 +68,13 @@ public class PetWalkController {
 	@PostMapping(value = "/imgSave.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> imgSave(
 			@ModelAttribute Pet pet,
-			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws NumberFormatException, IOException {
+			@RequestPart(value = "files", required = false) List<MultipartFile> files,  @AuthenticationPrincipal CustomUserDetails userDetails)
+					throws NumberFormatException, IOException {
 		log.info("이미지 파일 업로드 요청");
+		SecurityUtil.checkAuthorization(userDetails);
 		
+		pet.setUsersId(userDetails.getUser().getUsersId());
+		pet.setCreateId(userDetails.getUsername());
 				
 		pet.setFiles(files);
 		boolean isCreated = petWalkService.imgSave(pet);
@@ -78,7 +83,9 @@ public class PetWalkController {
 	}
 	
 	@PostMapping("/imgLoad.do")
-    public List<PostFile> getAllImages(@ModelAttribute PostFile postFile) {
+    public List<PostFile> getAllImages(@RequestBody PostFile postFile) {
+		log.info("postFile received: {}", postFile);
+		log.info("postFileKey: {}, postFileCategory: {}", postFile.getPostFileKey(), postFile.getPostFileCategory());
         return petWalkService.getAllFiles(postFile); // 모든 파일을 반환하는 쿼리 필요
     }
 	

@@ -86,6 +86,6 @@ public class ImgServiceImpl implements ImgService {
 	public List<PostFile> getAllFiles(PostFile postFile) {
 		// TODO Auto-generated method stub
 		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
-		return fileMapper.getAllFiles();
+		return fileMapper.getAllFiles(postFile);
 	}
 }
