@@ -16,6 +16,10 @@ public class AlarmServiceImpl implements AlarmService {
     @Autowired
     private AlarmMapper alarmMapper;
 	
+    @Override
+	public List getOneList(Alarm alarm) {
+    	return alarmMapper.OneList(alarm);
+	}
     
 
 	@Override
@@ -38,9 +42,6 @@ public class AlarmServiceImpl implements AlarmService {
 		boolean result = alarmMapper.update(alarm) > 0;
 		return result;
 	}
-
-	
-	
     
 
 

@@ -39,7 +39,7 @@ public class Pet extends Model {
     
     
     private int walkId;    // ANIMAL_WALK_ID
-    private Date walkDt;   // ANIMAL_RECORDED_DT  << SYSDATE값넣음
+    private Timestamp walkDt;   // ANIMAL_RECORDED_DT  << SYSDATE값넣음
     private String walkTime;  // ANIMAL_ELAPSED_TIME
     
 

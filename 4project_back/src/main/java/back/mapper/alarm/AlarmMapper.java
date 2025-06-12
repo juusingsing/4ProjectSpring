@@ -9,7 +9,8 @@ import back.model.alarm.Alarm;
 
 @Mapper
 public interface AlarmMapper {
-
+	
+	public List<Alarm> OneList(Alarm alarm);
 	
 	public List<Alarm> list();
 	

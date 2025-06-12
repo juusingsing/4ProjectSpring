@@ -6,7 +6,9 @@ import back.model.alarm.Alarm;
 
 
 public interface AlarmService {
-    
+	
+	
+	public List getOneList(Alarm alarm);
     
     public List getList(Alarm alarm);
     
