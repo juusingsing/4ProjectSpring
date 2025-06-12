@@ -21,6 +21,67 @@ public class PlantServiceImpl implements PlantService {
     @Autowired
     private PlantMapper plantMapper;
     
+    //식물 분갈이 조회
+    @Override
+	public List<Plant> pestlogs(Plant plant) {
+		List result = plantMapper.pestlogs(plant);
+		return result;
+	}
+    
+    //식물 병충해 저장
+    @Override
+    public boolean savePestInfo(Plant plant) {
+        int result = plantMapper.savePestInfo(plant);
+        return result > 0;
+    }
+    
+    //식물 분갈이 개별 수정
+  	@Override
+  	public boolean updatePlantRepottingLogs(Plant plant) {
+          try {
+  			return plantMapper.updatePlantRepottingLogs(plant) > 0;
+  		} catch (Exception e) {
+  			log.error("일조량 수정 실패", e);
+  			throw new HException("일조량 수정 실패", e);
+  		}
+  	}
+  	
+    //식물 분갈이 단건 조회
+    @Override
+	public boolean getPlantRepottingLogsId(Plant plant) {
+        try {
+			return plantMapper.getPlantRepottingLogsId(plant) > 0;
+		} catch (Exception e) {
+			log.error("분갈이 조회 실패", e);
+			throw new HException("분갈이 조회 실패", e);
+		}
+	}
+    
+    //식물 분갈이 로그 개별 삭제
+    @Override
+    public boolean deletePlantRepottingLogs(Plant plant) {
+    	try {
+            return plantMapper.deletePlantRepottingLogs(plant) > 0;
+        } catch (Exception e) {
+            log.error("일지 삭제 중 오류 발생", e);
+            throw new HException("일지 삭제 실패", e);
+        }
+    }
+    
+    //식물 분갈이 조회
+    @Override
+	public List<Plant> repottinglogs(Plant plant) {
+		List result = plantMapper.repottinglogs(plant);
+		return result;
+	}
+    
+    //식물 분갈이 저장
+    @Override
+    public boolean saveRepottingInfo(Plant plant) {
+        int result = plantMapper.saveRepottingInfo(plant);
+        return result > 0;
+    }
+    
     //식물 일조량 단건 조회
     @Override
 	public boolean getPlantSunlightLogsId(Plant plant) {
@@ -32,16 +93,14 @@ public class PlantServiceImpl implements PlantService {
 		}
 	}
     
-    
-    
     //식물 일조량 개별 수정
 	@Override
 	public boolean updatePlantSunlightLogs(Plant plant) {
         try {
 			return plantMapper.updatePlantSunlightLogs(plant) > 0;
 		} catch (Exception e) {
-			log.error("댓글 일조량 실패", e);
-			throw new HException("댓글 일조량 실패", e);
+			log.error("일조량 수정 실패", e);
+			throw new HException("일조량 수정 실패", e);
 		}
 	}
 
@@ -51,7 +110,7 @@ public class PlantServiceImpl implements PlantService {
     	try {
             return plantMapper.deletePlantSunlightLogs(plant) > 0;
         } catch (Exception e) {
-            log.error("일지 삭제중 오류 발생", e);
+            log.error("일지 삭제 중 오류 발생", e);
             throw new HException("일지 삭제 실패", e);
         }
     }
@@ -77,7 +136,7 @@ public class PlantServiceImpl implements PlantService {
     }
 
     
-    //식물저장
+    //식물 일조량 저장
     @Override
     public boolean saveSunlightInfo(Plant plant) {
         int result = plantMapper.saveSunlightInfo(plant);

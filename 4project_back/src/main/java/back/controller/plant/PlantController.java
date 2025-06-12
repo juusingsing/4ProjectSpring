@@ -38,7 +38,90 @@ public class PlantController {
     private PlantService plantService;
     private List<MultipartFile> files;
     
-    //식물 일조량 단건 조회
+    // 식물 분갈이 조회
+    @PostMapping("/pest-logs.do")
+    public ResponseEntity<?> pestLogs(@RequestBody Plant plant) {
+        List plantSunList = plantService.pestlogs(plant);
+        return ResponseEntity.ok(new ApiResponse<>(true, "분갈이 조회 성공", plantSunList));
+    }
+    
+    //식물 병충해 저장
+    @PostMapping("/pest-save.do")
+    public ResponseEntity<?> savePestInfo(@RequestBody Plant plant) throws IOException {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        SecurityUtil.checkAuthorization(userDetails);
+        plant.setCreateId(userDetails.getUsername());
+
+        boolean isCreated = plantService.savePestInfo(plant);
+
+        return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "저장성공" : "저장실패", null));
+    }
+    
+    //식물 일조량 로그 개별 수정
+    @PostMapping("/repotting-update.do")
+    public ResponseEntity<?> updatePlantRepottingLogs (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isUpdate = plantService.updatePlantRepottingLogs(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isUpdate, isUpdate ? "일지 수정 성공" : "일지 수정 실패", null)
+        );
+    }
+    
+    //식물 분갈이 단건 조회
+    @PostMapping("/repotting-blist.do")
+    public ResponseEntity<?> getPlantRepottingLogsId (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isResult = plantService.getPlantRepottingLogsId(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isResult, isResult ? "일지 조회 성공" : "일지 조회 실패", null)
+        );
+    }
+    
+    // 식물 분갈이 로그 개별 삭제
+    @PostMapping("/repotting-delete.do")
+    public ResponseEntity<?> deleteRepottingLog (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isDeleted = plantService.deletePlantRepottingLogs(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isDeleted, isDeleted ? "일지 삭제 성공" : "일지 삭제 실패", null)
+        );
+    }
+    
+    // 식물 분갈이 조회
+    @PostMapping("/repotting-logs.do")
+    public ResponseEntity<?> repottingLogs(@RequestBody Plant plant) {
+        List plantSunList = plantService.repottinglogs(plant);
+        return ResponseEntity.ok(new ApiResponse<>(true, "분갈이 조회 성공", plantSunList));
+    }
+    
+    //식물 분갈이 저장
+    @PostMapping("/repotting-save.do")
+    public ResponseEntity<?> saveRepottingInfo(@RequestBody Plant plant) throws IOException {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        SecurityUtil.checkAuthorization(userDetails);
+        plant.setCreateId(userDetails.getUsername());
+
+        boolean isCreated = plantService.saveRepottingInfo(plant);
+
+        return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "저장성공" : "저장실패", null));
+    }
+    
+    
+    //식물 일조량 로그 단건 조회
     @PostMapping("/sunlight-alist.do")
     public ResponseEntity<?> getPlantSunlightLogsId (@RequestBody Plant plant,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -53,7 +136,7 @@ public class PlantController {
     }
     
     
-    //식물 일조량 개별 수정
+    //식물 일조량 로그 개별 수정
     @PostMapping("/sunlight-update.do")
     public ResponseEntity<?> updatePlantSunlightLogs (@RequestBody Plant plant,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -70,7 +153,7 @@ public class PlantController {
     
     
     
-    // 식물 일조량 개별 삭제
+    // 식물 일조량 로그 개별 삭제
     @PostMapping("/sunlight-delete.do")
     public ResponseEntity<?> deleteSunlightLog (@RequestBody Plant plant,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -109,7 +192,7 @@ public class PlantController {
     }
     
     // 식물 일조량 저장
-    @PostMapping(value = "/save.do")
+    @PostMapping("/sunlight-save.do")
     public ResponseEntity<?> saveSunlightInfo(@RequestBody Plant plant) throws IOException {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
