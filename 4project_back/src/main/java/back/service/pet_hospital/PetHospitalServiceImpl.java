@@ -7,7 +7,9 @@ import back.model.pet_hospital.PetHospital;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,19 @@ public class PetHospitalServiceImpl implements PetHospitalService {
             throw new HException("병원 진료 수정 실패", e);
         }
     }
+
+    @Override
+    @Transactional
+    public void deletePetHospital(Long id, String usersId) {
+        try {
+            petHospitalMapper.logicalDeleteById(id, usersId);
+        } catch (Exception e) {
+            log.error("병원 진료 삭제 실패", e);
+            throw new HException("병원 진료 삭제 실패", e);
+        }
+    }
+
+	
     
     
     

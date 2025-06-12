@@ -8,6 +8,7 @@ import back.model.Model;
 import back.model.common.PostFile;
 import back.model.diary.Diary;
 import back.model.pet.Pet;
+import back.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,4 +32,23 @@ public class PetHospital extends Model{
     private String updateId;
     private String updateDt;
     private String delYn;
+    
+    private User user;
+    
+    
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setUsersId(String usersId) {
+        if (this.user == null) {
+            this.user = new User();
+        }
+        this.user.setUsersId(usersId);
+    }
+
 }
