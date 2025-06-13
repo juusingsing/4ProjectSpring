@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -58,7 +60,20 @@ public class PetWalkController {
 				
 		pet.setCreateId(userDetails.getUser().getUsersId());
 		boolean isCreated = petWalkService.petWalkSave(pet);
-		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "펫산책 저장 성공" : "펫산책 저장 실패", null));
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "펫산책 임시저장 성공" : "펫산책 임시저장 실패", pet));
+		
+	}
+	
+	@PostMapping(value = "/petUpdate.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> petWalkUpdate(
+			@ModelAttribute Pet pet, @AuthenticationPrincipal CustomUserDetails userDetails)
+					throws NumberFormatException, IOException {
+		
+		SecurityUtil.checkAuthorization(userDetails);
+				
+		pet.setCreateId(userDetails.getUser().getUsersId());
+		boolean isUpdated = petWalkService.petWalkUpdate(pet);
+		return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "펫산책 최종저장 성공" : "펫산책 최종저장 실패", null));
 		
 	}
 	
@@ -67,8 +82,13 @@ public class PetWalkController {
 	@PostMapping(value = "/imgSave.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> imgSave(
 			@ModelAttribute Pet pet,
-			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws NumberFormatException, IOException {
-		log.info("이미지 파일 업로드 요청");
+			@RequestPart(value = "files", required = false) List<MultipartFile> files,  @AuthenticationPrincipal CustomUserDetails userDetails)
+					throws NumberFormatException, IOException {
+		log.info("petwalikid",pet.getWalkId());
+		SecurityUtil.checkAuthorization(userDetails);
+		
+		pet.setUsersId(userDetails.getUser().getUsersId());
+		pet.setCreateId(userDetails.getUsername());
 		
 				
 		pet.setFiles(files);
@@ -78,8 +98,40 @@ public class PetWalkController {
 	}
 	
 	@PostMapping("/imgLoad.do")
-    public List<PostFile> getAllImages(@ModelAttribute PostFile postFile) {
-        return petWalkService.getAllFiles(postFile); // 모든 파일을 반환하는 쿼리 필요
+    public List<PostFile> getAllImages(@RequestBody PostFile postFile) {
+		log.info("postFileKey: {}, postFileCategory: {}", postFile.getPostFileKey(), postFile.getPostFileCategory());
+		
+
+        return petWalkService.awalkIdSearch(postFile); // 모든 파일을 반환하는 쿼리 필요
+    }
+	
+	
+	@PostMapping("/petLoad.do")
+    public List<Pet> getCurrentWalkId(@RequestBody Pet pet,  @AuthenticationPrincipal CustomUserDetails userDetails)
+    				throws NumberFormatException, IOException {
+		
+		log.info("animalId: {}", pet.getAnimalId());
+		SecurityUtil.checkAuthorization(userDetails);
+		pet.setCreateId(userDetails.getUsername());
+		List<Pet> walk = petWalkService.getCurrentWalkId(pet);
+
+		
+	    return walk;
+    }
+	
+	
+	@PostMapping("/petCurrentLoad.do")
+    public List<Pet> getCurrentWalkInfo(@RequestBody Pet pet,  @AuthenticationPrincipal CustomUserDetails userDetails)
+    				throws NumberFormatException, IOException {
+		
+		log.info("walkId: {}", pet.getWalkId());
+		SecurityUtil.checkAuthorization(userDetails);
+		pet.setCreateId(userDetails.getUsername());
+		
+
+		List<Pet> walk = petWalkService.petCurrentLoad(pet);
+		return walk;
+	
     }
 	
 	

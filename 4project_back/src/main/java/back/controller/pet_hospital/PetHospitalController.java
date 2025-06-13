@@ -6,6 +6,7 @@ import back.service.pet_hospital.PetHospitalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,13 +31,14 @@ public class PetHospitalController {
 	  consumes = MediaType.MULTIPART_FORM_DATA_VALUE
 	)
 	public ResponseEntity<?> insertPetHospital(
-	    @RequestParam("animalId") int animalId,
-	    @RequestParam("animalVisitDate") String animalVisitDate,
-	    @RequestParam("animalHospitalName") String animalHospitalName,
-	    @RequestParam("animalMedication") String animalMedication,
-	    @RequestParam(value = "animalTreatmentMemo", required = false) String animalTreatmentMemo,
-	    @RequestParam(value = "animalTreatmentType", required = false) String animalTreatmentType,
-	    @AuthenticationPrincipal CustomUserDetails userDetails
+			@RequestParam("animalId") int animalId,
+		    @RequestParam("animalVisitDate") String animalVisitDate,
+		    @RequestParam("animalHospitalName") String animalHospitalName,
+		    @RequestParam("animalMedication") String animalMedication,
+		    @RequestParam("animalTreatmentType") String animalTreatmentType,
+		    @RequestParam("animalTreatmentMemo") String animalTreatmentMemo,
+		    @RequestParam(value = "animalHospitalTreatmentId", required = false) Long animalHospitalTreatmentId,
+		    @AuthenticationPrincipal CustomUserDetails userDetails
 	) {
 	    try {
 	        PetHospital petHospital = new PetHospital();
@@ -86,13 +88,34 @@ public class PetHospitalController {
         PetHospital petHospital = new PetHospital();
         petHospital.setAnimalHospitalTreatmentId(id);
         petHospital.setAnimalId(animalId);
-        petHospital.setAnimalVisitDate(animalVisitDate); // LocalDate 타입이면 변환 필요
+        petHospital.setAnimalVisitDate(animalVisitDate);
         petHospital.setAnimalHospitalName(animalHospitalName);
         petHospital.setAnimalMedication(animalMedication);
         petHospital.setAnimalTreatmentType(animalTreatmentType);
         petHospital.setAnimalTreatmentMemo(animalTreatmentMemo);
 
         petHospitalService.updatePetHospital(id, petHospital, userDetails);
-        return ResponseEntity.ok("수정 성공");
+
+        // 수정된 데이터 다시 반환
+        return ResponseEntity.ok(petHospital);
+    }
+    
+    @PostMapping("/delete.do")
+    public ResponseEntity<?> deletePetHospital(
+            @RequestBody Map<String, Long> payload,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long treatmentId = payload.get("animalHospitalTreatmentId");
+
+        if (treatmentId == null) {
+            return ResponseEntity.badRequest().body("잘못된 요청입니다. ID가 없습니다.");
+        }
+
+        try {
+        	petHospitalService.deletePetHospital(treatmentId, userDetails.getUsername());
+            return ResponseEntity.ok().body(Map.of("message", "삭제 성공"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("삭제 실패: " + e.getMessage());
+        }
     }
 } // 클래스 닫기

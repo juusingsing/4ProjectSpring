@@ -11,6 +11,8 @@ import back.model.pet.Pet;
 public interface PetWalkMapper {
 	
 	public int petWalkSave(Pet pet);
+
+	public int petWalkUpdate(Pet pet);
 	
 	public int insertFile(PostFile file);
 	
@@ -20,6 +22,10 @@ public interface PetWalkMapper {
 	
 	public int deleteFile(PostFile file);
 	
-	public List<PostFile> getAllFiles(); // 파일 전체 가져오기
+	public List<PostFile> awalkIdSearch(PostFile postFile); // 가장 최근산책아이디로 사진조회
+	
+	public List<Pet> getCurrentWalkId(Pet pet);
+	
+	public List<Pet> petCurrentLoad(Pet pet);
 	
 }

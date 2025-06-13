@@ -40,7 +40,7 @@
 	</select>
 	
 	<update id="updatePetHospital">
-	  UPDATE pet_hospital
+	  UPDATE ANIMAL_HOSPITAL_TREATMENT
 	  SET 
 	    animal_visit_date = #{animalVisitDate},
 	    animal_hospital_name = #{animalHospitalName},
@@ -48,7 +48,15 @@
 	    animal_treatment_type = #{animalTreatmentType},
 	    animal_treatment_memo = #{animalTreatmentMemo},
 	    update_id = #{updateId},
-	    update_dt = NOW()
+	    update_dt = #{updateDt, jdbcType=TIMESTAMP}
 	  WHERE animal_hospital_treatment_id = #{animalHospitalTreatmentId}
+	</update>
+	
+	<update id="logicalDeleteById">
+	    UPDATE ANIMAL_HOSPITAL_TREATMENT
+	    SET del_yn = 'Y',
+	        update_id = #{updateId},
+	        update_dt = SYSDATE
+	    WHERE animal_hospital_treatment_id = #{animalHospitalTreatmentId}
 	</update>
 </mapper>

@@ -55,6 +55,14 @@ public ResponseEntity<?> getAlarmList(@RequestBody Alarm alarm) {
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", alarmList));
 }
 
+@PostMapping("/oneList.do")
+public ResponseEntity<?> getOneAlarmList(@RequestBody Alarm alarm) {
+	log.info("petId, 카테고리 : 1111111111", alarm.getPetId()+ " / " + alarm.getCategory());
+	List alarmList = alarmService.getOneList(alarm);
+
+	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", alarmList));
+}
+
 @PostMapping("/create.do")
 public ResponseEntity<?> createAlarm (@RequestBody Alarm alarm) {
 	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()

@@ -35,6 +35,13 @@ public class PetWalkServiceImpl implements PetWalkService {
 		return result;
 	}
 	
+	@Override
+	public boolean petWalkUpdate(Pet pet) throws NumberFormatException, IOException {
+		boolean result = petWalkMapper.petWalkUpdate(pet) > 0;
+		
+		return result;
+	}
+	
 
     public PostFile getFileByFileId(PostFile file) { 
         PostFile PostFile = petWalkMapper.getFileByFileId(file);
@@ -99,10 +106,25 @@ public class PetWalkServiceImpl implements PetWalkService {
 	}
 
 	@Override
-	public List<PostFile> getAllFiles(PostFile postFile) {
+	public List<PostFile> awalkIdSearch(PostFile postFile) {
 		
 		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
 		return fileMapper.getAllFiles(postFile);
 	}
+
+
+	@Override
+	public List<Pet> getCurrentWalkId(Pet pet) throws NumberFormatException, IOException {
+		
+		return petWalkMapper.getCurrentWalkId(pet);
+	}
+
+	@Override
+	public List<Pet> petCurrentLoad(Pet pet) throws NumberFormatException, IOException {
+
+		
+		return petWalkMapper.petCurrentLoad(pet);
+	}
+
 
 }

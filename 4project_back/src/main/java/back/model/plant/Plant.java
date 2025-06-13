@@ -30,6 +30,15 @@ public class Plant extends Model{
     private String sunlightStatus;
     private String sunlightMemo;
     
+    // PLANT_REPOTTING 테이블 관련 필드
+    private int plantRepottingId; // 분갈이 기록ID
+    private Date repottingDate; // 분갈이 날짜
+    private String soilCondition; // 흙 종류/선택
+    private String repottingMemo; // 분갈이 메모
+    
+    // PLANT_PEST 테이블 관련 필드
+    private Date plantPestDate;
+    private String plantPestMemo;
     
     
     private List<PostFile> postFiles;

@@ -28,9 +28,34 @@
 	        SYSDATE,
 	        #{usersId}
 	        )
-
 	    
      </insert>
+     
+     <select id="OneList" parameterType="back.model.alarm.Alarm" resultType="back.model.alarm.Alarm">
+	  SELECT ALARM_ID AS alarmId,
+	  		 FREQUENCY AS alarmCycle,
+	  		 ALARM_TIME AS alarmTime,
+	  		 	-- 시간과 분 분리 (문자열 자르기)
+			    TO_NUMBER(SUBSTR(ALARM_TIME, 1, 2)) AS hour,
+				TO_NUMBER(SUBSTR(ALARM_TIME, 4, 2)) AS min,
+	
+			    
+	  		 START_DATE AS startDate,
+	  		 	-- 연 월 일 분리
+			    TO_NUMBER(TO_CHAR(START_DATE, 'YY')) AS year,
+				TRIM(TO_CHAR(START_DATE, 'MONTH', 'NLS_DATE_LANGUAGE=ENGLISH')) AS month,
+				TO_NUMBER(TO_CHAR(START_DATE, 'DD')) AS day,
+	  		 
+	  		 IS_ACTIVE AS activeYn
+	  		 
+	  		 FROM ALARM
+	  		 WHERE
+	  		 <!-- 알람아이디 OR 펫아이디 OR 카테고리 등등 조건 추가-->
+	  		 PET_ID = #{petId}
+	  		 AND CATEGORY = #{category}
+	  		 AND DEL_YN = 'N'  -- 삭제 안된것만
+	  		 
+	</select>
     
     <select id="list" resultType="back.model.alarm.Alarm">
 	  SELECT ALARM_ID AS alarmId,
