@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import back.model.common.PostFile;
-import back.model.pet.Pet;
 
 @Mapper
 public interface FileMapper {

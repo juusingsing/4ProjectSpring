@@ -36,10 +36,16 @@ public class AlarmServiceImpl implements AlarmService {
 	}
 
 
-
+	
 	@Override
 	public boolean update(Alarm alarm) {
 		boolean result = alarmMapper.update(alarm) > 0;
+		return result;
+	}
+	
+	@Override
+	public boolean AllUpdate(Alarm alarm) {
+		boolean result = alarmMapper.AllUpdate(alarm) > 0;
 		return result;
 	}
     

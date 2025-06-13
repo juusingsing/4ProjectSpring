@@ -18,5 +18,7 @@ public interface AlarmMapper {
 	
 	public int update(Alarm alarm);
 	
+	public int AllUpdate(Alarm alarm);
+	
 	
 }

@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Home extends Model {
 	
-    private String userId;
     private String fileId;
 
     // 동물 관련 컬럼 (ANIMAL 테이블에만 존재)
@@ -36,10 +35,9 @@ public class Home extends Model {
     private String plantPurchaseDate; 
     private String plantSunPreference;
     private String plantGrowStatus;
-
-	
-
-
+    
+    private String sortField; // 정렬 기준 컬럼명 (예: "ANIMAL_NAME", "CREATE_DT")
+    private String sortOrder; // 정렬 순서 (예: "ASC", "DESC")
 
     
 }

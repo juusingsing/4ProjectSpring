@@ -32,6 +32,7 @@ public class Alarm extends Model {
 	private int year;
 	private String month;
 	private int day;
+	private int monthNum;
 	
 	private String activeYn;      // 사용 여부 (Y/N)
 	

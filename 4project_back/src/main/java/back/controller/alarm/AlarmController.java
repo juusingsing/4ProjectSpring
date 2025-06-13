@@ -86,6 +86,17 @@ public ResponseEntity<?> updateAlarm (@RequestBody Alarm alarm) {
 }
 
 
+@PostMapping("/AllUpdate.do")
+public ResponseEntity<?> AllupdateAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		alarm.setUsersId(userDetails.getUser().getUsersId());
+		boolean isCreated = alarmService.AllUpdate(alarm);
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "알람 수정 성공" : "알람 수정 실패", null));
+}
+
 
 
 }

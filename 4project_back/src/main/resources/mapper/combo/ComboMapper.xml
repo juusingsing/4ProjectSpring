@@ -28,6 +28,8 @@
     </select>
     
     
+    
+    
     <select id="list" resultType="back.model.combo.Combo">
 	  SELECT LABEL AS label, VALUE AS value FROM COMBO
 	</select>

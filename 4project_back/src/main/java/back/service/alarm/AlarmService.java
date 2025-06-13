@@ -15,6 +15,7 @@ public interface AlarmService {
     public boolean create(Alarm alarm);
     
     public boolean update(Alarm alarm);
-
+    
+    public boolean AllUpdate(Alarm alarm);
 
 }

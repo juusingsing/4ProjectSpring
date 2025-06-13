@@ -33,6 +33,7 @@
      
      <select id="OneList" parameterType="back.model.alarm.Alarm" resultType="back.model.alarm.Alarm">
 	  SELECT ALARM_ID AS alarmId,
+	  		 PET_ID AS petId,
 	  		 FREQUENCY AS alarmCycle,
 	  		 ALARM_TIME AS alarmTime,
 	  		 	-- 시간과 분 분리 (문자열 자르기)
@@ -45,6 +46,7 @@
 			    TO_NUMBER(TO_CHAR(START_DATE, 'YY')) AS year,
 				TRIM(TO_CHAR(START_DATE, 'MONTH', 'NLS_DATE_LANGUAGE=ENGLISH')) AS month,
 				TO_NUMBER(TO_CHAR(START_DATE, 'DD')) AS day,
+				TO_NUMBER(TO_CHAR(START_DATE, 'MM')) AS monthNum,
 	  		 
 	  		 IS_ACTIVE AS activeYn
 	  		 
@@ -83,8 +85,20 @@
 	
 	<update id="update" parameterType="back.model.alarm.Alarm">
         UPDATE ALARM SET
-        IS_ACTIVE = #{activeYn}
+        	IS_ACTIVE = #{activeYn}
         WHERE ALARM_ID = #{alarmId}
+    </update>
+    
+    
+    <update id="AllUpdate" parameterType="back.model.alarm.Alarm">
+        UPDATE ALARM SET
+        	FREQUENCY = #{alarmCycle},
+        	ALARM_TIME = #{alarmTime},
+        	START_DATE = #{startDate}
+        WHERE
+        ALARM_ID = #{alarmId}
+        AND PET_ID = #{petId}
+        AND CATEGORY = #{category}
     </update>
     
     
