@@ -18,7 +18,7 @@ public class FileUploadUtil {
     /**
      * 다중 파일 업로드 처리
      */
-    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int postFileKey, String postFileCategory,String usersId) throws IOException {
+    public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath, int postFileKey, String postFileCategory, String usersName) throws IOException {
         List<PostFile> uploadedFiles = new ArrayList<>();
         
         // multipartFiles가 null일 경우 빈 리스트 반환
@@ -59,13 +59,12 @@ public class FileUploadUtil {
                 file.transferTo(new File(filePath));
 
                 PostFile postFile = new PostFile();
-                postFile.setPostFileCategory(postFileCategory);
-                postFile.setPostFileKey(postFileKey);   //   <<여기에 산책, 일기, 커뮤니티 등 고유키 들어감
-                postFile.setPostFileName(originalFileName);
-                postFile.setPostFilePath(filePath); // 실제 파일 전체 경로
-                postFile.setCreateId(usersId);
-                postFile.setUpdateId(usersId);
-                postFile.setDelYn("N");
+                postFile.setPostFileCategory(postFileCategory); // < 카테고리 산책 WAL / 일기 MMO / 커뮤니티 COM 
+                postFile.setPostFileKey(postFileKey);   //   <<여기에 산책, 일기, 커뮤니티등의  고유키값(walkId, diaryId 등등) 들어감
+                postFile.setPostFileName(originalFileName);   // < 파일의 실제이름  위에서 만듬
+                postFile.setPostFilePath(filePath); // 실제 파일 전체 경로  위에서만듬
+                postFile.setCreateId(usersName);      // 받아온 유저네임   createId 를 보내오는데 createId = get.UserName
+                postFile.setUpdateId(usersName);	  // 받아온 유저네임   createId 를 보내오는데 createId = get.UserName
 
                 uploadedFiles.add(postFile);
             }

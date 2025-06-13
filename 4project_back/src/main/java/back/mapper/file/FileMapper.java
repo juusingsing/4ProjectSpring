@@ -18,7 +18,7 @@ public interface FileMapper {
 	
 	public int deleteFile(PostFile file);
 	
-	public List<PostFile> getAllFiles(); // 파일 전체 가져오기
+	public List<PostFile> getAllFiles(PostFile postFile); // 파일 전체 가져오기
 
 	Long selectLatestFileIdByRefId(@Param("refId") int refId, @Param("category") String category);
 	

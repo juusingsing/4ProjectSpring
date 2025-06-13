@@ -9,9 +9,8 @@ import back.model.home.Home;
 @Mapper
 public interface HomeMapper {
 	
-	public List<Home> getAnimalSortedByName();
-	public List<Home> getAnimalSortedByCreateDtDesc();
-	public List<Home> getPlantSortedByName();
-	public List<Home> getPlantSortedByCreateDtDesc();
+	public List<Home> getAnimalList (Home home);
+	
+	public List<Home> getPlantList (Home home);
 
 }

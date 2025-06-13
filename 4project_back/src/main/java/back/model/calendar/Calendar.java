@@ -23,6 +23,8 @@ public class Calendar extends Model{
 
     private String name;
     private String category;
+    private Integer id;
 
+    
 
 }

@@ -94,6 +94,10 @@ public class SecurityConfig {
                         "/api/pet/petdelete.do",
                         "/api/pet/getPetById.do",
                         "/api/petHospital/petHospital.do",
+                        "/api/petHospital/list.do",
+                        "/api/petHospital/update.do",
+                        "/api/petWalk/imgSave.do",
+                        "/api/petWalk/imgLoad.do",
                         "api/petWalk/petSave.do"
                         
                         

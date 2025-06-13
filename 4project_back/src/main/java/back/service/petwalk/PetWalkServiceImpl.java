@@ -79,10 +79,19 @@ public class PetWalkServiceImpl implements PetWalkService {
     }
 
 	@Override
-	public boolean imgSave(Pet Pet) throws NumberFormatException, IOException {
+	@Transactional
+	public boolean imgSave(Pet pet) throws NumberFormatException, IOException {
+		
+			List<MultipartFile>files = pet.getFiles();
 		
 			//업로드된 파일들을 처리하여 PostFile 객체 리스트 반환
-			List<PostFile> fileList = FileUploadUtil.uploadFiles(Pet.getFiles(), "pj4");
+			List<PostFile> fileList = FileUploadUtil.uploadFiles(
+					files,                  // 받아온 파일
+					"petWalk",				// 폴더이름
+					pet.getWalkId(),		// 파일테이블에넣을 고유키값   walkId 넣어야함
+					"WAL",					// 파일테이블에넣을 카테고리  WAL 넣어야함
+					pet.getCreateId()		// 로그인중인 유저아이디(createId = 유저이름)
+				);
 			for (PostFile PostFile : fileList) {
 				fileMapper.insertFile(PostFile);
 			}
@@ -91,9 +100,9 @@ public class PetWalkServiceImpl implements PetWalkService {
 
 	@Override
 	public List<PostFile> getAllFiles(PostFile postFile) {
-		// TODO Auto-generated method stub
+		
 		log.info("파일 저장 경로: {}", postFile.getPostFilePath());
-		return fileMapper.getAllFiles();
+		return fileMapper.getAllFiles(postFile);
 	}
 
 }

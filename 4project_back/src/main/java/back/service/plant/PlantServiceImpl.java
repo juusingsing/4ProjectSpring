@@ -11,15 +11,58 @@ import org.springframework.transaction.annotation.Transactional;
 import back.exception.HException;
 import back.mapper.plant.PlantMapper;
 import back.model.plant.Plant;
+import back.model.write.Comment;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class PlantServiceImpl implements PlantService {
-
+	
     @Autowired
     private PlantMapper plantMapper;
+    
+    //식물 일조량 단건 조회
+    @Override
+	public boolean getPlantSunlightLogsId(Plant plant) {
+        try {
+			return plantMapper.getPlantSunlightLogsId(plant) > 0;
+		} catch (Exception e) {
+			log.error("일조량 조회 실패", e);
+			throw new HException("일조량 조회 실패", e);
+		}
+	}
+    
+    
+    
+    //식물 일조량 개별 수정
+	@Override
+	public boolean updatePlantSunlightLogs(Plant plant) {
+        try {
+			return plantMapper.updatePlantSunlightLogs(plant) > 0;
+		} catch (Exception e) {
+			log.error("댓글 일조량 실패", e);
+			throw new HException("댓글 일조량 실패", e);
+		}
+	}
 
+    //식물 일조량 개별 삭제
+    @Override
+    public boolean deletePlantSunlightLogs(Plant plant) {
+    	try {
+            return plantMapper.deletePlantSunlightLogs(plant) > 0;
+        } catch (Exception e) {
+            log.error("일지 삭제중 오류 발생", e);
+            throw new HException("일지 삭제 실패", e);
+        }
+    }
+    
+    //식물 일조량 조회
+    @Override
+	public List<Plant> findByPlantId(Plant plant) {
+		List result = plantMapper.findByPlantId(plant);
+		return result;
+	}
+    
     @Override
     public List<Map<String, Object>> getPlantCheck(Integer plantId) {
         return plantMapper.selectPlantCheck(plantId);
@@ -73,14 +116,17 @@ public class PlantServiceImpl implements PlantService {
         }
     }
 
-    @Override
-    @Transactional
-    public boolean delete(int plantId) {
-        try {
-            return plantMapper.delete(plantId) > 0;
-        } catch (Exception e) {
-            log.error("식물 삭제 중 오류 발생", e);
-            throw new HException("식물 삭제 실패", e);
-        }
-    }
+
+//    @Override
+//    @Transactional
+//    public boolean delete(Plant plant) {
+//        try {
+//            return plantMapper.delete(plant) > 0;
+//        } catch (Exception e) {
+//            log.error("식물 삭제 중 오류 발생", e);
+//            throw new HException("식물 삭제 실패", e);
+//        }
+//    }
+
+	
 }

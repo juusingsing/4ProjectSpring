@@ -17,6 +17,7 @@ import lombok.Data;
 @Data
 public class Pet extends Model {
     private int animalId;            // ANIMAL_ID
+    private int petId;            // PET_ID
     private Long fileId;              // FILE_ID
     
     private String animalName;        // ANIMAL_NAME

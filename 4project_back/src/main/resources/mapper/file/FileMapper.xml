@@ -81,9 +81,11 @@
     </update>
     
     <select id="getAllFiles" resultType="back.model.common.PostFile">
-	    SELECT POST_FILE_ID, POST_FILE_NAME, POST_FILE_PATH, CREATE_ID, UPDATE_ID, CREATE_DT, UPDATE_DT, DEL_YN
+	    SELECT POST_FILE_ID, POST_FILE_NAME, POST_FILE_CATEGORY, POST_FILE_KEY, POST_FILE_PATH, CREATE_ID, UPDATE_ID, CREATE_DT, UPDATE_DT, DEL_YN
 	    FROM POST_FILE
 	    WHERE DEL_YN = 'N'
+	    AND POST_FILE_KEY = #{postFileKey}
+	    AND POST_FILE_CATEGORY = #{postFileCategory}
 	    ORDER BY CREATE_DT DESC
 	</select>
 
