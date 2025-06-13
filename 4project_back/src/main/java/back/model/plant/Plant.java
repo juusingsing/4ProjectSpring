@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Plant extends Model{
 	// 식물 기본 정보 (Plant 테이블과 매핑될 필드)
 	private int plantId; // 식물ID
-    private int fileId; // 파일ID
+	private int fileId; // 파일ID
     private String plantName; // 식물이름
     private String plantType; // 식물 종류
     private Date plantPurchaseDate; // 식물 입수일
@@ -37,10 +37,10 @@ public class Plant extends Model{
     private String repottingMemo; // 분갈이 메모
     
     // PLANT_PEST 테이블 관련 필드
+    private int plantPestId;
     private Date plantPestDate;
     private String plantPestMemo;
-    
-    
-    private List<PostFile> postFiles;
+     
+    private List<MultipartFile> files;
 	
 }

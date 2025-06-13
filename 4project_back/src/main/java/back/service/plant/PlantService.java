@@ -8,7 +8,16 @@ import back.model.plant.Plant;
 
 public interface PlantService {
 	
-	//식물 분갈이 조회
+	// 식물 정보 조회
+	public List<Plant> plantInfo(Plant plant);
+	
+	//식물 병충해 로그 개별 수정
+	public boolean updatePestLogs(Plant plant);
+		
+	// 식물 병충해 로그 개별 삭제
+	public boolean deletePestLogs(Plant plant);
+	
+	//식물 병충해 조회
 	public List<Plant> pestlogs(Plant plant);
 		
 	//식물 병충해 저장
@@ -57,7 +66,9 @@ public interface PlantService {
     // 식물 수정
     public boolean update(Plant plant) throws HException;
 
+
+
     // 식물 삭제
-//    public boolean delete(Plant plant) throws HException;  
+    // public boolean delete(Plant plant) throws HException;  
     
 }

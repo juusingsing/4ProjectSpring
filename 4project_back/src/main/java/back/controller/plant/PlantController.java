@@ -38,7 +38,42 @@ public class PlantController {
     private PlantService plantService;
     private List<MultipartFile> files;
     
-    // 식물 분갈이 조회
+    // 식물 정보 조회
+    @PostMapping("/plant-info.do")
+    public ResponseEntity<?> plantInfo(@RequestBody Plant plant) {
+        List plantSunList = plantService.plantInfo(plant);
+        return ResponseEntity.ok(new ApiResponse<>(true, "식물 정보 조회 성공", plantSunList));
+    }
+    
+    //식물 병충해 로그 개별 수정
+    @PostMapping("/pest-update.do")
+    public ResponseEntity<?> updatePestLogs (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isUpdate = plantService.updatePestLogs(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isUpdate, isUpdate ? "일지 수정 성공" : "일지 수정 실패", null)
+        );
+    }
+    
+    // 식물 병충해 로그 개별 삭제
+    @PostMapping("/pest-delete.do")
+    public ResponseEntity<?> deletePestLog (@RequestBody Plant plant,
+    		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setUpdateId(userDetails.getUsername());
+	    
+        boolean isDeleted = plantService.deletePestLogs(plant);
+
+        return ResponseEntity.ok(
+            new ApiResponse<>(isDeleted, isDeleted ? "일지 삭제 성공" : "일지 삭제 실패", null)
+        );
+    }
+    
+    // 식물 병충해 조회
     @PostMapping("/pest-logs.do")
     public ResponseEntity<?> pestLogs(@RequestBody Plant plant) {
         List plantSunList = plantService.pestlogs(plant);
@@ -58,7 +93,7 @@ public class PlantController {
         return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "저장성공" : "저장실패", null));
     }
     
-    //식물 일조량 로그 개별 수정
+    //식물 분갈이 로그 개별 수정
     @PostMapping("/repotting-update.do")
     public ResponseEntity<?> updatePlantRepottingLogs (@RequestBody Plant plant,
     		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -235,16 +270,9 @@ public class PlantController {
         SecurityUtil.checkAuthorization(userDetails);
         plant.setUsersId(userDetails.getUsername());
         plant.setCreateId(userDetails.getUsername());
-        //plant.setFiles(files);
+        plant.setFiles(files);
         log.info("파일 개수: {}", files != null ? files.size() : 0);
-        boolean isCreated;
-        try {
-            isCreated = plantService.create(plant);
-        } catch (Exception e) {
-            log.error("식물 등록 중 오류 발생", e);
-            return ResponseEntity.internalServerError()
-                    .body(new ApiResponse<>(false, "식물 등록 실패: " + e.getMessage(), null));
-        }
+        boolean isCreated = plantService.create(plant);
         return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "식물 등록 성공" : "식물 등록 실패", null));
     }
 

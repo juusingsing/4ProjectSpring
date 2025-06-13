@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="back.mapper.plant.PlantMapper">
+
+  <!-- 식물 정보 조회 -->
+  <select id="plantInfo" resultType="back.model.plant.Plant">
+    SELECT 
+    PLANT_ID AS plantId,
+    FILE_ID AS fileId,
+    PLANT_NAME AS plantName,
+    PLANT_TYPE AS plantType,
+    PLANT_PURCHASE_DATE AS plantPurchaseDate,
+    PLANT_SUN_PREFERENCE AS plantSunPreference,
+    PLANT_GROW_STATUS AS plantGrowStatus,
+    TO_CHAR(CREATE_DT, 'YYYY.MM.DD') AS createDt
+    FROM PLANT
+    WHERE PLANT_ID = #{plantId}
+    AND DEL_YN = 'N' ORDER BY CREATE_DT DESC
+  </select>
+  
+  <!-- 식물 병충해 개별 수정-->
+  <update id="updatePestLogs" parameterType="back.model.plant.Plant">
+    update PLANT_PEST
+    SET
+    PLANT_PEST_DATE=#{plantPestDate, jdbcType=DATE},
+	PLANT_PEST_MEMO=#{plantPestMemo, jdbcType=VARCHAR},
+    UPDATE_ID=#{updateId},
+    UPDATE_DT=SYSDATE
+    WHERE PLANT_PEST_ID=#{plantPestId}
+  </update>
+  
+  <!-- 식물  병충해 개별 삭제-->
+  <delete id="deletePestLogs" parameterType="back.model.plant.Plant">
+   UPDATE PLANT_PEST
+  	SET DEL_YN='Y',
+  	UPDATE_ID=#{updateId},
+  	UPDATE_DT=SYSDATE
+  	WHERE PLANT_PEST_ID = #{plantPestId}
+  </delete>
 	
-	
-  <!-- 식물 분갈이 조회 -->
+  <!-- 식물 병충해 조회 -->
   <select id="pestlogs" resultType="back.model.plant.Plant">
     SELECT 
     PLANT_PEST_ID AS plantPestId,
@@ -215,8 +250,8 @@
     INSERT INTO PLANT 
     ( 
 		PLANT_ID, 
-		USERS_ID, 
-		FILE_ID, 
+		USERS_ID,
+		FILE_ID,
 		PLANT_NAME, 
 		PLANT_TYPE, 
 		PLANT_PURCHASE_DATE, 
@@ -232,7 +267,7 @@
     	( 
 		#{plantId}, 
 		#{usersId}, 
-		#{fileId}, 
+		#{fileId},
 		#{plantName}, 
 		#{plantType}, 
 		#{plantPurchaseDate, jdbcType=DATE}, 
@@ -245,7 +280,12 @@
 		 SYSDATE, 'N' 
 		 ) 
   </insert>
-  
+  <update id="updateFileId">
+	  UPDATE plant
+	  SET file_id = #{fileId}
+	  WHERE plant_id = #{plantId}
+  </update>
+
 	<!-- 식물 일조량 저장 -->
   <insert id="saveSunlightInfo" parameterType="back.model.plant.Plant" useGeneratedKeys="true" keyProperty="plantSunlightingId" keyColumn="PLANT_SUNLIGHTING_ID">
     <selectKey keyProperty="plantSunlightingId" resultType="int" order="BEFORE">
