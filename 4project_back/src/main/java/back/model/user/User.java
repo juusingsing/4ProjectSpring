@@ -1,6 +1,11 @@
 package back.model.user;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import back.model.Model;
+import back.model.common.PostFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +21,7 @@ public class User extends Model {
     private String usersName;
     private String usersPassword;
     private String usersEmail;
+    private int usersFileId;
     
     //검색필터
   	private String searchText;
@@ -34,6 +40,11 @@ public class User extends Model {
   	private int totalPages;
   	private String sortField = "CREATE_DT";
   	private String sortOrder = "DESC";
+  	
+  	private List<PostFile> postFiles; // 조회할 때 사용
+	private List<MultipartFile> files; // 입력할 때 사용
+
+	private String remainingFileIds;
   	
 
 }
