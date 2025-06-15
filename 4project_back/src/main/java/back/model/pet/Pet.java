@@ -36,7 +36,7 @@ public class Pet extends Model {
     private Date parsedCreateDt; // DB에 실제로 넣을 Date 타입 값
     private List<MultipartFile> files;
     private List<PostFile> postFiles;
-    
+    private String fileUrl;
     
     private int walkId;    // ANIMAL_WALK_ID
     private Timestamp walkDt;   // ANIMAL_RECORDED_DT  << SYSDATE값넣음

@@ -2,6 +2,8 @@ package back.controller.pet;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.common.CustomUserDetails;
+import back.model.common.PostFile;
 import back.model.pet.Pet;
+import back.service.file.FileService;
 import back.service.pet.PetService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
@@ -29,7 +33,8 @@ public class PetController {
 
     @Autowired
     private PetService petService;
-
+    @Autowired
+    private FileService fileService;
     @PostMapping(value = "/animalregister.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> registerPet(
             @RequestPart("data") Pet pet,
@@ -89,20 +94,30 @@ public class PetController {
     
     @GetMapping("/getPetById.do")
     public ResponseEntity<?> getPetById(
-        @RequestParam(name = "animalId", required = false) Integer animalId,
+        @RequestParam(name = "animalId") Integer animalId,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
-        
+
         if (animalId == null) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "animalId는 필수입니다.", null));
         }
 
         Pet pet = petService.getPetById(animalId, userDetails.getUsername());
-        if (pet != null) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
-        } else {
+        if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }
+
+        // 파일 이름을 전체 URL로 변환
+        if (pet.getFileUrl() != null) {
+            try {
+                String encodedFileName = URLEncoder.encode(pet.getFileUrl(), "UTF-8");
+                pet.setFileUrl("http://localhost:8081/uploads/" + encodedFileName);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("fileUrl from DB: " + pet.getFileUrl());
+        return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
     }
 }
