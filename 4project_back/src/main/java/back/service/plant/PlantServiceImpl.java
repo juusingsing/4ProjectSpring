@@ -223,12 +223,15 @@ public class PlantServiceImpl implements PlantService {
 	    }
 	}
 
-
+	//식물 수정
 	@Override
     @Transactional
-    public boolean update(Plant plant) {
+    public boolean updatePlant(Plant plant) {
+		
         try {
-            return plantMapper.update(plant) > 0;
+        	log.info("Attempting to update plant with ID: {}", plant.getPlantId());
+            log.info("Plant details: {}", plant); // Plant 객체 전체 출력 (toString() 호출)
+            return plantMapper.updatePlant(plant) > 0;
         } catch (Exception e) {
             log.error("식물 수정 중 오류 발생", e);
             throw new HException("식물 수정 실패", e);

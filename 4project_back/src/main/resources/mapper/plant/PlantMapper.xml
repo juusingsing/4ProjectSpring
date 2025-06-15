@@ -317,7 +317,7 @@
   </insert>
 
 	<!-- 식물 수정 -->
-  <update id="update" parameterType="back.model.plant.Plant">
+  <update id="updatePlant" parameterType="back.model.plant.Plant">
     UPDATE PLANT
     SET
     PLANT_NAME = #{plantName},

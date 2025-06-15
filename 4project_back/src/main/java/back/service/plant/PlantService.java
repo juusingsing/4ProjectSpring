@@ -64,7 +64,7 @@ public interface PlantService {
     public boolean create(Plant plant) throws HException;
 
     // 식물 수정
-    public boolean update(Plant plant) throws HException;
+    public boolean updatePlant(Plant plant) throws HException;
 
 
 

@@ -65,7 +65,7 @@ public interface PlantMapper {
 	public int updateFileId(@Param("plantId") Integer plantId, @Param("fileId") Integer fileId);
 
     // 식물 수정
-    public int update(Plant plant);
+    public int updatePlant(Plant plant);
 
     // 식물 삭제
     public int delete(@Param("plantId") int plantId);

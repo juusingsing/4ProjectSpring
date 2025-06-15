@@ -275,42 +275,19 @@ public class PlantController {
         boolean isCreated = plantService.create(plant);
         return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "식물 등록 성공" : "식물 등록 실패", null));
     }
-
+    
     // 식물 수정 (파일 업로드 포함)
-    @PutMapping(value = "/update.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/updatePlant.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> update(
             @ModelAttribute Plant plant,
-            @RequestPart(value = "file", required = false) MultipartFile file,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+            @RequestPart(value = "file", required = false) List<MultipartFile> file,  // 복수 파일 받기
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         SecurityUtil.checkAuthorization(userDetails);
-        Plant existingPlant;
-        try {
-            existingPlant = plantService.getPlantById(String.valueOf(plant.getPlantId()));
-        } catch (Exception e) {
-            return ResponseEntity.status(500)
-                    .body(new ApiResponse<>(false, "내부 서버 오류", null));
-        }
-        if (existingPlant == null) {
-            return ResponseEntity.status(404).body(new ApiResponse<>(false, "수정할 식물을 찾을 수 없습니다.", null));
-        }
-        if (!existingPlant.getUsersId().equals(userDetails.getUsername())) {
-            return ResponseEntity.status(403).body(new ApiResponse<>(false, "권한이 없습니다.", null));
-        }
-
         plant.setUpdateId(userDetails.getUsername());
-        //plant.setFile(file);
-
-        boolean isUpdated;
-        try {
-            isUpdated = plantService.update(plant);
-        } catch (Exception e) {
-            log.error("식물 수정 중 오류 발생", e);
-            return ResponseEntity.internalServerError()
-                    .body(new ApiResponse<>(false, "식물 수정 실패: " + e.getMessage(), null));
-        }
-        return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "식물 수정 성공" : "식물 수정 실패", null));
+        plant.setFiles(files);  // files를 plant에 세팅
+        boolean isUpdated = plantService.updatePlant(plant);
+        return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "게시글 수정 성공" : "게시글 수정 실패", null));
     }
 
-   
 }
