@@ -166,6 +166,13 @@
             UPDATE_DT = SYSDATE  
         WHERE WRITING_ID = #{writingId}
     </update>
+    
+    <!--조회수 상승-->
+    <update id="incrementViewCount" parameterType="int">
+	    UPDATE WRITING
+	    SET WRITING_VIEW_COUNT = WRITING_VIEW_COUNT + 1
+	    WHERE WRITING_ID = #{writingId}
+    </update>
      
     <!-- 댓글 등록 -->
     <insert id="insertComment" parameterType="back.model.write.Comment">
