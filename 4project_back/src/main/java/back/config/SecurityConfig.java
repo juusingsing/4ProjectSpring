@@ -109,7 +109,8 @@ public class SecurityConfig {
                         "/api/petWalk/petLoad.do",
                         "/api/petWalk/petCurrentLoad.do",
                         "/api/alarm/oneList.do",
-                        "/api/alarm/list.do"
+                        "/api/alarm/list.do",
+                        "/api/alarm/delete.do"
                         
                         
                         
