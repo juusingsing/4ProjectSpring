@@ -31,8 +31,11 @@
   LEFT JOIN (
     SELECT TO_CHAR(aht.ANIMAL_VISIT_DATE, 'YYYY-MM-DD') AS log_date, 'animal' AS type, COUNT(*) AS count
     FROM ANIMAL_HOSPITAL_TREATMENT aht
+    JOIN ANIMAL a ON aht.ANIMAL_ID=a.ANIMAL_ID
     WHERE aht.DEL_YN = 'N'
+    	AND a.DEL_YN='N'
 	    AND aht.CREATE_ID=#{usersId}
+	    	
 	    <if test="year != null">
 	      AND TO_CHAR(aht.ANIMAL_VISIT_DATE, 'YYYY') = #{year}
 	    </if>
@@ -49,7 +52,9 @@
 
     SELECT TO_CHAR(ata.ANIMAL_RECORD_DATE, 'YYYY-MM-DD'), 'animal', COUNT(*)
     FROM ANIMAL_TRAINING_ACTION ata
+    JOIN ANIMAL a ON ata.ANIMAL_ID=a.ANIMAL_ID
     WHERE ata.DEL_YN = 'N'
+    AND a.DEL_YN='N'
     AND ata.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(ata.ANIMAL_RECORD_DATE, 'YYYY') = #{year}
@@ -66,7 +71,9 @@
 
     SELECT TO_CHAR(aw.ANIMAL_RECORDED_DT, 'YYYY-MM-DD'), 'animal', COUNT(*)
     FROM ANIMAL_WALK aw
+    JOIN ANIMAL a ON aw.ANIMAL_ID=a.ANIMAL_ID
     WHERE aw.DEL_YN = 'N'
+    AND a.DEL_YN='N'
     AND aw.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(aw.ANIMAL_RECORDED_DT, 'YYYY') = #{year}
@@ -83,7 +90,9 @@
 
     SELECT TO_CHAR(pp.PLANT_PEST_DATE, 'YYYY-MM-DD'), 'plant', COUNT(*)
     FROM PLANT_PEST pp
+    JOIN PLANT P ON pp.PLANT_ID=p.PLANT_ID
     WHERE pp.DEL_YN = 'N'
+    AND p.DEL_YN='N'
     AND pp.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(pp.PLANT_PEST_DATE, 'YYYY') = #{year}
@@ -100,7 +109,9 @@
 
     SELECT TO_CHAR(pr.PLANT_REPOTTING_DATE, 'YYYY-MM-DD'), 'plant', COUNT(*)
     FROM PLANT_REPOTTING pr
+    JOIN PLANT P ON pr.PLANT_ID=p.PLANT_ID
     WHERE pr.DEL_YN = 'N'
+    AND p.DEL_YN='N'
     AND pr.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(pr.PLANT_REPOTTING_DATE, 'YYYY') = #{year}
@@ -117,7 +128,9 @@
 
     SELECT TO_CHAR(ps.CREATE_DT, 'YYYY-MM-DD'), 'plant', COUNT(*)
     FROM PLANT_SUNLIGHTING ps
+    JOIN PLANT P ON ps.PLANT_ID=p.PLANT_ID
     WHERE ps.DEL_YN = 'N'
+    AND p.DEL_YN='N'
     AND ps.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(ps.CREATE_DT, 'YYYY') = #{year}
@@ -134,7 +147,9 @@
 
     SELECT TO_CHAR(pw.PLANT_WATERING_DATE, 'YYYY-MM-DD'), 'plant', COUNT(*)
     FROM PLANT_WATERING pw
+    JOIN PLANT P ON pw.PLANT_ID=p.PLANT_ID
     WHERE pw.DEL_YN = 'N'
+    AND p.DEL_YN='N'
     AND pw.CREATE_ID=#{usersId}
     <if test="year != null">
       AND TO_CHAR(pw.PLANT_WATERING_DATE, 'YYYY') = #{year}
@@ -172,6 +187,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.ANIMAL_VISIT_DATE, 'YYYY-MM-DD') = #{logDate}
 		AND A.USERS_ID=#{usersId, jdbcType=VARCHAR}
+		AND A.DEL_YN='N'
     
     UNION ALL
 
@@ -182,7 +198,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.ANIMAL_RECORD_DATE, 'YYYY-MM-DD') = #{logDate}
 		AND A.USERS_ID=#{usersId, jdbcType=VARCHAR}
-    
+    	AND A.DEL_YN='N'
     UNION ALL
 
     SELECT 
@@ -192,7 +208,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.ANIMAL_RECORDED_DT, 'YYYY-MM-DD') = #{logDate}
 		AND A.USERS_ID=#{usersId, jdbcType=VARCHAR}
-    
+    	AND A.DEL_YN='N'
     UNION ALL
 
     SELECT 
@@ -202,7 +218,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.PLANT_WATERING_DATE, 'YYYY-MM-DD') = #{logDate}
 		AND P.USERS_ID=#{usersId, jdbcType=VARCHAR}
-    
+    	AND P.DEL_YN='N'
     UNION ALL
 
     SELECT 
@@ -212,7 +228,7 @@
     WHERE T.DEL_YN = 'N'
      	AND TO_CHAR(T.PLANT_PEST_DATE, 'YYYY-MM-DD') = #{logDate}
 		AND P.USERS_ID=#{usersId, jdbcType=VARCHAR}
-    
+    	AND P.DEL_YN='N'
     UNION ALL
 
     SELECT 
@@ -222,7 +238,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.PLANT_REPOTTING_DATE, 'YYYY-MM-DD') = #{logDate}
 		AND P.USERS_ID=#{usersId, jdbcType=VARCHAR}
-
+		AND P.DEL_YN='N'
     UNION ALL
 
     SELECT 
@@ -232,6 +248,7 @@
     WHERE T.DEL_YN = 'N'
       	AND TO_CHAR(T.CREATE_DT, 'YYYY-MM-DD') = #{logDate}
       	AND P.USERS_ID=#{usersId, jdbcType=VARCHAR}
+      	AND P.DEL_YN='N'
   ) A
   ORDER BY A.TYPE, A.NAME
 </select>
