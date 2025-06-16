@@ -5,17 +5,31 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import back.model.plant.Plant;
 
 @Mapper
 public interface PlantMapper {
+	// 식물 목록 리스트
+	public List<Plant> getPlantList(Plant plant);
 	
-	//식물 분갈이 조회
+	// 식물 정보 조회
+	public List<Plant> plantInfo(Plant plant);
+	
+	//식물 병충해 로그 개별 수정
+	public int updatePestLogs(Plant plant);
+	
+	//식물 병충해 로그 개별 삭제
+	public int deletePestLogs(Plant plant);
+		
+	//식물 병충해 조회
 	public List<Plant> pestlogs(Plant plant);
 	
 	//식물 병충해 저장
 	public int savePestInfo(Plant plant);
+	public int updatePestFileId(Plant plant);
+
 	
 	//식물 분갈이 개별 수정
 	public int updatePlantRepottingLogs(Plant plant);
@@ -46,23 +60,18 @@ public interface PlantMapper {
 	
 	public List<Map<String, Object>> selectPlantCheck(int plant_id);
 	
-	public int updateSunlightInfo(
-	        @Param("plantId") Integer plantId,
-	        @Param("sunlightStatus") String sunlightStatus,
-	        @Param("sunlightMemo") String sunlightMemo
-	    );
 	
 	//식물 일조량 저장
 	public int saveSunlightInfo(Plant plant);
-
 	
 	public Plant selectPlantById(String plantId);
 	
 	//식물 등록
 	public int create(Plant plant);
+	public int updateFileId(@Param("plantId") Integer plantId, @Param("fileId") Integer fileId);
 
     // 식물 수정
-    public int update(Plant plant);
+    public int updatePlant(Plant plant);
 
     // 식물 삭제
     public int delete(@Param("plantId") int plantId);
