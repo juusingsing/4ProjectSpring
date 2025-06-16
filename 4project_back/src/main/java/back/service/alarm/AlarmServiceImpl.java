@@ -18,13 +18,15 @@ public class AlarmServiceImpl implements AlarmService {
 	
     @Override
 	public List getOneList(Alarm alarm) {
+    	
     	return alarmMapper.OneList(alarm);
 	}
     
 
 	@Override
 	public List<Alarm> getList(Alarm alarm) {
-		return alarmMapper.list();
+		log.info("list 호출!!!!!!!!");
+		return alarmMapper.list(alarm);
 	}
 
 
@@ -46,6 +48,12 @@ public class AlarmServiceImpl implements AlarmService {
 	@Override
 	public boolean AllUpdate(Alarm alarm) {
 		boolean result = alarmMapper.AllUpdate(alarm) > 0;
+		return result;
+	}
+	
+	@Override
+	public boolean delete(Alarm alarm) {
+		boolean result = alarmMapper.delete(alarm) > 0;
 		return result;
 	}
     
