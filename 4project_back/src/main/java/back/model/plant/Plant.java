@@ -25,6 +25,9 @@ public class Plant extends Model{
     private String plantSunPreference; // 햇빛/그늘 선호
     private String plantGrowStatus; // 식물 생육 상태
     
+    private String fileLogicName; // 서버에 저장된 파일명 (실제 파일명)
+    private String fileOriginName; // 원본 파일명 (사용자가 업로드한 파일명)
+    
     // PLANT_SUNLIGHTING 테이블 관련 필드
     private int plantSunlightingId; // 일조기록ID
     private String sunlightStatus;
@@ -42,5 +45,6 @@ public class Plant extends Model{
     private String plantPestMemo;
      
     private List<MultipartFile> files;
+    private List<PostFile> postFiles;
 	
 }

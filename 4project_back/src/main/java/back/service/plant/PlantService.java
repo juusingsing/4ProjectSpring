@@ -3,10 +3,15 @@ package back.service.plant;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import back.exception.HException;
 import back.model.plant.Plant;
 
 public interface PlantService {
+	
+	// 식물 목록 리스트
+	public List<Plant> getPlantList(Plant plant);
 	
 	// 식물 정보 조회
 	public List<Plant> plantInfo(Plant plant);

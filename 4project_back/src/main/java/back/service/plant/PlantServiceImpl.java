@@ -13,6 +13,7 @@ import back.exception.HException;
 import back.mapper.file.FileMapper;
 import back.mapper.plant.PlantMapper;
 import back.model.common.PostFile;
+import back.model.diary.Diary;
 import back.model.plant.Plant;
 import back.model.write.Comment;
 import back.util.FileUploadUtil;
@@ -26,6 +27,31 @@ public class PlantServiceImpl implements PlantService {
 	@Autowired
 	private FileMapper fileMapper;
 
+	// 식물 목록 리스트
+	@Override
+	public List<Plant> getPlantList(Plant plant) {
+	    try {
+	        // diaryList 대신 plantList로 받아야 일관됨
+	        List<Plant> plantList = plantMapper.getPlantList(plant);
+	        
+	        for (Plant p : plantList) {
+	            PostFile file = new PostFile();
+	            file.setPostFileKey(p.getPlantId()); // 식물 고유키로 변경
+	            
+	            List<PostFile> files = fileMapper.getFilesByFileKey(file);
+	            if (files != null && !files.isEmpty()) {
+	                p.setPostFiles(List.of(files.get(0))); // 첫 번째 파일만 넣음 (썸네일 용)
+	            }
+	        }
+	        
+	        return plantList;
+	    } catch(Exception e) {
+	        log.error("식물 목록 조회 실패", e);
+	        throw new HException("식물 목록 조회 실패", e);
+	    }
+	}
+
+	
 	// 식물 정보 조회
 	@Override
 	public List<Plant> plantInfo(Plant plant) {
@@ -33,10 +59,13 @@ public class PlantServiceImpl implements PlantService {
 		return result;
 	}
 
-	// 식물 병충해 개별 수정
+	// 식물 병충해 로그 개별 수정
 	@Override
 	public boolean updatePestLogs(Plant plant) {
 		try {
+			boolean result = plantMapper.updatePestLogs(plant) > 0;
+			List<MultipartFile> files = plant.getFiles();
+	        Integer plantId = plant.getPlantId();
 			return plantMapper.updatePestLogs(plant) > 0;
 		} catch (Exception e) {
 			log.error("병충해 수정 실패", e);
@@ -64,10 +93,37 @@ public class PlantServiceImpl implements PlantService {
 
 	// 식물 병충해 저장
 	@Override
+	@Transactional
 	public boolean savePestInfo(Plant plant) {
-		int result = plantMapper.savePestInfo(plant);
-		return result > 0;
+	    try {
+	        boolean result = plantMapper.savePestInfo(plant) > 0;
+	        List<MultipartFile> files = plant.getFiles();
+	        Integer plantId = plant.getPlantId();
+
+	        if (result && files != null && !files.isEmpty() && plantId != null && plantId > 0) {
+	            List<PostFile> fileList = FileUploadUtil.uploadFiles(
+	                files, "pest", plantId, "PES", plant.getCreateId()
+	            );
+	            log.info("파일사이즈:"+fileList.size());
+	            for (PostFile postFile : fileList) {
+	                boolean insertResult = fileMapper.insertFile(postFile) > 0;
+	                if (!insertResult) throw new HException("파일 추가 실패");
+	                plant.setFileId(postFile.getPostFileId());
+	                plantMapper.updatePestFileId(plant);
+	            }
+	        }
+
+	        return result;
+
+	    } catch (Exception e) {
+	        log.error("병충해 저장 실패: {}", e.getMessage(), e);
+	        throw new HException("병충해 저장 실패", e);
+	    }
 	}
+
+
+
+
 
 	// 식물 분갈이 개별 수정
 	@Override
