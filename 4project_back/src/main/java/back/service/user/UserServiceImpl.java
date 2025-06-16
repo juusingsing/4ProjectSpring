@@ -170,7 +170,10 @@ public class UserServiceImpl implements UserService {
 	 @Override
 	 public boolean updatePassword(String usersId, String encodedPassword) {
 	     try {
-	         return userMapper.updatePassword(usersId, encodedPassword) > 0;
+	    	 Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", usersId);
+	         params.put("encodedPassword", encodedPassword);
+	         return userMapper.updatePassword(params) > 0;
 	     } catch (Exception e) {
 	         log.error("비밀번호 업데이트 중 오류", e);
 	         throw new HException("비밀번호 업데이트 실패", e);
@@ -178,13 +181,22 @@ public class UserServiceImpl implements UserService {
 	 }
 	
 	 @Override
-	 public boolean resetPassword(String usersId, String newPassword) {
+	 public boolean resetPassword(User user) {
 	     try {
-	         User user = userMapper.findByUserId(usersId);
-	         if (user == null) return false;
+	         User userCheck = userMapper.findByUserId(user.getUsersId());
+	         if (userCheck == null) return false;
+	         
+	         log.info(">>>> userCheck체크 결과", userCheck);
+	         
+	         String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
+	         log.info(">>>> encodedPassword", encodedPassword);
+	         
+	         Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", user.getUsersId());
+	         params.put("encodedPassword", encodedPassword);
 
-	         String encodedPassword = passwordEncoder.encode(newPassword);
-	         return userMapper.updatePassword(usersId, encodedPassword) > 0;
+
+	         return userMapper.updatePassword(params) > 0;
 	     } catch (Exception e) {
 	         log.error("비밀번호 재설정 중 오류", e);
 	         throw new HException("비밀번호 재설정 실패", e);

@@ -49,8 +49,8 @@ private AlarmService alarmService;
 
 @PostMapping("/list.do")
 public ResponseEntity<?> getAlarmList(@RequestBody Alarm alarm) {
-	log.info(alarm.toString());
-	List alarmList = alarmService.getList(alarm);
+	log.info("alarmPetId : {}", alarm.getPetId());
+	List<Alarm> alarmList = alarmService.getList(alarm);
 
 	return ResponseEntity.ok(new ApiResponse<>(true, "목록 조회 성공", alarmList));
 }
@@ -86,6 +86,28 @@ public ResponseEntity<?> updateAlarm (@RequestBody Alarm alarm) {
 }
 
 
+@PostMapping("/AllUpdate.do")
+public ResponseEntity<?> AllupdateAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		alarm.setUsersId(userDetails.getUser().getUsersId());
+		boolean isCreated = alarmService.AllUpdate(alarm);
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "알람 수정 성공" : "알람 수정 실패", null));
+}
+
+
+@PostMapping("/delete.do")
+public ResponseEntity<?> deleteAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		alarm.setUsersId(userDetails.getUser().getUsersId());
+		boolean isDeleted = alarmService.delete(alarm);
+		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 수정 성공" : "알람 수정 실패", null));
+}
 
 
 }

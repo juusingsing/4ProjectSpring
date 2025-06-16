@@ -22,6 +22,8 @@ public interface WriteMapper {
 	
 	public int delete(Write write);
 	
+	public int incrementViewCount(int WritingId);
+	
 	public List<Comment> getCommentsByWriteId(int WritingId);
 	
 	public int insertComment(Comment comment);

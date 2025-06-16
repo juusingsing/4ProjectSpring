@@ -46,12 +46,11 @@ public class Write extends Model {
 	private String writingSortation;
 	private String writingCategory;;
 
-	private List<PostFile> postFiles;
+	private List<MultipartFile> files; //입력할 때 사용
+	private List<PostFile> postFiles; //조회할 때 사용
 	private List<Comment> comments;
-	
-	private List<MultipartFile> files;
+
 	private String remainingFileIds;
-	
 	
 
 

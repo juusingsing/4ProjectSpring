@@ -40,6 +40,10 @@ public class WriteServiceImpl implements WriteService {
 	public Write getWriteById(int writingId) {
     	
     	try {
+    		 // 조회수 증가 로직 추가
+            writeMapper.incrementViewCount(writingId); // 조회수 1 증가 [1]
+            log.info("게시글 ID {}의 조회수를 증가시켰습니다.", writingId);
+
             Write write = writeMapper.getWriteById(writingId);
     	
     	 if (write != null) { // 게시글이 존재하는 경우에만 파일 조회

@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import back.exception.HException;
 import back.mapper.file.FileMapper;
 import back.mapper.pet.PetMapper;
+import back.mapper.pet_training_and_action.PetTrainingAndActionMapper;
 import back.model.common.PostFile;
 import back.model.pet.Pet;
 import back.util.FileUploadUtil;
@@ -29,6 +30,8 @@ public class PetServiceImpl implements PetService {
     private PetMapper petMapper;
     @Autowired
     private FileMapper fileMapper;
+    @Autowired
+    private PetTrainingAndActionMapper petTrainingAndActionMapper;
     // 반려동물 등록 처리
     @Override
     @Transactional
@@ -103,14 +106,16 @@ public class PetServiceImpl implements PetService {
     @Override
     @Transactional
     public boolean deletePet(int animalId, String usersId) {
-        // 권한 확인, 소유자 확인 로직 필요 시 추가
-        // petMapper에서 petId와 username이 일치하는 데이터만 삭제하도록 구현 권장
-    	try {
-    		return petMapper.deletePetByIdAndUser(animalId, usersId) > 0;
-    	} catch (Exception e) {
-    		log.error("반려동물 삭제 실패", e);
-    		throw new HException("삭제 실패", e);
-    	}
+        try {
+            // ❌ 자식 삭제 제거
+            // petTrainingAndActionMapper.logicalDeleteByAnimalId(animalId, usersId);
+
+            // ✅ 부모(동물)만 논리 삭제
+            return petMapper.deletePetByIdAndUser(animalId, usersId) > 0;
+        } catch (Exception e) {
+            log.error("반려동물 삭제 실패", e);
+            throw new HException("삭제 실패", e);
+        }
     }
 
     @Override

@@ -88,6 +88,8 @@ public class SecurityConfig {
                         "/api/find/findPw.do",
                         "/api/find/resetPassword.do",
                         "/api/email/send-code.do",
+                        "/api/email/idfind-send-code.do",
+                        "/api/email/pwfind-send-code.do",
                         "/api/email/verify-code.do",
                         "/api/pet/animalregister.do",
                         "/api/pet/petUpdate.do",
@@ -96,6 +98,10 @@ public class SecurityConfig {
                         "/api/petHospital/petHospital.do",
                         "/api/petHospital/list.do",
                         "/api/petHospital/update.do",
+                        "/api/petTrainingAndAction/petTrainingAndAction.do",
+                        "/api/petTrainingAndAction/list.do",
+                        "/api/petTrainingAndAction/update.do",
+                        "/api/petTrainingAndAction/delete.do",
                         "/api/petWalk/imgSave.do",
                         "/api/petWalk/imgLoad.do",
                         "/api/petWalk/petSave.do",
@@ -103,7 +109,8 @@ public class SecurityConfig {
                         "/api/petWalk/petLoad.do",
                         "/api/petWalk/petCurrentLoad.do",
                         "/api/alarm/oneList.do",
-                        "/api/alarm/list.do"
+                        "/api/alarm/list.do",
+                        "/api/alarm/delete.do"
                         
                         
                         

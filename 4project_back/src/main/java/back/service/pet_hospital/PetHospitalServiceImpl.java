@@ -36,7 +36,12 @@ public class PetHospitalServiceImpl implements PetHospitalService {
 
     @Override
     public List<PetHospital> getAllByCreateDtDesc() {
-        return petHospitalMapper.selectAllByCreateDtDesc();
+    	try {
+    		return petHospitalMapper.selectAllByCreateDtDesc();
+    	} catch (Exception e) {
+    		log.error("병원 진료 목록 조회 실패", e);
+    		throw new HException("병원 진료 목록 조회 실패", e);
+    	}
     }
 
     @Override

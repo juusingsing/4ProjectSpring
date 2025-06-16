@@ -62,11 +62,14 @@
 	    WHERE animal_id = #{animalId}
 	</update>
 	<!-- PetMapper.xml -->
-	<delete id="deletePetByIdAndUser" parameterType="map">
-	    DELETE FROM ANIMAL
+	<update id="deletePetByIdAndUser" parameterType="map">
+	    UPDATE ANIMAL
+	    SET del_yn = 'Y',
+	        update_dt = SYSDATE,
+	        update_id = #{usersId}
 	    WHERE animal_id = #{animalId}
 	      AND users_id = #{usersId}
-	</delete>
+	</update>
 	
 	<select id="getPetByIdAndUsername" parameterType="map" resultType="back.model.pet.Pet">
 	    SELECT *

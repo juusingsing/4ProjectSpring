@@ -196,10 +196,10 @@
 	    WHERE USERS_ID = #{usersId} AND DEL_YN = 'N'
 	</select>    
 	
-    <update id="updatePassword">
+    <update id="updatePassword" parameterType="map">
 		UPDATE users
 		SET users_password = #{encodedPassword}
-		WHERE users_id = #{userId}
+		WHERE users_id = #{usersId}
 	</update>
 	    
 	<select id="findUsersByInfo" parameterType="map" resultType="back.model.user.User">

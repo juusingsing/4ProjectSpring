@@ -12,11 +12,15 @@ public interface AlarmMapper {
 	
 	public List<Alarm> OneList(Alarm alarm);
 	
-	public List<Alarm> list();
+	public List<Alarm> list(Alarm alarm);
 	
 	public int create(Alarm alarm);
 	
 	public int update(Alarm alarm);
+	
+	public int AllUpdate(Alarm alarm);
+	
+	public int delete(Alarm alarm);
 	
 	
 }

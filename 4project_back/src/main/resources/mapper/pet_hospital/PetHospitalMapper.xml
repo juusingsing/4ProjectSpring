@@ -35,8 +35,12 @@
 	    )
 	</insert>
 	<select id="selectAllByCreateDtDesc" resultType="back.model.pet_hospital.PetHospital">
-	  SELECT * FROM ANIMAL_HOSPITAL_TREATMENT
-	  ORDER BY create_dt DESC
+	  SELECT ht.*
+	  FROM ANIMAL_HOSPITAL_TREATMENT ht
+	  JOIN ANIMAL a ON ht.animal_id = a.animal_id
+	  WHERE ht.del_yn = 'N'
+	    AND a.del_yn = 'N'
+	  ORDER BY ht.create_dt DESC
 	</select>
 	
 	<update id="updatePetHospital">

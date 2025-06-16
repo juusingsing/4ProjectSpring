@@ -1,6 +1,7 @@
 package back.service.calendar;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,13 @@ public class CalendarServiceImpl implements CalendarService {
 			throw new HException("로그 조회 실패",e);
 		}
 	}
-	
+	@Override
+	public List<Map<String, Object>> selectUserAnimals(String usersId) {
+		return calendarMapper.selectUserAnimals(usersId);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectUserPlants(String usersId) {
+		return calendarMapper.selectUserPlants(usersId);
+	}
 }

@@ -70,13 +70,18 @@ public class FindController {
     public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody Map<String, String> payload) {
         String usersId = payload.get("usersId");
         String newPassword = payload.get("newPassword");
+        log.info(">>>> 받은 usersId: {}", usersId);
+        log.info(">>>> 받은 newPassword: {}", newPassword);
+        User user = new User();
+        user.setUsersId(usersId);
+        user.setEncodedPassword(newPassword);
 
         if (usersId == null || newPassword == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse<>(false, "필수 정보 누락", null));
         }
 
-        boolean result = userService.resetPassword(usersId, newPassword);
+        boolean result = userService.resetPassword(user);
 
         if (result) {
             return ResponseEntity.ok(new ApiResponse<>(true, "비밀번호가 변경되었습니다.", null));
