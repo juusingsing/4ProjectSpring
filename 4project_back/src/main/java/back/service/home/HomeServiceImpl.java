@@ -21,11 +21,6 @@ public class HomeServiceImpl implements HomeService {
 	@Override
 	public List<Home> getAnimalList(Home home) {
         try {
-            // 디버그 로그 추가: home 객체와 usersId 값 확인
-            log.info("getAnimalList 서비스 호출: home 객체 = {}", home);
-            log.info("getAnimalList 서비스 호출: usersId = {}", home.getUsersId());
-
-        	
         	List<Home>animalList = homeMapper.getAnimalList(home);
         	return animalList;
         } catch(Exception e) {
@@ -38,10 +33,6 @@ public class HomeServiceImpl implements HomeService {
 	@Override
 	public List<Home> getPlantList(Home home) {
        try {
-    	   // 디버그 로그 추가: home 객체와 usersId 값 확인
-           log.info("getPlantList 서비스 호출: home 객체 = {}", home);
-           log.info("getPlantList 서비스 호출: usersId = {}", home.getUsersId());
-
     	   List<Home>plantList = homeMapper.getPlantList(home);
     	   return plantList;
        } catch(Exception e) {

@@ -51,20 +51,21 @@
 		) 
     </insert>
 
-    <!-- 사용자 업데이트 -->
-    <update id="updateUser" parameterType="back.model.user.User">
+   <!-- 사용자 업데이트 -->
+	<update id="updateUser" parameterType="back.model.user.User">
 	    UPDATE USERS
-	    SET 
+	    <set>
 	        USERS_NAME = #{usersName},
 	        USERS_EMAIL = #{usersEmail},
-	        <if test="usersFileId != null"> <!--프로필 사진이 들어갈 때만 유동적으로 추가-->
-            USERS_FILE_ID = #{usersFileId},
-            </if>
+	        <if test="usersFileId != null">
+	            USERS_FILE_ID = #{usersFileId},
+	        </if>
+	        <if test="usersPassword != null and usersPassword != ''">
+	            USERS_PASSWORD = #{usersPassword},
+	        </if>
 	        UPDATE_ID = #{updateId},
 	        UPDATE_DT = SYSDATE
-	        <if test="usersPassword != null and usersPassword != ''">
-	         ,USERS_PASSWORD = #{usersPassword} <!-- password 가 null이 아니거나 공백이 아니면 재설정-->
-	        </if>
+	    </set>
 	    WHERE USERS_ID = #{usersId}
 	</update>
     

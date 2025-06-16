@@ -21,6 +21,7 @@ public class User extends Model {
     private String usersName;
     private String usersPassword;
     private String usersEmail;
+    private int usersFileId;
     
     //검색필터
   	private String searchText;
