@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PlantController {
 	@Autowired
 	private PlantService plantService;
-	
+	//
 	// 식물 목록 리스트
 	@PostMapping("/plant-list.do")
 	public ResponseEntity<?> getPlantList(@RequestBody Plant plant){
