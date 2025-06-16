@@ -293,16 +293,17 @@ public class PlantServiceImpl implements PlantService {
             throw new HException("식물 수정 실패", e);
         }
     }
-
-//    @Override
-//    @Transactional
-//    public boolean delete(Plant plant) {
-//        try {
-//            return plantMapper.delete(plant) > 0;
-//        } catch (Exception e) {
-//            log.error("식물 삭제 중 오류 발생", e);
-//            throw new HException("식물 삭제 실패", e);
-//        }
-//    }
+	
+	//식물 삭제
+    @Override
+    @Transactional
+    public boolean deletePlant(Plant plant) {
+        try {
+            return plantMapper.deletePlant(plant) > 0;
+        } catch (Exception e) {
+            log.error("식물 삭제 중 오류 발생", e);
+            throw new HException("식물 삭제 실패", e);
+        }
+    }
 
 }

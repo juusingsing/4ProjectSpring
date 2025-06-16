@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
+import back.model.diary.Diary;
 import back.model.plant.Plant;
 
 @Mapper
@@ -30,7 +31,6 @@ public interface PlantMapper {
 	public int savePestInfo(Plant plant);
 	public int updatePestFileId(Plant plant);
 
-	
 	//식물 분갈이 개별 수정
 	public int updatePlantRepottingLogs(Plant plant);
 		
@@ -74,5 +74,5 @@ public interface PlantMapper {
     public int updatePlant(Plant plant);
 
     // 식물 삭제
-    public int delete(@Param("plantId") int plantId);
+    public int deletePlant(Plant plant);
 }

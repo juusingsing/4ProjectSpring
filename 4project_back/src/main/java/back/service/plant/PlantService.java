@@ -71,9 +71,7 @@ public interface PlantService {
     // 식물 수정
     public boolean updatePlant(Plant plant) throws HException;
 
-
-
     // 식물 삭제
-    // public boolean delete(Plant plant) throws HException;  
+    public boolean deletePlant(Plant plant) throws HException;  
     
 }
