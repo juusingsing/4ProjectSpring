@@ -88,6 +88,8 @@ public class SecurityConfig {
                         "/api/find/findPw.do",
                         "/api/find/resetPassword.do",
                         "/api/email/send-code.do",
+                        "/api/email/idfind-send-code.do",
+                        "/api/email/pwfind-send-code.do",
                         "/api/email/verify-code.do",
                         "/api/pet/animalregister.do",
                         "/api/pet/petUpdate.do",

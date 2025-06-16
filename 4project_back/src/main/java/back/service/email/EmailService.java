@@ -5,6 +5,7 @@ public interface EmailService {
 	public boolean saveEmailCode(String email, String code);
 	public boolean verifyEmailCode(String email, String code);
 	public boolean isEmailRegistered(String email);
+	public boolean isEmailYnCheck(String email);
 	
 	public void saveVerificationCode(String email, String code); // 수정됨
 	public boolean verifyCode(String email, String code);

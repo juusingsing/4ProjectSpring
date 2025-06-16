@@ -32,7 +32,7 @@ public interface UserMapper {
 
 	public User findUserByUserIdAndEmail(Map<String, Object> params);
 
-	public int updatePassword(String usersId, String encodedPassword);
+	public int updatePassword(Map<String, Object> params);
 
 	public User findByUserId(String usersId);
 
