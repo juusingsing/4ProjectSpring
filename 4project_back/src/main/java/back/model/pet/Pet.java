@@ -9,11 +9,17 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.Model;
+import back.model.combo.Combo;
 import back.model.common.PostFile;
 import back.model.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor  // 기본 생성자 자동 생성
+@AllArgsConstructor  // 모든 필드를 매개변수로 하는 생성사 자동 생성
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Pet extends Model {
     private int animalId;            // ANIMAL_ID
@@ -42,7 +48,7 @@ public class Pet extends Model {
     private Timestamp walkDt;   // ANIMAL_RECORDED_DT  << SYSDATE값넣음
     private String walkTime;  // ANIMAL_ELAPSED_TIME
     
-
+    private String fileUrl;
     public List<MultipartFile> getFiles() {
         return files;
     }

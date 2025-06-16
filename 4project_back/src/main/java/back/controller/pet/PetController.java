@@ -15,8 +15,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import back.model.combo.Combo;
 import back.model.common.CustomUserDetails;
 import back.model.pet.Pet;
+import back.model.pet_hospital.PetHospital;
 import back.service.pet.PetService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
@@ -89,20 +91,23 @@ public class PetController {
     
     @GetMapping("/getPetById.do")
     public ResponseEntity<?> getPetById(
-        @RequestParam(name = "animalId", required = false) Integer animalId,
+        @RequestParam("animalId") Integer animalId,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
-        
+
         if (animalId == null) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "animalId는 필수입니다.", null));
         }
 
         Pet pet = petService.getPetById(animalId, userDetails.getUsername());
-        if (pet != null) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
-        } else {
+        if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }
+        
+
+        return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
     }
+    
+    
 }
