@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import back.model.combo.Combo;
 import back.model.common.CustomUserDetails;
+import back.model.diary.Diary;
 import back.model.pet.Pet;
 import back.model.pet_hospital.PetHospital;
 import back.service.pet.PetService;
@@ -60,18 +61,18 @@ public class PetController {
     
     @PostMapping(value = "/petUpdate.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updatePet(
-        @RequestPart("data") Pet pet,
-        @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+		@ModelAttribute Pet pet,
+        @RequestPart(value = "files", required = false) List<MultipartFile> files,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
-        System.out.println(pet);
-        // 사용자 및 시간 정보 세팅 등 기존 로직 유지
-        pet.setUpdateId(userDetails.getUsername());
-        pet.setUpdateDt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
+        log.info("petId : {}",pet.getAnimalId());
 
-        if (imageFile != null && !imageFile.isEmpty()) {
-            pet.setFiles(List.of(imageFile));
+        pet.setUpdateId(userDetails.getUsername());
+        
+
+        if (files != null && !files.isEmpty()) {
+            pet.setFiles(files);
         }
 
         boolean updated = petService.updatePet(pet);
