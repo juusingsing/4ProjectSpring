@@ -48,7 +48,6 @@ public class Pet extends Model {
     private Timestamp walkDt;   // ANIMAL_RECORDED_DT  << SYSDATE값넣음
     private String walkTime;  // ANIMAL_ELAPSED_TIME
     
-    private String fileUrl;
     public List<MultipartFile> getFiles() {
         return files;
     }

@@ -19,17 +19,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import back.model.combo.Combo;
 import back.model.common.CustomUserDetails;
-<<<<<<< HEAD
+
 import back.model.common.PostFile;
-=======
+
 import back.model.diary.Diary;
->>>>>>> branch 'main' of https://github.com/juusingsing/4ProjectSpring.git
+
 import back.model.pet.Pet;
-<<<<<<< HEAD
+
 import back.service.file.FileService;
-=======
+
 import back.model.pet_hospital.PetHospital;
->>>>>>> branch 'main' of https://github.com/juusingsing/4ProjectSpring.git
+
 import back.service.pet.PetService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
@@ -103,11 +103,9 @@ public class PetController {
     
     @GetMapping("/getPetById.do")
     public ResponseEntity<?> getPetById(
-<<<<<<< HEAD
-        @RequestParam(name = "animalId") Integer animalId,
-=======
+
         @RequestParam("animalId") Integer animalId,
->>>>>>> branch 'main' of https://github.com/juusingsing/4ProjectSpring.git
+
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
@@ -120,7 +118,6 @@ public class PetController {
         if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }
-<<<<<<< HEAD
 
         // 파일 이름을 전체 URL로 변환
         if (pet.getFileUrl() != null) {
@@ -132,10 +129,7 @@ public class PetController {
             }
         }
         System.out.println("fileUrl from DB: " + pet.getFileUrl());
-=======
-        
 
->>>>>>> branch 'main' of https://github.com/juusingsing/4ProjectSpring.git
         return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
     }
     
