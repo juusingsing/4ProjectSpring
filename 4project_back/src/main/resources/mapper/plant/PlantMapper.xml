@@ -372,5 +372,40 @@
     UPDATE_DT = SYSDATE
     WHERE PLANT_ID = #{plantId}
   </update>
+  
+  <!-- 물주기 기록 저장 -->
+	<insert id="WaterCreate" parameterType="back.model.plant.Plant">
+        INSERT INTO PLANT_WATERING (
+            PLANT_WATERING_ID,
+            PLANT_ID,
+            PLANT_WATERING_DATE,
+        	CREATE_ID,
+            CREATE_DT
+        ) VALUES (
+            PLANT_WATERING_SEQ.NEXTVAL,  
+            #{plantId},
+            SYSDATE,
+            #{createId},
+            SYSDATE
+        )  
+        
+        <selectKey keyProperty="waterId" resultType="int" order="AFTER">
+	       SELECT PLANT_WATERING_SEQ.CURRVAL FROM DUAL
+	    </selectKey>
+	</insert>
+	
+	<!-- 물주기 기록 조회 -->
+    <select id="waterList" parameterType="back.model.plant.Plant" resultType="back.model.plant.Plant">
+
+	        SELECT
+	        	PLANT_WATERING_ID AS waterId,
+	        	PLANT_WATERING_DATE AS waterDt
+
+            FROM PLANT_WATERING
+            WHERE PLANT_ID = #{plantId}
+            AND DEL_YN = 'N'
+            ORDER BY PLANT_WATERING_DATE ASC  --오름차순
+
+    </select>
 
 </mapper>

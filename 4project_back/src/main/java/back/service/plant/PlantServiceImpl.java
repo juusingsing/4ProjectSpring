@@ -1,5 +1,6 @@
 package back.service.plant;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -305,5 +306,20 @@ public class PlantServiceImpl implements PlantService {
             throw new HException("식물 삭제 실패", e);
         }
     }
+
+
+	@Override
+	public boolean WaterCreate(Plant plant) throws NumberFormatException, IOException {
+		boolean result = plantMapper.WaterCreate(plant) > 0;
+		
+		return result;
+	}
+
+
+	@Override
+	public List<Plant> waterList(Plant plant) throws NumberFormatException, IOException {
+
+		return  plantMapper.waterList(plant);
+	}
 
 }
