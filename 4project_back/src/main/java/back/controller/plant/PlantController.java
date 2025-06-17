@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PlantController {
 	@Autowired
 	private PlantService plantService;
-	
+	//
 	// 식물 목록 리스트
 	@PostMapping("/plant-list.do")
 	public ResponseEntity<?> getPlantList(@RequestBody Plant plant){
@@ -279,4 +279,14 @@ public class PlantController {
 		return ResponseEntity.ok(new ApiResponse<>(isUpdated, isUpdated ? "게시글 수정 성공" : "게시글 수정 실패", null));
 	}
 
+	// 식물 삭제
+	@PostMapping("/deletePlant.do")
+	public ResponseEntity<?> deletePlant(@RequestBody Plant plant,
+			@AuthenticationPrincipal CustomUserDetails userDetails) {
+		SecurityUtil.checkAuthorization(userDetails);
+		log.info("plant:" , plant.getPlantId());
+		plant.setUpdateId(userDetails.getUsername());
+		boolean isDeleted = plantService.deletePlant(plant);
+		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "게시물 삭제 성공" : "게시물 삭제 실패", null));
+	}
 }

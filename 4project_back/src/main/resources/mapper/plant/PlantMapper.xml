@@ -350,7 +350,7 @@
 		) 
   </insert>
 
-	<!-- 식물 수정 -->
+  <!-- 식물 수정 -->
   <update id="updatePlant" parameterType="back.model.plant.Plant">
     UPDATE PLANT
     SET
@@ -365,9 +365,12 @@
   </update>
 
 	<!-- 식물 삭제 -->
-  <delete id="delete" parameterType="int">
-    DELETE FROM PLANT
-    WHERE plant_id = #{plantId}
-  </delete>
+  <update id="deletePlant" parameterType="int">
+    UPDATE PLANT
+    SET
+    DEL_YN ='Y',
+    UPDATE_DT = SYSDATE
+    WHERE PLANT_ID = #{plantId}
+  </update>
 
 </mapper>
