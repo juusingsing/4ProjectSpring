@@ -71,7 +71,7 @@
 	      AND users_id = #{usersId}
 	</update>
 	<select id="getPetByIdAndUsername" parameterType="map" resultType="back.model.pet.Pet">
-	  SELECT a.*, pf.post_file_name AS fileUrl
+	  SELECT a.*, pf.post_file_path AS fileUrl
 	  FROM ANIMAL a
 	  LEFT JOIN POST_FILE pf ON a.animal_id = pf.post_file_key
 	  WHERE a.animal_id = #{animalId}

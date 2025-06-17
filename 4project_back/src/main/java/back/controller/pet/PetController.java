@@ -118,16 +118,8 @@ public class PetController {
         if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }
-
-        // 파일 이름을 전체 URL로 변환
-        if (pet.getFileUrl() != null) {
-            try {
-                String encodedFileName = URLEncoder.encode(pet.getFileUrl(), "UTF-8");
-                pet.setFileUrl("http://localhost:8081/uploads/" + encodedFileName);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
+    
+   
         System.out.println("fileUrl from DB: " + pet.getFileUrl());
 
         return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
