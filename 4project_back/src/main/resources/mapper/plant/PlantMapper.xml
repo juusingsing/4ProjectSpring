@@ -404,7 +404,7 @@
             FROM PLANT_WATERING
             WHERE PLANT_ID = #{plantId}
             AND DEL_YN = 'N'
-            ORDER BY PLANT_WATERING_DATE ASC  --오름차순
+            ORDER BY PLANT_WATERING_DATE DESC  --오름차순
 
     </select>
 
