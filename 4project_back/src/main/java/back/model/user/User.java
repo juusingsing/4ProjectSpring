@@ -41,10 +41,12 @@ public class User extends Model {
   	private String sortField = "CREATE_DT";
   	private String sortOrder = "DESC";
   	
-  	private List<PostFile> postFiles; // 조회할 때 사용
-	private List<MultipartFile> files; // 입력할 때 사용
-
+  	private List<MultipartFile> files; //입력할 때 사용
+	private List<PostFile> postFiles; //조회할 때 사용
 	private String remainingFileIds;
+  	
+  	
+  	private String encodedPassword;       // 새롭게 저장할 비밀번호
   	
 
 }

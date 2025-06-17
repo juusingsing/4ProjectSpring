@@ -83,15 +83,22 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public boolean updatePet(Pet pet) {
         boolean updated = petMapper.updatePet(pet) > 0;
+        log.info("updated :{}" , updated);
+        log.info("animalId :{}" , pet.getAnimalId());
+
         if (updated && pet.getFiles() != null && !pet.getFiles().isEmpty()) {
             try {
+
                 List<PostFile> fileList = FileUploadUtil.uploadFiles(
                     pet.getFiles(), "pet", pet.getAnimalId(), "ANI", pet.getUpdateId()
                 );
+
                 for (PostFile postFile : fileList) {
-                    boolean insertResult = fileMapper.insertFile(postFile) > 0;
-                    if (!insertResult) throw new HException("파일 추가 실패");
+                    boolean insertResult = fileMapper.updateFilesByKey(postFile) > 0;
+                    if (!insertResult) throw new HException("파일 업데이트 실패");
                 }
+
+                // Step 3: 최신 파일 ID로 업데이트
                 Long latestFileId = fileMapper.selectLatestFileIdByRefId(pet.getAnimalId(), "ANI");
                 if (latestFileId != null) {
                     petMapper.updatePetFileId(latestFileId, pet.getAnimalId());
@@ -100,6 +107,7 @@ public class PetServiceImpl implements PetService {
                 throw new HException("파일 업로드 중 오류 발생", e);
             }
         }
+
         return updated;
     }
     

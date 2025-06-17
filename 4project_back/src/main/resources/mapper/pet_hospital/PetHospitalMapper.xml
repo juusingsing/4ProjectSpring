@@ -54,6 +54,7 @@
 	    update_id = #{updateId},
 	    update_dt = #{updateDt, jdbcType=TIMESTAMP}
 	  WHERE animal_hospital_treatment_id = #{animalHospitalTreatmentId}
+	  	AND animal_id = #{animalId}
 	</update>
 	
 	<update id="logicalDeleteById">

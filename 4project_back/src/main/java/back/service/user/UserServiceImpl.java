@@ -21,77 +21,75 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserServiceImpl implements UserService {
 	@Autowired
-	private UserMapper userMapper;
+    private UserMapper userMapper;
 	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 	@Autowired
 	private FileMapper fileMapper;
 	@Autowired
 	private FileService fileService;
 
-	// 로그인
-	@Override
+
+    
+    @Override
 	@Transactional
 	public boolean validateUser(User user) {
-
-		try {
-			User dbUser = userMapper.getUserById(user.getUsersId());
-			if (dbUser == null)
-				return false;
-
-			String encryptedPassword = passwordEncoder.encode(user.getUsersPassword());
-			return passwordEncoder.matches(dbUser.getUsersPassword(), encryptedPassword);
-		} catch (Exception e) {
-			log.error("로그인 실패", e);
+    	
+    	try {
+            User dbUser = userMapper.getUserById(user.getUsersId());
+            if (dbUser == null) return false;
+            
+            String encryptedPassword = passwordEncoder.encode(user.getUsersPassword());
+            return passwordEncoder.matches(dbUser.getUsersPassword(), encryptedPassword);
+        } catch (Exception e) {
+        	log.error("로그인 실패", e);
 			throw new HException("로그인 실패", e);
-		}
+        }
 	}
 
-	// 회원가입
-	@Override
+    @Override
 	@Transactional
-	public boolean registerUser(User user) {
+    public boolean registerUser(User user) {
 
-		try {
-			String password = user.getUsersPassword();
-			user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
-			return userMapper.registerUser(user) > 0;
-		} catch (Exception e) {
-			log.error("회원가입 실패", e);
-			e.printStackTrace();
+        try {
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
+            return userMapper.registerUser(user) > 0;
+        } catch (Exception e) {
+        	log.error("회원가입 실패", e);
+        	e.printStackTrace();
 			throw new HException("회원가입 실패", e);
-		}
-	}
-
-	// 사용자 ID로 사용자 정보 조회
-	@Override
-	@Transactional
-	public User getUserById(String usersId) {
-		try {
-			User user = userMapper.getUserById(usersId);
-			if (user != null) {
-				int usersFileId = user.getUsersFileId(); // User 객체에 있는 usersFileId 가져옴
-				if (usersFileId != 0) {
-					PostFile profileFile = fileMapper.getFileByFileId(usersFileId);
-					if (profileFile != null) {
-						user.setPostFiles(List.of(profileFile));
-					} else {
-						log.warn("사용자 ID: {} 의 프로필 파일 ID: {} 에 해당하는 파일을 찾을 수 없습니다.", usersId, usersFileId);
-						user.setPostFiles(null); // 찾지 못했으면 리스트를 null 또는 비어있는 리스트로 설정
-					}
-				} else {
-					log.info("사용자 ID: {} 에게 연결된 프로필 파일이 없습니다 (usersFileId = 0).", usersId);
-					user.setPostFiles(null); // 프로필 파일 ID가 0이면 리스트를 null 또는 비어있는 리스트로 설정
-				}
-			}
-			return user;
-		} catch (Exception e) {
-			log.error("사용자 ID로 사용자 정보 조회 실패: {}", usersId, e); // 로그 메시지 수정
-			throw new HException("사용자 정보 조회 실패", e); // 예외 메시지 수정
-		}
-	}
-	
-	//회원정보 수정
+        }
+    }
+ // 사용자 ID로 사용자 정보 조회
+ 	@Override
+ 	@Transactional
+ 	public User getUserById(String usersId) {
+ 		try {
+ 			User user = userMapper.getUserById(usersId);
+ 			if (user != null) {
+ 				int usersFileId = user.getUsersFileId(); // User 객체에 있는 usersFileId 가져옴
+ 				if (usersFileId != 0) {
+ 					PostFile profileFile = fileMapper.getFileByFileId(usersFileId);
+ 					if (profileFile != null) {
+ 						user.setPostFiles(List.of(profileFile));
+ 					} else {
+ 						log.warn("사용자 ID: {} 의 프로필 파일 ID: {} 에 해당하는 파일을 찾을 수 없습니다.", usersId, usersFileId);
+ 						user.setPostFiles(null); // 찾지 못했으면 리스트를 null 또는 비어있는 리스트로 설정
+ 					}
+ 				} else {
+ 					log.info("사용자 ID: {} 에게 연결된 프로필 파일이 없습니다 (usersFileId = 0).", usersId);
+ 					user.setPostFiles(null); // 프로필 파일 ID가 0이면 리스트를 null 또는 비어있는 리스트로 설정
+ 				}
+ 			}
+ 			return user;
+ 		} catch (Exception e) {
+ 			log.error("사용자 ID로 사용자 정보 조회 실패: {}", usersId, e); // 로그 메시지 수정
+ 			throw new HException("사용자 정보 조회 실패", e); // 예외 메시지 수정
+ 		}
+ 	}
+ 	
+ 	//회원정보 수정
 	@Override
 	@Transactional
 	public boolean updateUser(User user) {
@@ -180,17 +178,17 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	//회원탈퇴
-	@Override
+    
+    @Override
 	public boolean deleteUser(User user) {
-		try {
-			String password = user.getUsersPassword();
-			user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
-			return userMapper.deleteUser(user) > 0;
-		} catch (Exception e) {
-			log.error("사용자 탈퇴 중 오류", e);
-			throw new HException("사용자 탈퇴 실패", e);
-		}
+    	try {
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
+            return userMapper.deleteUser(user) > 0;
+        } catch (Exception e) {
+            log.error("사용자 탈퇴 중 오류", e);
+            throw new HException("사용자 탈퇴 실패", e);
+        }
 	}
 
 	@Override
@@ -198,20 +196,20 @@ public class UserServiceImpl implements UserService {
 		try {
 			int page = user.getPage();
 			int size = user.getSize();
-
+			
 			int totalCount = userMapper.getTotalUserCount(user);
 			int totalPages = (int) Math.ceil((double) totalCount / size);
-
+			
 			int startRow = (page - 1) * size + 1;
-			int endRow = page * size;
-
+			int endRow = page *size;
+			
 			user.setTotalCount(totalCount);
 			user.setTotalPages(totalPages);
 			user.setStartRow(startRow);
 			user.setEndRow(endRow);
-
+			
 			List list = userMapper.getUserList(user);
-
+			
 			return list;
 		} catch (Exception e) {
 			log.error("유저 목록 조회 실패", e);
@@ -222,24 +220,24 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean userM(User user) {
 		try {
-			String password = user.getUsersPassword();
-			user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
-			return userMapper.userM(user) > 0;
-		} catch (Exception e) {
-			log.error("회원관리 중 오류", e);
-			throw new HException("회원관리 실패", e);
-		}
+            String password = user.getUsersPassword();
+            user.setUsersPassword(password != null ? passwordEncoder.encode(password) : null);
+            return userMapper.userM(user) > 0;
+        } catch (Exception e) {
+            log.error("회원관리 중 오류", e);
+            throw new HException("회원관리 실패", e);
+        }
 	}
 
 	@Override
 	public boolean usersIdCheck(User user) {
 		try {
-			int count = userMapper.usersIdCheck(user);
-			return count > 0;
-		} catch (Exception e) {
-			log.error("아이디 중복 체크 중 오류 발생!", e);
-			throw new HException("아이디 중복 체크 실패", e);
-		}
+            int count = userMapper.usersIdCheck(user);
+            return count > 0;
+        } catch (Exception e) {
+            log.error("아이디 중복 체크 중 오류 발생!", e);
+            throw new HException("아이디 중복 체크 실패", e);
+        }
 	}
 
 	@Override
@@ -252,74 +250,85 @@ public class UserServiceImpl implements UserService {
 			throw new HException("아이디 중복 체크 실패", e);
 		}
 	}
+	
+	 @Override
+	 public List<User> findUsersByInfo(String email) {
+	     try {
+	         return userMapper.selectUsersByEmail(email);
+	     } catch (Exception e) {
+	         log.error("이메일로 사용자 목록 조회 중 오류", e);
+	         throw new HException("사용자 조회 실패", e);
+	     }
+	 }
 
-	@Override
-	public List<User> findUsersByInfo(String email) {
-		try {
-			return userMapper.selectUsersByEmail(email);
-		} catch (Exception e) {
-			log.error("이메일로 사용자 목록 조회 중 오류", e);
-			throw new HException("사용자 조회 실패", e);
-		}
-	}
+	 @Override
+	 public User findUserByUserIdAndEmail(String usersId, String usersEmail) {
+	     try {
+	         Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", usersId);
+	         params.put("usersEmail", usersEmail);
+	         return userMapper.findUserByUserIdAndEmail(params);
+	     } catch (Exception e) {
+	         log.error("아이디와 이메일로 사용자 조회 중 오류", e);
+	         throw new HException("사용자 조회 실패", e);
+	     }
+	 }
+	
+	 @Override
+	 public boolean updatePassword(String usersId, String encodedPassword) {
+	     try {
+	    	 Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", usersId);
+	         params.put("encodedPassword", encodedPassword);
+	         return userMapper.updatePassword(params) > 0;
+	     } catch (Exception e) {
+	         log.error("비밀번호 업데이트 중 오류", e);
+	         throw new HException("비밀번호 업데이트 실패", e);
+	     }
+	 }
+	
+	 @Override
+	 public boolean resetPassword(User user) {
+	     try {
+	         User userCheck = userMapper.findByUserId(user.getUsersId());
+	         if (userCheck == null) return false;
+	         
+	         log.info(">>>> userCheck체크 결과", userCheck);
+	         
+	         String encodedPassword = passwordEncoder.encode(user.getEncodedPassword());
+	         log.info(">>>> encodedPassword", encodedPassword);
+	         
+	         Map<String, Object> params = new HashMap<>();
+	         params.put("usersId", user.getUsersId());
+	         params.put("encodedPassword", encodedPassword);
 
-	@Override
-	public User findUserByUserIdAndEmail(String usersId, String usersEmail) {
-		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("usersId", usersId);
-			params.put("usersEmail", usersEmail);
-			return userMapper.findUserByUserIdAndEmail(params);
-		} catch (Exception e) {
-			log.error("아이디와 이메일로 사용자 조회 중 오류", e);
-			throw new HException("사용자 조회 실패", e);
-		}
-	}
 
-	@Override
-	public boolean updatePassword(String usersId, String encodedPassword) {
-		try {
-			return userMapper.updatePassword(usersId, encodedPassword) > 0;
-		} catch (Exception e) {
-			log.error("비밀번호 업데이트 중 오류", e);
-			throw new HException("비밀번호 업데이트 실패", e);
-		}
-	}
-
-	@Override
-	public boolean resetPassword(String usersId, String newPassword) {
-		try {
-			User user = userMapper.findByUserId(usersId);
-			if (user == null)
-				return false;
-
-			String encodedPassword = passwordEncoder.encode(newPassword);
-			return userMapper.updatePassword(usersId, encodedPassword) > 0;
-		} catch (Exception e) {
-			log.error("비밀번호 재설정 중 오류", e);
-			throw new HException("비밀번호 재설정 실패", e);
-		}
-	}
-
+	         return userMapper.updatePassword(params) > 0;
+	     } catch (Exception e) {
+	         log.error("비밀번호 재설정 중 오류", e);
+	         throw new HException("비밀번호 재설정 실패", e);
+	     }
+	 }
+	
+	
 	@Override
 	public boolean isEmailRegistered(String email) {
 		try {
-			int count = userMapper.isEmailRegistered(email);
-			return count > 0;
+		    int count = userMapper.isEmailRegistered(email);
+		    return count > 0;
 		} catch (Exception e) {
-			log.error("이메일 등록 여부 중 확인 실패했습니다.");
-			throw new HException("이메일 등록 여부 확인 실패");
-		}
+	    	log.error("이메일 등록 여부 중 확인 실패했습니다.");
+	    	throw new HException("이메일 등록 여부 확인 실패");
+	    }
 	}
-
 	@Override
 	public User findByEmail(String email) {
-		try {
-			List<User> users = userMapper.selectUsersByEmail(email);
-			return users != null && !users.isEmpty() ? users.get(0) : null;
-		} catch (Exception e) {
-			log.error("이메일로 사용자 조회 중 오류", e);
-			throw new HException("이메일 조회 실패", e);
-		}
+	    try {
+	        List<User> users = userMapper.selectUsersByEmail(email);
+	        return users != null && !users.isEmpty() ? users.get(0) : null;
+	    } catch (Exception e) {
+	        log.error("이메일로 사용자 조회 중 오류", e);
+	        throw new HException("이메일 조회 실패", e);
+	    }
 	}
 }
