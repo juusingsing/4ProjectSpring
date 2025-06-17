@@ -51,7 +51,7 @@
 		) 
     </insert>
 
-	<!-- 사용자 업데이트 -->
+   <!-- 사용자 업데이트 -->
 	<update id="updateUser" parameterType="back.model.user.User">
 	    UPDATE USERS
 	    <set>
@@ -185,16 +185,22 @@
 	    SELECT COUNT(*) FROM USERS WHERE USERS_ID = #{usersId}
 	</select>
 	
+	    <!-- 사용자 삭제 
+    <delete id="deleteUser" parameterType="string">
+        DELETE FROM USERS
+        WHERE USER_ID = #{userId}
+    </delete>
+        -->
 	<select id="checkUserIdDuplicate" parameterType="string" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM USERS
 	    WHERE USERS_ID = #{usersId} AND DEL_YN = 'N'
 	</select>    
 	
-    <update id="updatePassword">
+    <update id="updatePassword" parameterType="map">
 		UPDATE users
 		SET users_password = #{encodedPassword}
-		WHERE users_id = #{userId}
+		WHERE users_id = #{usersId}
 	</update>
 	    
 	<select id="findUsersByInfo" parameterType="map" resultType="back.model.user.User">
@@ -233,35 +239,23 @@
 	      AND DEL_YN = 'N'
 	</select>
 	
-	<!--이메일 중복페크-->
+	<select id="selectByEmail" resultType="back.model.user.User" parameterType="String">
+	    SELECT users_id, users_email, users_name, users_password
+	    FROM users
+	    WHERE users_email = #{usersEmail}
+	      AND ROWNUM = 1
+	</select>
+	
+	<select id="countByEmail" resultType="int" parameterType="String">
+	    SELECT COUNT(*)
+	    FROM users
+	    WHERE users_email = #{usersEmail}
+	</select>
+	
 	<select id="isEmailRegistered" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM USERS 
 	    WHERE USERS_EMAIL = #{email}
 	    AND DEL_YN = 'N'
 	</select>
-	
-	<!--	
-    이메일 중복 체크
-	<select id="countByEmail" resultType="int" parameterType="String">
-		SELECT COUNT(*)
-		FROM users
-		WHERE users_email = #{usersEmail}
-	</select>-->    
-	<!--    이메일 인증시 사용
-	<select id="selectByEmail" resultType="back.model.user.User" parameterType="String">
-		SELECT 
-		users_id, 
-		users_email, 
-		users_name, 
-		users_password
-		FROM users
-		WHERE users_email = #{usersEmail}
-		AND ROWNUM = 1
-	</select>-->
-	<!-- 사용자 삭제 
-    <delete id="deleteUser" parameterType="string">
-        DELETE FROM USERS
-        WHERE USER_ID = #{userId}
-    </delete>-->
 </mapper>

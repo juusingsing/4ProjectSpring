@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Home extends Model {
 	
-    private String fileId;
+    private int fileId;
 
     // 동물 관련 컬럼 (ANIMAL 테이블에만 존재)
     private String animalId;
@@ -37,7 +37,11 @@ public class Home extends Model {
     private String plantGrowStatus;
     
     private String sortField; // 정렬 기준 컬럼명 (예: "ANIMAL_NAME", "CREATE_DT")
-    private String sortOrder; // 정렬 순서 (예: "ASC", "DESC")
+    private String sortOrder; // 정렬 순서 (예: "ASC", "DESC")\
+    
+ 	private List<MultipartFile> files; //입력할 때 사용
+	private List<PostFile> postFiles; //조회할 때 사용
+	private String remainingFileIds;
 
     
 }

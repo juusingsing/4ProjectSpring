@@ -190,4 +190,14 @@ public class EmailServiceImpl implements EmailService {
         	throw new  HException("이메일 인증정보에서 사용자 아이디 업데이트가 안됬습니다.", e);		
         }
     }
+
+	@Override
+	public boolean isEmailYnCheck(String email) {
+		try {
+            return userService.isEmailRegistered(email);
+        } catch (Exception e) {
+            log.error("이메일 등록 여부 확인 실패", e);
+            throw new HException("이메일 중복 체크 실패", e);
+        }
+	}
 }

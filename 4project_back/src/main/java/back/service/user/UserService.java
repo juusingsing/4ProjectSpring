@@ -32,7 +32,7 @@ public interface UserService {
 
 	public boolean updatePassword(String usersId, String encodedPassword);
 
-	public boolean resetPassword(String usersId, String newPassword);
+	public boolean resetPassword(User user);
 
 	public boolean isEmailRegistered(String email);
 
