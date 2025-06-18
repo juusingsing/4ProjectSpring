@@ -269,7 +269,7 @@ public class PlantController {
 	// 식물 수정 (파일 업로드 포함)
 	@PostMapping(value = "/updatePlant.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> update(@ModelAttribute Plant plant,
-			@RequestPart(value = "file", required = false) List<MultipartFile> files, // 복수 파일 받기
+			@RequestPart(value = "files", required = false) List<MultipartFile> files, // 복수 파일 받기
 			@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		SecurityUtil.checkAuthorization(userDetails);

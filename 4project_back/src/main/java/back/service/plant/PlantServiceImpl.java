@@ -284,15 +284,36 @@ public class PlantServiceImpl implements PlantService {
 	@Override
     @Transactional
     public boolean updatePlant(Plant plant) {
-		
-        try {
-        	log.info("Attempting to update plant with ID: {}", plant.getPlantId());
-            log.info("Plant details: {}", plant); // Plant 객체 전체 출력 (toString() 호출)
-            return plantMapper.updatePlant(plant) > 0;
-        } catch (Exception e) {
-            log.error("식물 수정 중 오류 발생", e);
-            throw new HException("식물 수정 실패", e);
+		log.info("Attempting to update plant with ID: {}", plant.getPlantId());
+        log.info("Plant details: {}", plant); // Plant 객체 전체 출력 (toString() 호출)
+		boolean updated = plantMapper.updatePlant(plant) > 0;
+		boolean result = false;
+		if (updated && plant.getFiles() != null && !plant.getFiles().isEmpty()) {
+            try {
+            
+                List<PostFile> fileList = FileUploadUtil.uploadFiles(
+                		plant.getFiles(), "plant", plant.getPlantId(), "PLA", plant.getUpdateId()
+                );
+
+                for (PostFile postFile : fileList) {
+                    boolean insertResult = fileMapper.updateFilesByKey(postFile) > 0;
+                    if (!insertResult) throw new HException("파일 업데이트 실패");
+                }
+
+                // Step 3: 최신 파일 ID로 업데이트
+                Long latestFileId = fileMapper.selectLatestFileIdByRefId(plant.getPlantId(), "PLA");
+                if (latestFileId != null) {
+                	result = plantMapper.updatePlantFileId(latestFileId, plant.getPlantId()) > 0;
+                	
+                }
+                
+                
+            } catch (Exception e) {
+            	log.error("식물 수정 중 오류 발생", e);
+                throw new HException("식물 수정 실패", e);
+            }
         }
+		 return result;
     }
 	
 	//식물 삭제

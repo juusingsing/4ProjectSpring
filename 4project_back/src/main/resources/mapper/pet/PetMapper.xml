@@ -70,13 +70,16 @@
 	    WHERE animal_id = #{animalId}
 	      AND users_id = #{usersId}
 	</update>
+	
 	<select id="getPetByIdAndUsername" parameterType="map" resultType="back.model.pet.Pet">
 	  SELECT a.*, pf.post_file_path AS fileUrl
-	  FROM ANIMAL a
-	  LEFT JOIN POST_FILE pf ON a.animal_id = pf.post_file_key
-	  WHERE a.animal_id = #{animalId}
-	    AND a.users_id = #{usersId}
-	    AND a.del_yn = 'N'
+		FROM ANIMAL a
+		LEFT JOIN POST_FILE pf 
+		  ON (a.animal_id = pf.post_file_key
+		  AND pf.post_file_category = #{category})
+		WHERE a.animal_id = #{animalId}
+		  AND a.users_id = #{usersId}
+		  AND a.del_yn = 'N'
 	</select>
 
 </mapper>

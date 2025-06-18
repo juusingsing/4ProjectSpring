@@ -407,5 +407,11 @@
             ORDER BY PLANT_WATERING_DATE DESC  --오름차순
 
     </select>
+    
+    <update id="updatePlantFileId" parameterType="map">
+	    UPDATE PLANT
+	    SET file_id = #{fileId}
+	    WHERE PLANT_ID = #{plantId}
+	</update>
 
 </mapper>

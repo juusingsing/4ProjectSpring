@@ -25,6 +25,7 @@ public class Pet extends Model {
     private int animalId;            // ANIMAL_ID
     private int petId;            // PET_ID
     private Long fileId;              // FILE_ID
+    private String category;          // 파일테이블 조회 카테고리
     
     private String animalName;        // ANIMAL_NAME
     private String animalSpecies;     // ANIMAL_SPECIES

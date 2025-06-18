@@ -82,4 +82,6 @@ public interface PlantMapper {
     
     // 물주기 리스트조회
     public List<Plant> waterList(Plant plant);
+    
+    public int updatePlantFileId(@Param("fileId") Long fileId, @Param("plantId") int plantId);
 }

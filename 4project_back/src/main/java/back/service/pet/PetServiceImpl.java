@@ -127,7 +127,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet getPetById(int animalId, String usersId) {
-        return petMapper.getPetByIdAndUsername(animalId, usersId);
+    public Pet getPetById(int animalId, String usersId, String category) {
+        return petMapper.getPetByIdAndUsername(animalId, usersId, category);
     }
 }

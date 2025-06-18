@@ -114,7 +114,8 @@ public class PetController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "animalId는 필수입니다.", null));
         }
 
-        Pet pet = petService.getPetById(animalId, userDetails.getUsername());
+        String category = "ANI";
+        Pet pet = petService.getPetById(animalId, userDetails.getUsername(), category);
         if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }

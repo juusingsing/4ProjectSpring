@@ -12,7 +12,7 @@ public interface PetService {
 
 
 
-	public Pet getPetById(int animalId, String usersId);
+	public Pet getPetById(int animalId, String usersId, String category);
 
 	
 }
