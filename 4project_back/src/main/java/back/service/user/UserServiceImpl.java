@@ -300,8 +300,9 @@ public class UserServiceImpl implements UserService {
 	         
 	         Map<String, Object> params = new HashMap<>();
 	         params.put("usersId", user.getUsersId());
-	         params.put("updateId", user.getUpdateId());
+	         params.put("updateId", user.getUsersId());
 	         params.put("encodedPassword", encodedPassword);
+	         
 
 
 	         return userMapper.updatePassword(params) > 0;

@@ -258,7 +258,7 @@ public class PlantServiceImpl implements PlantService {
 	                files,
 	                "plant",
 	                plantId,
-	                "P", // PostFileCategory는 'P' (plant)로 지정
+	                "PLA", //'PLA'로 지정
 	                plant.getCreateId()
 	            );
 
