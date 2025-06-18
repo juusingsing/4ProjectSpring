@@ -1,11 +1,13 @@
 package back.service.plant;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
+import back.model.pet.Pet;
 import back.model.plant.Plant;
 
 public interface PlantService {
@@ -73,5 +75,11 @@ public interface PlantService {
 
     // 식물 삭제
     public boolean deletePlant(Plant plant) throws HException;  
+    
+    //물주기 저장
+    public boolean WaterCreate(Plant plant) throws NumberFormatException, IOException;
+    
+    //물주기조회
+    public List<Plant> waterList(Plant plant) throws NumberFormatException, IOException;
     
 }

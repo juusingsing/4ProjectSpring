@@ -170,4 +170,16 @@
 	  ORDER BY create_dt DESC
 	  FETCH FIRST 1 ROWS ONLY
    </select>
+   <!-- 특정 키에 해당하는 파일들 업데이트 처리 -->
+	<update id="updateFilesByKey" parameterType="back.model.common.PostFile">
+	    UPDATE POST_FILE
+	    SET 
+	        POST_FILE_NAME = #{postFileName},
+	        POST_FILE_PATH = #{postFilePath},
+	        UPDATE_ID = #{updateId},
+	        UPDATE_DT = SYSDATE
+	    WHERE POST_FILE_KEY = #{postFileKey}
+	      AND POST_FILE_CATEGORY = #{postFileCategory}
+	      AND DEL_YN = 'N'
+	</update>
 </mapper>

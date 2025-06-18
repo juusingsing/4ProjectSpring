@@ -31,6 +31,9 @@
 			<if test="diaryType != null and diaryType != ''">
    			 	AND A.DIARY_TYPE = #{diaryType}
 			</if>
+			<if test="createId != null and createId != ''">
+    			AND A.CREATE_ID = #{createId}
+			</if>
 			</where>
 			ORDER BY DIARY_DATE DESC
 

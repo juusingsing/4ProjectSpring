@@ -74,6 +74,7 @@ public class FindController {
         log.info(">>>> 받은 newPassword: {}", newPassword);
         User user = new User();
         user.setUsersId(usersId);
+        user.setUpdateId(usersId);
         user.setEncodedPassword(newPassword);
 
         if (usersId == null || newPassword == null) {

@@ -20,7 +20,12 @@ public interface FileMapper {
 	
 	public List<PostFile> getAllFiles(PostFile postFile); // 파일 전체 가져오기
 
-	Long selectLatestFileIdByRefId(@Param("refId") int refId, @Param("category") String category);
+	public Long selectLatestFileIdByRefId(@Param("refId") int refId, @Param("category") String category);
+
+
+	public int updateFilesByKey(PostFile updateFileInfo);
+
+	
 	
 	
 }

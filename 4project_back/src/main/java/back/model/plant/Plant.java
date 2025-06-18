@@ -1,6 +1,7 @@
 package back.model.plant;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,10 @@ public class Plant extends Model{
     
     private String fileLogicName; // 서버에 저장된 파일명 (실제 파일명)
     private String fileOriginName; // 원본 파일명 (사용자가 업로드한 파일명)
+    
+    // PLANT_WATERING 테이블 관련 필드
+    private int waterId; // 물주기기록ID
+    private Timestamp waterDt;
     
     // PLANT_SUNLIGHTING 테이블 관련 필드
     private int plantSunlightingId; // 일조기록ID
