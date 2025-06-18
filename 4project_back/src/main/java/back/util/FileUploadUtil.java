@@ -57,7 +57,6 @@ public class FileUploadUtil {
                 String filePath = uploadPath + File.separator + newFileName;
 
                 file.transferTo(new File(filePath));
-
                 PostFile postFile = new PostFile();
                 postFile.setPostFileCategory(postFileCategory); // < 카테고리 산책 WAL / 일기 MMO / 커뮤니티 COM 
                 postFile.setPostFileKey(postFileKey);   //   <<여기에 산책, 일기, 커뮤니티등의  고유키값(walkId, diaryId 등등) 들어감
