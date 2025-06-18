@@ -2,6 +2,8 @@ package back.controller.pet;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -17,9 +19,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import back.model.combo.Combo;
 import back.model.common.CustomUserDetails;
+
+import back.model.common.PostFile;
+
 import back.model.diary.Diary;
+
 import back.model.pet.Pet;
+
+import back.service.file.FileService;
+
 import back.model.pet_hospital.PetHospital;
+
 import back.service.pet.PetService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
@@ -32,7 +42,8 @@ public class PetController {
 
     @Autowired
     private PetService petService;
-
+    @Autowired
+    private FileService fileService;
     @PostMapping(value = "/animalregister.do", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> registerPet(
             @RequestPart("data") Pet pet,
@@ -92,7 +103,9 @@ public class PetController {
     
     @GetMapping("/getPetById.do")
     public ResponseEntity<?> getPetById(
+
         @RequestParam("animalId") Integer animalId,
+
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         SecurityUtil.checkAuthorization(userDetails);
@@ -105,7 +118,9 @@ public class PetController {
         if (pet == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "반려동물 조회 실패", null));
         }
-        
+    
+   
+        System.out.println("fileUrl from DB: " + pet.getFileUrl());
 
         return ResponseEntity.ok(new ApiResponse<>(true, "반려동물 조회 성공", pet));
     }

@@ -70,7 +70,6 @@
 	    WHERE animal_id = #{animalId}
 	      AND users_id = #{usersId}
 	</update>
-	
 	<select id="getPetByIdAndUsername" parameterType="map" resultType="back.model.pet.Pet">
 	  SELECT a.*, pf.post_file_path AS fileUrl
 	  FROM ANIMAL a
@@ -78,5 +77,6 @@
 	  WHERE a.animal_id = #{animalId}
 	    AND a.users_id = #{usersId}
 	    AND a.del_yn = 'N'
-	</select>	
+	</select>
+
 </mapper>

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.model.diary.Diary;
+import back.model.pet.Pet;
 import back.model.plant.Plant;
 
 @Mapper
@@ -75,4 +76,10 @@ public interface PlantMapper {
 
     // 식물 삭제
     public int deletePlant(Plant plant);
+    
+    // 물주기 저장
+    public int WaterCreate(Plant plant);
+    
+    // 물주기 리스트조회
+    public List<Plant> waterList(Plant plant);
 }

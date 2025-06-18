@@ -289,4 +289,31 @@ public class PlantController {
 		boolean isDeleted = plantService.deletePlant(plant);
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "게시물 삭제 성공" : "게시물 삭제 실패", null));
 	}
+	
+	@PostMapping("/waterCreate.do")
+	public ResponseEntity<?> WaterCreate(
+			@RequestBody Plant plant, @AuthenticationPrincipal CustomUserDetails userDetails)
+					throws NumberFormatException, IOException {
+		
+		log.info("watercreate plantId: {}", plant.getPlantId());
+		SecurityUtil.checkAuthorization(userDetails);
+				
+		plant.setCreateId(userDetails.getUser().getUsersId());
+		boolean isCreated = plantService.WaterCreate(plant);
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "펫산책 임시저장 성공" : "펫산책 임시저장 실패", plant));
+		
+	}
+	
+	@PostMapping("/waterList.do")
+    public List<Plant> waterList(@RequestBody Plant plant,  @AuthenticationPrincipal CustomUserDetails userDetails)
+    				throws NumberFormatException, IOException {
+		
+		log.info("waterlist plantId: {}", plant.getPlantId());
+		SecurityUtil.checkAuthorization(userDetails);
+		plant.setCreateId(userDetails.getUsername());
+		List<Plant> waterList = plantService.waterList(plant);
+
+		
+	    return waterList;
+    }
 }
