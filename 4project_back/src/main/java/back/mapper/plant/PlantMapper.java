@@ -80,6 +80,9 @@ public interface PlantMapper {
     // 물주기 저장
     public int WaterCreate(Plant plant);
     
+    // 물주기 삭제
+    public int WaterDelete(Plant plant);
+    
     // 물주기 리스트조회
     public List<Plant> waterList(Plant plant);
     

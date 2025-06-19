@@ -79,6 +79,9 @@ public interface PlantService {
     //물주기 저장
     public boolean WaterCreate(Plant plant) throws NumberFormatException, IOException;
     
+    //물주기 삭제
+    public boolean WaterDelete(Plant plant) throws NumberFormatException, IOException;
+    
     //물주기조회
     public List<Plant> waterList(Plant plant) throws NumberFormatException, IOException;
     

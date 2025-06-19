@@ -394,6 +394,13 @@
 	    </selectKey>
 	</insert>
 	
+	<!-- 물주기 기록 삭제-->
+	<update id="WaterDelete" parameterType="back.model.plant.Plant">
+	    UPDATE PLANT_WATERING
+	    SET DEL_YN = 'Y'
+	    WHERE PLANT_WATERING_ID = #{waterId}
+	</update>
+	
 	<!-- 물주기 기록 조회 -->
     <select id="waterList" parameterType="back.model.plant.Plant" resultType="back.model.plant.Plant">
 

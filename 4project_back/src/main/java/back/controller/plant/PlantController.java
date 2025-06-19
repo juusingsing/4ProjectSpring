@@ -300,7 +300,21 @@ public class PlantController {
 				
 		plant.setCreateId(userDetails.getUser().getUsersId());
 		boolean isCreated = plantService.WaterCreate(plant);
-		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "펫산책 임시저장 성공" : "펫산책 임시저장 실패", plant));
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "식물 줄주기 성공" : "식물 물주기 실패", plant));
+		
+	}
+	
+	@PostMapping("/waterDelete.do")
+	public ResponseEntity<?> WaterDelete(
+			@RequestBody Plant plant, @AuthenticationPrincipal CustomUserDetails userDetails)
+					throws NumberFormatException, IOException {
+		
+		log.info("watercreate waterId: {}", plant.getWaterId());
+		SecurityUtil.checkAuthorization(userDetails);
+				
+		plant.setCreateId(userDetails.getUser().getUsersId());
+		boolean isCreated = plantService.WaterDelete(plant);
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "식물 물주기삭제 성공" : "식물 물주기삭제 실패", plant));
 		
 	}
 	

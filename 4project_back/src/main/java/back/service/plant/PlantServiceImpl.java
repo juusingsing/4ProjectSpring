@@ -335,6 +335,13 @@ public class PlantServiceImpl implements PlantService {
 		
 		return result;
 	}
+	
+	@Override
+	public boolean WaterDelete(Plant plant) throws NumberFormatException, IOException {
+		boolean result = plantMapper.WaterDelete(plant) > 0;
+		
+		return result;
+	}
 
 
 	@Override
