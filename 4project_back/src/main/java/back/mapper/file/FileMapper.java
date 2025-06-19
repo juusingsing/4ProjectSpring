@@ -22,10 +22,6 @@ public interface FileMapper {
 
 	public Long selectLatestFileIdByRefId(@Param("refId") int refId, @Param("category") String category);
 
-
-	public int updateFilesByKey(PostFile updateFileInfo);
-
-	
-	
+	public int updateFilesByKey(PostFile updateFileInfo);	
 	
 }

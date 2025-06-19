@@ -181,5 +181,8 @@
 	    WHERE POST_FILE_KEY = #{postFileKey}
 	      AND POST_FILE_CATEGORY = #{postFileCategory}
 	      AND DEL_YN = 'N'
+	      <if test="postFileId != null">
+            AND POST_FILE_ID = #{postFileId}
+          </if>
 	</update>
 </mapper>

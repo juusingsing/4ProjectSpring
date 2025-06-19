@@ -37,7 +37,6 @@ public class DiaryServiceImpl implements DiaryService{
 			Integer id = diary.getDiaryId();
 			log.info("파일 업로드 진입전!");
 			if(result && files != null && id != null && id > 0) {
-				log.info("파일 업로드 진입!");
 				List<PostFile> fileList = FileUploadUtil.uploadFiles(
 						files, 
 						"diary",

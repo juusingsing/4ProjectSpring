@@ -9,7 +9,6 @@ import back.model.combo.GroupCode;
 
 public interface ComboService {
     
-    
     public boolean create(Combo combo);
     
     public boolean update(Combo combo);

@@ -54,9 +54,6 @@ public class FindController {
         String usersId = body.get("usersId");
         String usersEmail = body.get("usersEmail");
 
-        log.info("비밀번호 찾기 요청: usersId={}, usersEmail={}", usersId, usersEmail);
-        log.info(">>>> 받은 usersId: {}", usersId);
-        log.info(">>>> 받은 usersEmail: {}", usersEmail);
         User user = userService.findUserByUserIdAndEmail(usersId, usersEmail);
         if (user == null) {
             return ResponseEntity.ok(new ApiResponse<>(false, "입력한 정보가 일치하지 않습니다.", null));
@@ -70,8 +67,7 @@ public class FindController {
     public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody Map<String, String> payload) {
         String usersId = payload.get("usersId");
         String newPassword = payload.get("newPassword");
-        log.info(">>>> 받은 usersId: {}", usersId);
-        log.info(">>>> 받은 newPassword: {}", newPassword);
+        
         User user = new User();
         user.setUsersId(usersId);
         user.setUpdateId(usersId);

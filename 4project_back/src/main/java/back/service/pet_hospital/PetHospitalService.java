@@ -10,16 +10,12 @@ import back.model.pet_hospital.PetHospital;
 
 public interface PetHospitalService {
 
-
 	PetHospital registerHospitalRecord(PetHospital petHospital);
 
 	List<PetHospital> getAllByCreateDtDesc();
 
 	void updatePetHospital(int id, PetHospital petHospital, CustomUserDetails userDetails);
 
-
-	void deletePetHospital(Long id, String usersId);
-
-	
+	void deletePetHospital(Long id, String usersId);	
 
 }
