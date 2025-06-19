@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Diary extends Model{
 	
-	
 	private Integer  diaryId;
 	private String diaryTitle;
 	private String diaryContent;

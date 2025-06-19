@@ -10,8 +10,6 @@ public interface PetService {
 
 	public boolean deletePet(int animalId, String usersId);
 
-
-
 	public Pet getPetById(int animalId, String usersId, String category);
 
 	

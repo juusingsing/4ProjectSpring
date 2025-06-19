@@ -72,18 +72,6 @@ public class SecurityConfig {
                         "/api/user/logout.do",
                         "/api/user/register.do",
                         "/api/user/checkUserId.do",
-                        "/api/file/down.do",
-                        "/api/file/imgDown.do",
-                        "/api/file/imgUpload.do",
-                        "/api/combo/create.do", // ✅ 게시글 등록 허용
-                        "/api/combo/delete.do",
-                        "/api/combo/list.do",
-                        "/api/combo/common.do",
-                        "/api/combo/listByGroup.do",
-                        "/combo/list.do",
-                        "/api/img/imgSave.do",
-                        "/uploads/**", // ✅ 정적 리소스 (이미지, 파일 등)
-                        "/api/img/imgLoad.do",
                         "/api/find/findId.do",
                         "/api/find/findPw.do",
                         "/api/find/resetPassword.do",
@@ -91,31 +79,7 @@ public class SecurityConfig {
                         "/api/email/idfind-send-code.do",
                         "/api/email/pwfind-send-code.do",
                         "/api/email/verify-code.do",
-                        "/api/pet/animalregister.do",
-                        "/api/pet/petUpdate.do",
-                        "/api/pet/petdelete.do",
-                        "/api/pet/getPetById.do",
-                        "/api/petHospital/petHospital.do",
-                        "/api/petHospital/list.do",
-                        "/api/petHospital/update.do",
-                        "/api/petTrainingAndAction/petTrainingAndAction.do",
-                        "/api/petTrainingAndAction/list.do",
-                        "/api/petTrainingAndAction/update.do",
-                        "/api/petTrainingAndAction/delete.do",
-                        "/api/petWalk/imgSave.do",
-                        "/api/petWalk/imgLoad.do",
-                        "/api/petWalk/petSave.do",
-                        "/api/petWalk/petUpdate.do",
-                        "/api/petWalk/petLoad.do",
-                        "/api/petWalk/petCurrentLoad.do",
-                        "/api/alarm/oneList.do",
-                        "/api/alarm/list.do",
-                        "/api/alarm/delete.do",
-                        "/api/plant/waterList.do",
-                        "/api/plant/waterCreate.do"
-                        
-                        
-                        
+                        "/uploads/**" // ✅ 정적 리소스 (이미지, 파일 등)
 
                     ).permitAll() // 로그인, 로그아웃, 회원가입은 누구나 접근 가능
                     .anyRequest().authenticated() // 그 외는 인증 필요

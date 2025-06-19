@@ -42,6 +42,5 @@ public class Home extends Model {
  	private List<MultipartFile> files; //입력할 때 사용
 	private List<PostFile> postFiles; //조회할 때 사용
 	private String remainingFileIds;
-
     
 }

@@ -33,9 +33,6 @@ public class WriteServiceImpl implements WriteService {
     @Autowired
     private FileService fileService; // 새로 추가: FileService 주입
     
-
-    
-    
     @Override
 	public Write getWriteById(int writingId) {
     	

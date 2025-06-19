@@ -36,7 +36,6 @@ public class DiaryServiceImpl implements DiaryService{
 			List<MultipartFile>files=diary.getFiles();
 			Integer id = diary.getDiaryId();
 			if(result && files != null && id != null && id > 0) {
-				log.info("파일 업로드 진입!");
 				List<PostFile> fileList = FileUploadUtil.uploadFiles(
 						files, 
 						"diary",

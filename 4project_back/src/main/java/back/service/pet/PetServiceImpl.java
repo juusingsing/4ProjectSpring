@@ -49,7 +49,6 @@ public class PetServiceImpl implements PetService {
             int animalId = pet.getAnimalId();
 
             if (result && files != null && animalId > 0) {
-                log.info("파일 업로드 진입!");
 
                 List<PostFile> fileList = FileUploadUtil.uploadFiles(
                     files,
@@ -83,8 +82,6 @@ public class PetServiceImpl implements PetService {
     @Transactional
     public boolean updatePet(Pet pet) {
         boolean updated = petMapper.updatePet(pet) > 0;
-        log.info("updated :{}" , updated);
-        log.info("animalId :{}" , pet.getAnimalId());
 
         if (updated && pet.getFiles() != null && !pet.getFiles().isEmpty()) {
             try {

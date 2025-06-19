@@ -47,22 +47,6 @@ public class ComboController{
 private ComboService comboService;
 
 
-///**
-// * 
-// * 게시글 단건 조회
-// */
-//@PostMapping("/view.do")
-//public ResponseEntity<?> getBoard(@RequestBody Board board) {
-//	Board selecBoard = comboService.getBoardById(board.getBoardId());
-//	return ResponseEntity.ok(new ApiResponse<>(true, "조회 성공", selecBoard));
-//}
-
-/**
- * 
- * 게시글 등록
- * @throws IOException 
- * @throws NumberFormatException 
- */
 @PostMapping("/create.do")
 public ResponseEntity<?> createBoard (@RequestBody Combo combo) {
 //		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()

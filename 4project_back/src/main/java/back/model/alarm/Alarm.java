@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor  // 모든 필드를 매개변수로 하는 생성사 자동 생성
 @EqualsAndHashCode(callSuper = true)
 public class Alarm extends Model {
-
 	
 	private int alarmId;
 	private int petId;
@@ -38,11 +37,5 @@ public class Alarm extends Model {
 	
 	private String category;    // 동/식물 구분 카테고리
 	private String type;		// 먹이 타입  사료 간식 영양제 약
-	
-	
-	
-	
 
-
-    
 }

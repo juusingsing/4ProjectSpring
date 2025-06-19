@@ -83,9 +83,6 @@ public ResponseEntity<?> createWrite (
 	@ModelAttribute Write write,
 	@RequestPart(value = "files", required = false) List<MultipartFile> files
 	) throws NumberFormatException, IOException {
-	//CustomUserDetails는 애플리케이션 사용자 모델(User)과 Spring Security의 사용자 모델(UserDetails) 사이의 다리 역할을 한다.
-	//이를 통해 Spring Security가 사용자 정보를 사용하여 인증 및 권한 부여를 수행할 수 있도록 만들어 준다. 
-	//없으면 Spring Security가 당신의 User 객체를 어떻게 처리해야 할지 알 수 없다.
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		SecurityUtil.checkAuthorization(userDetails);
@@ -149,7 +146,7 @@ public ResponseEntity<?> createComment (@RequestBody Comment comment) {
  * 
  * 댓글 수정
  */
-@PostMapping("/comment/update.do")                  //@AuthenticationPrincipal CustomUserDetails userDetails
+@PostMapping("/comment/update.do")
 public ResponseEntity<?> updateComment (@RequestBody Comment comment) {
 
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()

@@ -9,7 +9,6 @@ import back.model.diary.Diary;
 
 @Mapper
 public interface DiaryMapper {
-//	public Diary getDiaryById(String userId);
 	public int create(Diary diary);
 	public List<Diary> getDiaryList(Diary diary);
 	public Diary getDiaryById(int diaryId);

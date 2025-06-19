@@ -11,8 +11,6 @@ import back.model.combo.GroupCode;
 @Mapper
 public interface ComboMapper {
 	
-	
-	
 	public int create(Combo combo);
 	
 	public int update(Combo combo);

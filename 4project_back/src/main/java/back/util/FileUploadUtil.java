@@ -76,14 +76,17 @@ public class FileUploadUtil {
     
     
     /**
-     * 업로드 경로 반환 (날짜 단일 폴더 포함)       ㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ임시기능임ㅁㅁㅁㅁㅁㅁㅁㅁ
+     * 업로드 경로 반환 (날짜 단일 폴더 포함)
      */
     public static String getUploadPath(String basePath, String dateFolder) {
         return File.separator + UPLOAD_DIR + File.separator + basePath + File.separator + dateFolder;
     }
     
     
-    
+    /**
+     * 
+     * 임시기능
+     */
     public static List<PostFile> uploadFiles(List<MultipartFile> multipartFiles, String basePath) throws NumberFormatException, IOException {
         List<PostFile> uploadedFiles = new ArrayList<>();
         

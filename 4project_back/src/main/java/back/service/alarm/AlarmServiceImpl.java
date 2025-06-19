@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class AlarmServiceImpl implements AlarmService {
+	
     @Autowired
     private AlarmMapper alarmMapper;
 	

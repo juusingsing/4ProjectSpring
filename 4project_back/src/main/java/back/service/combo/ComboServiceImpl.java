@@ -30,21 +30,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class ComboServiceImpl implements ComboService {
+	
     @Autowired
     private ComboMapper comboMapper;
-    
-
-    
     
 	
     @Override
 	@Transactional
 	public boolean create(Combo combo)  {
        
-        	boolean result = comboMapper.create(combo) > 0;
-	
-			
-			return result;
+    	boolean result = comboMapper.create(combo) > 0;
+		
+		return result;
     
     }
 	
@@ -53,9 +50,7 @@ public class ComboServiceImpl implements ComboService {
 	public boolean update(Combo combo) {
         try {
             boolean result = comboMapper.update(combo) > 0;
-            
-            
-            
+                     
             return result;
         } catch (Exception e) {
             log.error("게시글 수정 실패", 0);
@@ -97,32 +92,6 @@ public class ComboServiceImpl implements ComboService {
             List<CommonCode> codes = comboMapper.selectCodesByGroupId(groupId);
 		return codes;
 	}
-
-
-//	@Override
-//	@Transactional
-//	public List getBoardList(Combo combo) {
-//		
-//		int page = board.getPage();
-//		int size = board.getSize();
-//		
-//		int totalCount = boardMapper.getTotalBoardCount(board);
-//		int totalPages = (int) Math.ceil((double) totalCount / size);
-//		
-//		int startRow = (page - 1) * size + 1;
-//		int endRow = page *size;
-//		
-//		board.setTotalCount(totalCount);
-//		board.setTotalPages(totalPages);
-//		board.setStartRow(startRow);
-//		board.setEndRow(endRow);
-//		
-//		List list = boardMapper.getBoardList(board);
-//		
-//		return list;
-//	}
-	
-    
 
 
 }

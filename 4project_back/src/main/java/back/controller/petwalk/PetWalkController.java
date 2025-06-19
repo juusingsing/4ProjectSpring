@@ -84,7 +84,7 @@ public class PetWalkController {
 			@ModelAttribute Pet pet,
 			@RequestPart(value = "files", required = false) List<MultipartFile> files,  @AuthenticationPrincipal CustomUserDetails userDetails)
 					throws NumberFormatException, IOException {
-		log.info("petwalikid",pet.getWalkId());
+		
 		SecurityUtil.checkAuthorization(userDetails);
 		
 		pet.setUsersId(userDetails.getUser().getUsersId());
@@ -93,15 +93,15 @@ public class PetWalkController {
 				
 		pet.setFiles(files);
 		boolean isCreated = petWalkService.imgSave(pet);
-		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "게시글 등록 성공" : "게시글 등록 실패", null));
+		return ResponseEntity.ok(new ApiResponse<>(isCreated, isCreated ? "이미지 등록 성공" : "이미지 등록 실패", null));
 		
 	}
 	
 	@PostMapping("/imgLoad.do")
-    public List<PostFile> getAllImages(@RequestBody PostFile postFile) {
-		log.info("postFileKey: {}, postFileCategory: {}", postFile.getPostFileKey(), postFile.getPostFileCategory());
-		
+    public List<PostFile> getAllImages(@RequestBody PostFile postFile, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+		SecurityUtil.checkAuthorization(userDetails);
+		
         return petWalkService.awalkIdSearch(postFile); // 모든 파일을 반환하는 쿼리 필요
     }
 	
@@ -110,7 +110,6 @@ public class PetWalkController {
     public List<Pet> getCurrentWalkId(@RequestBody Pet pet,  @AuthenticationPrincipal CustomUserDetails userDetails)
     				throws NumberFormatException, IOException {
 		
-		log.info("animalId: {}", pet.getAnimalId());
 		SecurityUtil.checkAuthorization(userDetails);
 		pet.setCreateId(userDetails.getUsername());
 		List<Pet> walk = petWalkService.getCurrentWalkId(pet);
@@ -124,10 +123,8 @@ public class PetWalkController {
     public List<Pet> getCurrentWalkInfo(@RequestBody Pet pet,  @AuthenticationPrincipal CustomUserDetails userDetails)
     				throws NumberFormatException, IOException {
 		
-		log.info("walkId: {}", pet.getWalkId());
 		SecurityUtil.checkAuthorization(userDetails);
 		pet.setCreateId(userDetails.getUsername());
-		
 
 		List<Pet> walk = petWalkService.petCurrentLoad(pet);
 		return walk;

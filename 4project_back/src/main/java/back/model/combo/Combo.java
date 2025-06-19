@@ -17,12 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Combo extends Model {
 
-	
 	private String value;
 	private String label;
-	
-	
-
-
     
 }

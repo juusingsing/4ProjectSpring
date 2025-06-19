@@ -70,7 +70,7 @@ public class UserController {
                     .badRequest()
                     .body(new ApiResponse<>(false, "필수 입력값이 누락되었습니다.", null));
         }
-        System.out.println(user.getUsersPassword());
+        
         user.setCreateId("SYSTEM");
         boolean success = userService.registerUser(user);
         if (success) {
@@ -89,24 +89,6 @@ public class UserController {
         result.put("available", !isDuplicate);
         return ResponseEntity.ok(result);
     }
-    
-//    
-//	@PostMapping("/register.do")
-//	public ResponseEntity<?> register(@RequestBody User user) {
-//		log.info("회원가입 요청: {}", user.getUsersId());
-//		
-//		int userIdCheck = userService.userIdCheck(user);
-//		
-//		if (userIdCheck == 0) {
-//			user.setCreateId("SYSTEM");
-//			boolean success = userService.registerUser(user);
-//			
-//			return ResponseEntity.ok(new ApiResponse<>(success, success ? "회원가입 성공" : "회원가입 실패", null));
-//		} else {
-//			log.info(userIdCheck + "아이디중복");
-//			return ResponseEntity.ok(new ApiResponse<>(false,  "abc", "아이디 중복", null));
-//		}
-//	}	
 		
 	
 	//회원정보 수정
@@ -154,12 +136,10 @@ public class UserController {
 	            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 	            SecurityContextHolder.getContext()
 	        );
-	        log.info("세션 ID: {}", session.getId());
 	        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal();
 	        return ResponseEntity.ok(new ApiResponse<>(true, "로그인 성공", userDetails.getUser()));
 	    } catch (AuthenticationException e) {
-	        log.warn("로그인 실패: {}", user.getUsersId());
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 	            .body(new ApiResponse<>(false, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
 	    }
@@ -168,7 +148,6 @@ public class UserController {
 	//로그아웃
 	@PostMapping("/logout.do")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        log.info("로그아웃 요청");
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok(new ApiResponse<>(true, "로그아웃 완료", null));
