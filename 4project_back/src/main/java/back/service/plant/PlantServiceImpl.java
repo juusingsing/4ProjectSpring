@@ -64,14 +64,31 @@ public class PlantServiceImpl implements PlantService {
 	@Override
 	public boolean updatePestLogs(Plant plant) {
 		try {
-			boolean result = plantMapper.updatePestLogs(plant) > 0;
-			List<MultipartFile> files = plant.getFiles();
+	        boolean result = plantMapper.updatePestLogs(plant) > 0;
+	        List<MultipartFile> files = plant.getFiles();
 	        Integer plantId = plant.getPlantId();
-			return plantMapper.updatePestLogs(plant) > 0;
-		} catch (Exception e) {
-			log.error("병충해 수정 실패", e);
-			throw new HException("병충해 수정 실패", e);
-		}
+
+	        if (result && files != null && !files.isEmpty() && plantId != null && plantId > 0) {
+	            List<PostFile> fileList = FileUploadUtil.uploadFiles(
+	                files, "pest", plantId, "PES", plant.getUpdateId()
+	            );
+	            log.info("파일사이즈:"+fileList.size());
+	            for (PostFile postFile : fileList) {
+	            	postFile.setPostFileId(plant.getFileId());
+	                boolean insertResult = fileMapper.updateFilesByKey(postFile) > 0;
+	                if (!insertResult) throw new HException("파일 추가 실패");
+
+	            }
+	        }
+
+	        return result;
+
+	    } catch (Exception e) {
+	        log.error("병충해 수정 실패: {}", e.getMessage(), e);
+	        throw new HException("병충해 수정 실패", e);
+	    }
+		
+
 	}
 
 	// 식물 병충해 로그 개별 삭제

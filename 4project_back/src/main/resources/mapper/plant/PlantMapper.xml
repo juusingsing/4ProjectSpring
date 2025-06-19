@@ -47,13 +47,12 @@
   <update id="updatePestLogs" parameterType="back.model.plant.Plant">
     update PLANT_PEST
     SET
-    PLANT_ID = #{plantId},
-    FILE_ID = #{fileId},
     PLANT_PEST_DATE=#{plantPestDate, jdbcType=DATE},
 	PLANT_PEST_MEMO=#{plantPestMemo, jdbcType=VARCHAR},
     UPDATE_ID=#{updateId},
     UPDATE_DT=SYSDATE
-    WHERE PLANT_PEST_ID=#{plantPestId}
+    WHERE PLANT_ID = #{plantId}
+    AND PLANT_PEST_ID=#{plantPestId}
   </update>
   
   <!-- 식물  병충해 개별 삭제-->
@@ -68,15 +67,19 @@
   <!-- 식물 병충해 조회 -->
   <select id="pestlogs" resultType="back.model.plant.Plant">
     SELECT 
-    PLANT_PEST_ID AS plantPestId,
-    PLANT_ID AS plantId,
-    FILE_ID AS fileId,
-    PLANT_PEST_DATE AS plantPestDate,
-    PLANT_PEST_MEMO AS plantPestMemo,
-    TO_CHAR(CREATE_DT, 'YYYY.MM.DD') AS createDt
-    FROM PLANT_PEST
-    WHERE PLANT_ID = #{plantId}
-    AND DEL_YN = 'N' ORDER BY CREATE_DT DESC
+    P.PLANT_PEST_ID AS plantPestId,
+    P.PLANT_ID AS plantId,
+    P.FILE_ID AS fileId,
+    P.PLANT_PEST_DATE AS plantPestDate,
+    P.PLANT_PEST_MEMO AS plantPestMemo,
+    TO_CHAR(P.CREATE_DT, 'YYYY.MM.DD') AS createDt,
+    F.POST_FILE_NAME AS fileOriginName
+    FROM PLANT_PEST P
+    LEFT JOIN POST_FILE F
+    	ON P.FILE_ID = F.POST_FILE_ID
+    WHERE P.PLANT_ID = #{plantId}
+    	AND P.DEL_YN = 'N'
+    ORDER BY P.CREATE_DT DESC
   </select>
   	
   <!-- 식물 병충해 저장 -->
