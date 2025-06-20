@@ -109,5 +109,35 @@ public ResponseEntity<?> deleteAlarm (@RequestBody Alarm alarm) {
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 수정 성공" : "알람 수정 실패", null));
 }
 
+@PostMapping("/petDelete.do")
+public ResponseEntity<?> petDeleteAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		
+		List<Alarm> Idlist = alarmService.alarmIdList(alarm);    // 알람아이디조회
+		
+		alarm.setUpdateId(userDetails.getUser().getUsersName());
+		boolean isDeleted = alarmService.petDelete(alarm);    // 식물삭제, 동물삭제 같은서비스
+		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 삭제 성공" : "알람 삭제 실패", isDeleted ? Idlist : null));
+}
+
+@PostMapping("/plantDelete.do")
+public ResponseEntity<?> plantDeleteAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		
+		List<Alarm> Idlist = alarmService.alarmIdList(alarm);    // 알람아이디조회
+		
+		alarm.setUpdateId(userDetails.getUser().getUsersName());
+		boolean isDeleted = alarmService.petDelete(alarm);    // 식물삭제, 동물삭제 같은서비스
+		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 삭제 성공" : "알람 삭제 실패", isDeleted ? Idlist : null));
+}
+
+
+
 
 }

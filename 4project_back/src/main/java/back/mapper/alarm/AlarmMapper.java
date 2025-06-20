@@ -22,5 +22,9 @@ public interface AlarmMapper {
 	
 	public int delete(Alarm alarm);
 	
+	public int petDelete(Alarm alarm);
+	
+	public List<Alarm> alarmIdList(Alarm alarm);
+	
 	
 }

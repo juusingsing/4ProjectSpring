@@ -107,16 +107,31 @@
     
     <update id="delete" parameterType="back.model.alarm.Alarm">
         UPDATE ALARM SET
+        	IS_ACTIVE = 'N',
         	DEL_YN = 'Y'
         WHERE ALARM_ID = #{alarmId}
     </update>
     
+    <update id="petDelete" parameterType="back.model.alarm.Alarm">
+        UPDATE ALARM SET
+        	UPDATE_ID = #{updateId},
+        	UPDATE_DT = SYSDATE,
+        	IS_ACTIVE = 'N',
+        	DEL_YN = 'Y'
+        WHERE
+        	PET_ID = #{petId}
+        	AND CATEGORY = #{category}
+    </update>
     
-    <!--<select id="list" resultType="back.model.alarm.Alarm">
-	  SELECT LABEL AS label,
-	  		 VALUE AS value
-	  		 FROM ALARM
-	</select>-->
+    
+    <select id="alarmIdList" resultType="back.model.alarm.Alarm">
+	  SELECT
+	  	ALARM_ID AS alarmId
+	  FROM ALARM
+	  WHERE
+    	PET_ID = #{petId}
+    	AND CATEGORY = #{category}
+	</select>
     
 	
      
