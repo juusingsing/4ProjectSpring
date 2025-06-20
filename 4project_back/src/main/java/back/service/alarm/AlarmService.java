@@ -24,5 +24,7 @@ public interface AlarmService {
     public List<Alarm> alarmIdList(Alarm alarm);
     
     public List<Alarm> logoutDelete(Alarm alarm);
+    
+    public List<Alarm> dropDeleteAlarm(Alarm alarm);
 
 }
