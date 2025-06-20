@@ -2,6 +2,7 @@ package back.controller.alarm;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,11 @@ import back.model.alarm.Alarm;
 import back.model.combo.Combo;
 import back.model.common.CustomUserDetails;
 import back.model.user.User;
+import back.model.pet.Pet;
+import back.model.plant.Plant;
 import back.service.alarm.AlarmService;
+import back.service.pet.PetService;
+import back.service.plant.PlantService;
 import back.util.ApiResponse;
 import back.util.SecurityUtil;
 
@@ -45,6 +50,12 @@ public class AlarmController{
 	
 @Autowired
 private AlarmService alarmService;
+
+@Autowired
+private PetService petService;
+
+@Autowired
+private PlantService plantService;
 
 
 @PostMapping("/list.do")
@@ -137,7 +148,51 @@ public ResponseEntity<?> plantDeleteAlarm (@RequestBody Alarm alarm) {
 		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 삭제 성공" : "알람 삭제 실패", isDeleted ? Idlist : null));
 }
 
+@PostMapping("/logoutDelete.do")
+public ResponseEntity<?> logoutDeleteAlarm (@RequestBody Alarm alarm) {
+	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
+		
+		SecurityUtil.checkAuthorization(userDetails);
+		
+		List<Map<String, Object>> IdList = new ArrayList<>();
+		
+		Pet pet = new Pet();
+		pet.setCreateId(userDetails.getUser().getUsersName());
+		List<Pet> petList = petService.petIdList(pet);    // 동물아이디 조회  petId로
+		
+		for (Pet p : petList) {
+			Map<String, Object> alarmMap = new HashMap<>(); // 루프마다 새 맵 생성
+		    alarmMap.put("petId", p.getPetId());
+		    alarmMap.put("category", "ANI");
+		    IdList.add(alarmMap);
+		}
+		
+		Plant plant = new Plant();
+		plant.setCreateId(userDetails.getUser().getUsersName());
+		List<Plant> plantList = plantService.plantIdList(plant);    // 식물아이디 조회  petId로
+		for (Plant pl : plantList) {
+			Map<String, Object> alarmMap = new HashMap<>(); // 루프마다 새 맵 생성
+			alarmMap.put("petId", pl.getPetId());
+			alarmMap.put("category", "PLA");
+			IdList.add(alarmMap);
+		}
 
+		log.info("IdList size: {}", IdList.size());
+		
+		alarm.setUpdateId(userDetails.getUser().getUsersName());
+		alarm.setIdList(IdList);   // 조회해온 아이디리스트 alarm에 추가
+		boolean isDeleted = false;
+		List<Alarm> list = new ArrayList<>();
+		try {
+			list = alarmService.logoutDelete(alarm);    // 식물삭제, 동물삭제 같은서비스
+			isDeleted = true;
+		} catch (Exception e) {
+			log.info("알람 수정시 오류 Controller");
+		}
+		
+		return ResponseEntity.ok(new ApiResponse<>(isDeleted, isDeleted ? "알람 수정 성공" : "알람 수정 실패", isDeleted ? list : null));
+}
 
 
 }

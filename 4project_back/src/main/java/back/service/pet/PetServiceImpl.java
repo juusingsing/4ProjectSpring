@@ -10,6 +10,7 @@ import back.exception.HException;
 import back.mapper.file.FileMapper;
 import back.mapper.pet.PetMapper;
 import back.mapper.pet_training_and_action.PetTrainingAndActionMapper;
+import back.model.alarm.Alarm;
 import back.model.common.PostFile;
 import back.model.pet.Pet;
 import back.util.FileUploadUtil;
@@ -127,4 +128,9 @@ public class PetServiceImpl implements PetService {
     public Pet getPetById(int animalId, String usersId, String category) {
         return petMapper.getPetByIdAndUsername(animalId, usersId, category);
     }
+
+	@Override
+	public List<Pet> petIdList(Pet pet) {
+		return petMapper.petIdList(pet);
+	}
 }

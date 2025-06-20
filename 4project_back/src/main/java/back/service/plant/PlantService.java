@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import back.exception.HException;
+import back.model.alarm.Alarm;
 import back.model.pet.Pet;
 import back.model.plant.Plant;
 
@@ -84,5 +85,8 @@ public interface PlantService {
     
     //물주기조회
     public List<Plant> waterList(Plant plant) throws NumberFormatException, IOException;
+    
+    // 식물아이디조회
+    public List<Plant> plantIdList(Plant plant);
     
 }

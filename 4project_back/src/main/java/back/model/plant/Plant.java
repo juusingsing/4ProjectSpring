@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class Plant extends Model{
 	// 식물 기본 정보 (Plant 테이블과 매핑될 필드)
 	private int plantId; // 식물ID
+	private int petId;   // petId
 	private int fileId; // 파일ID
     private String plantName; // 식물이름
     private String plantType; // 식물 종류

@@ -13,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import back.exception.HException;
 import back.mapper.file.FileMapper;
 import back.mapper.plant.PlantMapper;
+import back.model.alarm.Alarm;
 import back.model.common.PostFile;
 import back.model.diary.Diary;
+import back.model.pet.Pet;
 import back.model.plant.Plant;
 import back.model.write.Comment;
 import back.util.FileUploadUtil;
@@ -365,6 +367,11 @@ public class PlantServiceImpl implements PlantService {
 	public List<Plant> waterList(Plant plant) throws NumberFormatException, IOException {
 
 		return  plantMapper.waterList(plant);
+	}
+	
+	@Override
+	public List<Plant> plantIdList(Plant plant) {
+		return plantMapper.plantIdList(plant);
 	}
 
 }

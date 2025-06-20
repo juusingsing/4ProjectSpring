@@ -22,5 +22,7 @@ public interface AlarmService {
     public boolean petDelete(Alarm alarm);
     
     public List<Alarm> alarmIdList(Alarm alarm);
+    
+    public List<Alarm> logoutDelete(Alarm alarm);
 
 }

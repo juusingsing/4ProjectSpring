@@ -1,6 +1,7 @@
 package back.model.alarm;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,5 +38,7 @@ public class Alarm extends Model {
 	
 	private String category;    // 동/식물 구분 카테고리
 	private String type;		// 먹이 타입  사료 간식 영양제 약
-
+	
+	private List<Map<String, Object>> IdList;    //  아이디리스트
+	
 }

@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
+import back.model.alarm.Alarm;
 import back.model.diary.Diary;
 import back.model.pet.Pet;
 import back.model.plant.Plant;
@@ -87,4 +88,6 @@ public interface PlantMapper {
     public List<Plant> waterList(Plant plant);
     
     public int updatePlantFileId(@Param("fileId") Long fileId, @Param("plantId") int plantId);
+    
+    public List<Plant> plantIdList(Plant plant);
 }
