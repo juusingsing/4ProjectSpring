@@ -72,6 +72,7 @@ public class SecurityConfig {
                         "/api/user/logout.do",
                         "/api/user/register.do",
                         "/api/user/checkUserId.do",
+                        "/api/user/view.do",
                         "/api/find/findId.do",
                         "/api/find/findPw.do",
                         "/api/find/resetPassword.do",

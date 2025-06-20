@@ -135,9 +135,9 @@ public ResponseEntity<?> petDeleteAlarm (@RequestBody Alarm alarm) {
 }
 
 @PostMapping("/plantDelete.do")
-public ResponseEntity<?> plantDeleteAlarm (@RequestBody Alarm alarm) {
-	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-			.getAuthentication().getPrincipal();
+public ResponseEntity<?> plantDeleteAlarm (
+		@RequestBody Alarm alarm,
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
 		
 		SecurityUtil.checkAuthorization(userDetails);
 		
@@ -149,10 +149,10 @@ public ResponseEntity<?> plantDeleteAlarm (@RequestBody Alarm alarm) {
 }
 
 @PostMapping("/logoutDelete.do")
-public ResponseEntity<?> logoutDeleteAlarm (@RequestBody Alarm alarm) {
-	CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-			.getAuthentication().getPrincipal();
-		
+public ResponseEntity<?> logoutDeleteAlarm (
+		@RequestBody Alarm alarm,
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
+	
 		SecurityUtil.checkAuthorization(userDetails);
 		
 		List<Map<String, Object>> IdList = new ArrayList<>();

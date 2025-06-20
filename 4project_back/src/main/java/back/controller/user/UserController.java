@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,9 +49,12 @@ public class UserController {
 	
 	//사용자 정보 조회
 	@PostMapping("/view.do")
-	public ResponseEntity<?> view(@RequestBody User user) {
-		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
+	public ResponseEntity<?> view(
+			@RequestBody User user,
+			@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+		SecurityUtil.checkAuthorization(userDetails);
+		
 		String userId = "";
 		if (user.getUsersId() == null || user.getUsersId().equals("")) {
 			userId = userDetails.getUser().getUsersId();
