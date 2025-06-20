@@ -424,4 +424,13 @@
 	    WHERE PLANT_ID = #{plantId}
 	</update>
 
+
+	<select id="plantIdList" resultType="back.model.plant.Plant">
+	  SELECT
+	  	PLANT_ID AS petId
+	  FROM PLANT
+	  WHERE
+    	CREATE_ID = #{createId}
+    	AND DEL_YN = 'N'
+	</select>
 </mapper>

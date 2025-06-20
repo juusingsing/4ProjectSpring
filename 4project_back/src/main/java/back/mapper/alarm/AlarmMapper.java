@@ -26,5 +26,7 @@ public interface AlarmMapper {
 	
 	public List<Alarm> alarmIdList(Alarm alarm);
 	
+	public int logoutDelete(Alarm alarm);
+	
 	
 }

@@ -81,5 +81,14 @@
 		  AND a.users_id = #{usersId}
 		  AND a.del_yn = 'N'
 	</select>
+	
+	<select id="petIdList" resultType="back.model.pet.Pet">
+	  SELECT
+	  	ANIMAL_ID AS petId
+	  FROM ANIMAL
+	  WHERE
+    	CREATE_ID = #{createId}
+    	AND DEL_YN = 'N'
+	</select>
 
 </mapper>

@@ -133,7 +133,15 @@
     	AND CATEGORY = #{category}
 	</select>
     
-	
+	 <update id="logoutDelete" parameterType="back.model.alarm.Alarm">
+        UPDATE ALARM SET
+        	IS_ACTIVE = 'N',
+        	UPDATE_ID = #{updateId},
+        	UPDATE_DT = SYSDATE
+        WHERE
+        	PET_ID = #{petId}
+        	AND CATEGORY = #{category}
+    </update>
      
    
 	
