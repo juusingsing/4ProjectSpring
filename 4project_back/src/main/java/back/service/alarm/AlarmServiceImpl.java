@@ -57,6 +57,19 @@ public class AlarmServiceImpl implements AlarmService {
 		boolean result = alarmMapper.delete(alarm) > 0;
 		return result;
 	}
+
+
+	@Override
+	public boolean petDelete(Alarm alarm) {
+		boolean result = alarmMapper.petDelete(alarm) > 0;
+		return result;
+	}
+
+
+	@Override
+	public List<Alarm> alarmIdList(Alarm alarm) {
+		return alarmMapper.alarmIdList(alarm);
+	}
     
 
 

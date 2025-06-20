@@ -18,5 +18,9 @@ public interface AlarmService {
     public boolean delete(Alarm alarm);
     
     public boolean AllUpdate(Alarm alarm);
+    
+    public boolean petDelete(Alarm alarm);
+    
+    public List<Alarm> alarmIdList(Alarm alarm);
 
 }
