@@ -32,6 +32,7 @@
             USERS
         WHERE 
             USERS_ID = #{usersId}
+            AND DEL_YN ='N'
     </select>
 
     <!-- 사용자 생성 -->

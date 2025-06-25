@@ -289,7 +289,8 @@ public class PlantServiceImpl implements PlantService {
 
 	                // 4. fileId를 plant에 저장
 	                Integer fileId = file.getPostFileId(); // selectKey로 채워져야 함
-	                plantMapper.updateFileId(plantId, fileId);
+	                plant.setFileId(fileId);
+	                plantMapper.updatePlantFileId(plant);
 	            }
 	        }
 
@@ -303,37 +304,68 @@ public class PlantServiceImpl implements PlantService {
 	@Override
     @Transactional
     public boolean updatePlant(Plant plant) {
-		log.info("Attempting to update plant with ID: {}", plant.getPlantId());
-        log.info("Plant details: {}", plant); // Plant 객체 전체 출력 (toString() 호출)
-		boolean updated = plantMapper.updatePlant(plant) > 0;
-		boolean result = false;
-		if (updated && plant.getFiles() != null && !plant.getFiles().isEmpty()) {
-            try {
-            
-                List<PostFile> fileList = FileUploadUtil.uploadFiles(
-                		plant.getFiles(), "plant", plant.getPlantId(), "PLA", plant.getUpdateId()
-                );
+		// 1. 식물 기본 정보 업데이트 시도
+	    boolean updatedPlantCoreInfo = plantMapper.updatePlant(plant) > 0;
+	    boolean finalUpdateResult = updatedPlantCoreInfo; // 최종 업데이트 결과 초기값
 
-                for (PostFile postFile : fileList) {
-                    boolean insertResult = fileMapper.updateFilesByKey(postFile) > 0;
-                    if (!insertResult) throw new HException("파일 업데이트 실패");
-                }
+	    // 식물 기본 정보 업데이트가 성공했고, 새로운 파일이 첨부된 경우에만 파일 관련 로직 실행
+	    if (updatedPlantCoreInfo && plant.getFiles() != null && !plant.getFiles().isEmpty()) {
+	        try {
+	            // !!! 여기에 있었던 기존 파일 비활성화 (DEL_YN='Y' 업데이트) 로직을 제거합니다. !!!
+	            // fileMapper.selectLatestFileIdByRefId(...)
+	            // PostFile oldFileToDeactivate = ...
+	            // fileMapper.deleteFile(oldFileToDeactivate) ... // 이 부분이 제거됩니다.
 
-                // Step 3: 최신 파일 ID로 업데이트
-                Long latestFileId = fileMapper.selectLatestFileIdByRefId(plant.getPlantId(), "PLA");
-                if (latestFileId != null) {
-                	result = plantMapper.updatePlantFileId(latestFileId, plant.getPlantId()) > 0;
-                	
-                }
-                
-                
-            } catch (Exception e) {
-            	log.error("식물 수정 중 오류 발생", e);
-                throw new HException("식물 수정 실패", e);
-            }
-        }
-		 return result;
-    }
+	            // 1.1. 새로운 파일 물리적으로 업로드 및 PostFile 객체 생성
+	            List<PostFile> uploadedFiles = FileUploadUtil.uploadFiles(
+	                    plant.getFiles(),
+	                    "plant",
+	                    plant.getPlantId(), // 이 파일이 어떤 식물에 대한 것인지 참조 (POST_FILE_KEY)
+	                    "PLA",              // 파일 카테고리
+	                    plant.getUpdateId() // 파일 생성/수정자 ID
+	            );
+
+	            // 1.2. 새로 업로드된 파일의 메타데이터를 데이터베이스에 삽입
+	            if (!uploadedFiles.isEmpty()) {
+	                // 식물은 단일 이미지를 가정하므로, 리스트의 첫 번째 파일만 처리
+	                PostFile newFileMetadata = uploadedFiles.get(0);
+
+	                // fileMapper.insertFile은 새 레코드를 삽입하고 postFileId를 채워줍니다.
+	                boolean insertNewFileResult = fileMapper.insertFile(newFileMetadata) > 0;
+	                if (!insertNewFileResult) {
+	                    throw new HException("새 파일 메타데이터 DB 저장 실패");
+	                }
+
+	                // 1.3. 식물 레코드에 새로 삽입된 파일의 ID 연결
+	                // insertFile 호출 후 PostFile 객체에 postFileId가 selectKey로 채워져 있어야 합니다.
+	                Integer newFileId = newFileMetadata.getPostFileId();
+	                if (newFileId != null) {
+	                    // Plant 객체의 fileId 필드를 업데이트하여 plantMapper.updateFileId에 전달
+	                    plant.setFileId(newFileId);
+	                    finalUpdateResult = plantMapper.updatePlantFileId(plant) > 0; // plantMapper에 추가할 메서드
+	                } else {
+	                    throw new HException("새로 삽입된 파일 ID 조회 실패 (insertFile 후 ID가 null)");
+	                }
+	            } else {
+	                // 파일이 제공되었으나 FileUploadUtil.uploadFiles가 빈 리스트를 반환한 경우 (예: 잘못된 파일 형식 등)
+	                log.warn("Plant ID {} 에 대한 파일 업로드는 요청되었으나, 실제 업로드된 파일 없음.", plant.getPlantId());
+	                // 이 경우에도 식물 기본 정보 업데이트 결과는 유지
+	            }
+
+	        } catch (HException e) {
+	            log.error("Plant ID {} 식물 수정 중 파일 처리 실패: {}", plant.getPlantId(), e.getMessage(), e);
+	            throw e;
+	        } catch (Exception e) {
+	            log.error("Plant ID {} 식물 수정 중 예상치 못한 오류 발생", plant.getPlantId(), e);
+	            throw new HException("식물 수정 실패", e);
+	        }
+	    } else {
+	        // 파일이 첨부되지 않았거나 식물 기본 정보 업데이트가 실패한 경우
+	        // finalUpdateResult는 updatedPlantCoreInfo 값을 그대로 유지
+	    }
+
+	    return finalUpdateResult;
+	}
 	
 	//식물 삭제
     @Override

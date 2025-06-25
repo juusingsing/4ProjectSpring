@@ -70,10 +70,12 @@ public interface PlantMapper {
 	
 	//식물 등록
 	public int create(Plant plant);
-	public int updateFileId(@Param("plantId") Integer plantId, @Param("fileId") Integer fileId);
 
-    // 식물 수정
+    //식물 수정
     public int updatePlant(Plant plant);
+    
+    //식물 프로필 사진 수정
+    public int updatePlantFileId(Plant plant);
 
     // 식물 삭제
     public int deletePlant(Plant plant);
@@ -87,7 +89,7 @@ public interface PlantMapper {
     // 물주기 리스트조회
     public List<Plant> waterList(Plant plant);
     
-    public int updatePlantFileId(@Param("fileId") Long fileId, @Param("plantId") int plantId);
+
     
     public List<Plant> plantIdList(Plant plant);
 }
